@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Race{% endblock %}
+
+{% block body %}
+    <h1>Race</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ race.id }}</td>
+            </tr>
+            <tr>
+                <th>Timer</th>
+                <td>{{ race.timer }}</td>
+            </tr>
+            <tr>
+                <th>Race_duration</th>
+                <td>{{ race.raceDuration }}</td>
+            </tr>
+            <tr>
+                <th>Task_access</th>
+                <td>{{ race.taskAccess ? race.taskAccess|json_encode : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_race_index') }}">back to list</a>
+
+    <a href="{{ path('app_race_edit', {'id': race.id}) }}">edit</a>
+
+    {{ include('race/_delete_form.html.twig') }}
+{% endblock %}

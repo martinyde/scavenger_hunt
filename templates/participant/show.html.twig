@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Participant{% endblock %}
+
+{% block body %}
+    <h1>Participant</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ participant.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ participant.name }}</td>
+            </tr>
+            <tr>
+                <th>Progress_task_entry</th>
+                <td>{{ participant.progressTaskEntry ? participant.progressTaskEntry|json_encode : '' }}</td>
+            </tr>
+            <tr>
+                <th>Progress_task_solution</th>
+                <td>{{ participant.progressTaskSolution ? participant.progressTaskSolution|json_encode : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_participant_index') }}">back to list</a>
+
+    <a href="{{ path('app_participant_edit', {'id': participant.id}) }}">edit</a>
+
+    {{ include('participant/_delete_form.html.twig') }}
+{% endblock %}
