@@ -10,7 +10,6 @@ use Symfony\Component\Clock\DatePoint;
 use Symfony\UX\Turbo\Attribute\Broadcast;
 
 #[ORM\Entity(repositoryClass: RaceRepository::class)]
-#[Broadcast]
 class Race
 {
     #[ORM\Id]

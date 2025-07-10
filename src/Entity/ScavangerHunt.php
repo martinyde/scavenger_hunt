@@ -30,6 +30,10 @@ class ScavangerHunt
     #[ORM\OneToMany(targetEntity: Race::class, mappedBy: 'scavenger_hunt', orphanRemoval: true)]
     private Collection $races;
 
+    #[ORM\ManyToOne(inversedBy: 'scavangerHunts')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
@@ -109,6 +113,18 @@ class ScavangerHunt
                 $race->setScavengerHunt(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

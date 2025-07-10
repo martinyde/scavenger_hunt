@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -35,6 +37,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private bool $isVerified = false;
+
+    /**
+     * @var Collection<int, ScavangerHunt>
+     */
+    #[ORM\OneToMany(targetEntity: ScavangerHunt::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $scavangerHunts;
+
+    public function __construct()
+    {
+        $this->scavangerHunts = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -125,6 +138,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ScavangerHunt>
+     */
+    public function getScavangerHunts(): Collection
+    {
+        return $this->scavangerHunts;
+    }
+
+    public function addScavangerHunt(ScavangerHunt $scavangerHunt): static
+    {
+        if (!$this->scavangerHunts->contains($scavangerHunt)) {
+            $this->scavangerHunts->add($scavangerHunt);
+            $scavangerHunt->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeScavangerHunt(ScavangerHunt $scavangerHunt): static
+    {
+        if ($this->scavangerHunts->removeElement($scavangerHunt)) {
+            // set the owning side to null (unless already changed)
+            if ($scavangerHunt->getUser() === $this) {
+                $scavangerHunt->setUser(null);
+            }
+        }
 
         return $this;
     }
