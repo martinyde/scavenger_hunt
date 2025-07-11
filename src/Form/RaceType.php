@@ -16,7 +16,6 @@ class RaceType extends AbstractType
         $builder
             ->add('timer')
             ->add('race_duration')
-            ->add('task_access')
             ->add('scavenger_hunt', EntityType::class, [
                 'class' => ScavangerHunt::class,
                 'choice_label' => 'id',

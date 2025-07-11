@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\UX\Turbo\Attribute\Broadcast;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
+#[Broadcast]
 class Participant
 {
     #[ORM\Id]
@@ -27,7 +28,15 @@ class Participant
     #[ORM\JoinColumn(nullable: false)]
     private ?Race $race = null;
 
-    public function getId(): ?int
+    #[ORM\PrePersist]
+    public function onPrePersist()
+    {
+      // This runs before the entity is first persisted
+      $this->progress_task_entry = [];
+      $this->progress_task_solution = [];
+    }
+
+  public function getId(): ?int
     {
         return $this->id;
     }

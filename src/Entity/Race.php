@@ -36,6 +36,9 @@ class Race
     #[ORM\JoinColumn(nullable: false)]
     private ?ScavangerHunt $scavenger_hunt = null;
 
+    #[ORM\Column]
+    private ?bool $active = null;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -120,6 +123,18 @@ class Race
     public function setScavengerHunt(?ScavangerHunt $scavenger_hunt): static
     {
         $this->scavenger_hunt = $scavenger_hunt;
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): static
+    {
+        $this->active = $active;
 
         return $this;
     }

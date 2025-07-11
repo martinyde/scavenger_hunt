@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/race')]
 final class RaceController extends AbstractController
 {
+  // Make personal (Userid)
     #[Route(name: 'app_race_index', methods: ['GET'])]
     public function index(RaceRepository $raceRepository): Response
     {
@@ -22,6 +23,7 @@ final class RaceController extends AbstractController
         ]);
     }
 
+    // remove?
     #[Route('/new', name: 'app_race_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -30,6 +32,7 @@ final class RaceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $race->setActive(false);
             $entityManager->persist($race);
             $entityManager->flush();
 

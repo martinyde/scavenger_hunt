@@ -23,7 +23,7 @@
                 <td>{{ task.id }}</td>
                 <td>{{ task.passKey }}</td>
                 <td>{{ task.title }}</td>
-                <td>{{ task.solutions }}</td>
+                <td>{{ task.solutions|join('|') }}</td>
                 <td>{{ task.textBefore }}</td>
                 <td>{{ task.textAfter }}</td>
                 <td>

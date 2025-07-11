@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Participant;
 use App\Form\ParticipantType;
 use App\Repository\ParticipantRepository;
+use App\Repository\RaceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +15,10 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/participant')]
 final class ParticipantController extends AbstractController
 {
+    public function __construct(protected RaceRepository $raceRepository)
+    {
+    }
+
     #[Route(name: 'app_participant_index', methods: ['GET'])]
     public function index(ParticipantRepository $participantRepository): Response
     {
@@ -30,6 +35,7 @@ final class ParticipantController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $participant->setRace($this->raceRepository->find(4));
             $entityManager->persist($participant);
             $entityManager->flush();
 

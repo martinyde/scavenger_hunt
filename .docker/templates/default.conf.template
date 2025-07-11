@@ -11,6 +11,34 @@ server {
     real_ip_recursive on;
     real_ip_header X-Forwarded-For;
 
+   # Add this Mercure location block
+    location /.well-known/mercure {
+        # Proxy to the Mercure hub
+        proxy_pass http://mercure:3000/.well-known/mercure/;
+        proxy_read_timeout 24h;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+
+        # Headers for SSE (Server-Sent Events)
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # CORS headers
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization' always;
+        add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range' always;
+
+        # In case of OPTIONS request
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Max-Age' 1728000;
+            add_header 'Content-Type' 'text/plain charset=UTF-8';
+            add_header 'Content-Length' 0;
+            return 204;
+        }
+    }
+
     location / {
         # try to serve file directly, fallback to index.php
         try_files $uri /index.php$is_args$args;

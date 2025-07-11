@@ -15,8 +15,6 @@ class ParticipantType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('progress_task_entry')
-            ->add('progress_task_solution')
             ->add('race', EntityType::class, [
                 'class' => Race::class,
                 'choice_label' => 'id',
