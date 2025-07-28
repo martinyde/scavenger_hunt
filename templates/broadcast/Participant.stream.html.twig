@@ -2,21 +2,23 @@
 {% block create %}
     <turbo-stream action="append" target="participants">
         <template>
-            <div id="{{ 'participant_' ~ id }}">
-                #{{ id }} created
-            </div>
+            <tr id="participant-{{ entity.id }}">
+            {% include 'race/_participant.html.twig' with {'participant': entity} %}
+          </tr>
         </template>
     </turbo-stream>
 {% endblock %}
 
 {% block update %}
-    <turbo-stream action="update" target="participant_{{ id }}">
+    <turbo-stream action="update" target="participant-{{ entity.id }}">
         <template>
-            #{{ id }} updated
+          {% include 'race/_participant.html.twig' with {'participant': entity} %}
         </template>
     </turbo-stream>
 {% endblock %}
 
 {% block remove %}
-    <turbo-stream action="remove" target="participant_{{ id }}"></turbo-stream>
+    <turbo-stream action="remove" target="participant-{{ id }}">
+      <template></template>
+    </turbo-stream>
 {% endblock %}

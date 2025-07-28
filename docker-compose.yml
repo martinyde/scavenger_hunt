@@ -71,8 +71,8 @@ services:
       - "traefik.docker.network=frontend"
       - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_DOMAIN}`)"
 #      HTTPS config - uncomment to enable redirect from :80 to :443
-#      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=redirect-to-https"
-#      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
 
   mail:
     image: axllent/mailpit
@@ -87,6 +87,7 @@ services:
       - "traefik.docker.network=frontend"
       - "traefik.http.routers.${COMPOSE_PROJECT_NAME}mail.rule=Host(`mail-${COMPOSE_DOMAIN}`)"
       - "traefik.http.services.${COMPOSE_PROJECT_NAME}mail.loadbalancer.server.port=8025"
+
   ###> symfony/mercure-bundle ###
   mercure:
     image: dunglas/mercure
@@ -98,24 +99,40 @@ services:
       # Uncomment the following line to disable HTTPS,
       #SERVER_NAME: ':80'
       SERVER_NAME: ':3000'
-      MERCURE_PUBLISHER_JWT_KEY: ${MERCURE_JWT_SECRET}
-      MERCURE_SUBSCRIBER_JWT_KEY: ${MERCURE_JWT_SECRET}
+      MERCURE_PUBLISHER_JWT_KEY: "${MERCURE_JWT_SECRET}"
+      MERCURE_SUBSCRIBER_JWT_KEY: "${MERCURE_JWT_SECRET}"
       # Set the URL of your Symfony project (without trailing slash!) as value of the cors_origins directive
       MERCURE_EXTRA_DIRECTIVES: |
-        cors_origins http://127.0.0.1:8000
+        cors_origins https://scavenger.local.itkdev.dk
     # Comment the following line to disable the development mode
     command: /usr/bin/caddy run --config /etc/caddy/dev.Caddyfile
-    healthcheck:
-      test: ["CMD", "curl", "-f", "https://localhost/healthz"]
-      timeout: 5s
-      retries: 5
-      start_period: 60s
     volumes:
       - mercure_data:/data
       - mercure_config:/config
+    #healthcheck:
+    #  test: ["CMD", "curl", "-I", "https://mercure-scavenger.local.itkdev.dk/healthz"]
+    #  timeout: 5s
+    #  retries: 5
+    #  start_period: 60s
     ports:
-      - "3000:3000"
-###< symfony/mercure-bundle ###
+      - "3000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=frontend"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}mercure.rule=Host(`mercure-${COMPOSE_DOMAIN}`)"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}mercure.middlewares=redirect-to-https"
+      - "traefik.http.services.${COMPOSE_PROJECT_NAME}mercure.loadbalancer.server.port=3000"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+  ###< symfony/mercure-bundle ###
+
+  node:
+    image: node:20
+    profiles:
+      # Used only to build assets
+      - dev
+    working_dir: /app
+    volumes:
+      - .:/app
 
 volumes:
   mercure_data:
