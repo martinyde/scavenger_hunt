@@ -16,5 +16,11 @@ services:
     App\:
         resource: '../src/'
 
+
+    Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
+      arguments:
+        - '%env(DATABASE_URL)%'
+        - { db_table: 'participant_session', db_id_col: 'guid' }
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

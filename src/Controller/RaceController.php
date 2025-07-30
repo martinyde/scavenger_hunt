@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Race;
 use App\Form\RaceStartType;
+use App\Form\TaskPassPhraseType;
 use App\Form\RaceType;
 use App\Repository\RaceRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -48,19 +49,7 @@ final class RaceController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/{uuid}', name: 'app_race_show', methods: ['GET'])]
-    public function show(Race $race, string $uuid): Response
-    {
-        if ($race->getUuid()->toString() !== $uuid) {
-          throw $this->createAccessDeniedException();
-        }
-        return $this->render('race/show.html.twig', [
-            'race' => $race,
-        ]);
-    }
-
-
-    #[Route('/{id}/progress', name: 'app_race_progress', methods: ['GET', 'POST'])]
+    #[Route('/progress/{id}', name: 'app_race_progress', methods: ['GET', 'POST'])]
     public function progress(Request $request, Race $race, EntityManagerInterface $entityManager): Response
     {
 
@@ -76,6 +65,20 @@ final class RaceController extends AbstractController
         'race' => $race,
         'startRaceForm' => $startRaceForm,
       ]);
+    }
+
+    #[Route('/{id}/{uuid}', name: 'app_race_show', methods: ['GET'])]
+    public function show(Race $race, string $uuid): Response
+    {
+        if ($race->getUuid()->toString() !== $uuid) {
+          throw $this->createAccessDeniedException();
+        }
+
+        $taskPassPhraseForm = $this->createForm(TaskPassPhraseType::class);
+        return $this->render('race/show.html.twig', [
+            'race' => $race,
+            'taskPassPhraseForm' => $taskPassPhraseForm,
+        ]);
     }
 
     #[Route('/{id}/edit', name: 'app_race_edit', methods: ['GET', 'POST'])]
