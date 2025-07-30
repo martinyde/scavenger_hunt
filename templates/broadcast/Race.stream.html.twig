@@ -1,17 +1,20 @@
 {# Learn how to use Turbo Streams: https://github.com/symfony/ux-turbo#broadcast-doctrine-entities-update #}
 {% block create %}
-  <turbo-stream action="append" target="participants">
+  <turbo-stream action="append" target="race">
     <template>
     </template>
   </turbo-stream>
 {% endblock %}
 
 {% block update %}
-  <turbo-stream action="update" target="participant-{{ entity.id }}">
+  <turbo-stream action="replace" target="race-{{ entity.id }}">
+    <template>
+      {% include 'race/_race.html.twig' with {'race': entity} %}
+    </template>
   </turbo-stream>
 {% endblock %}
 
 {% block remove %}
-  <turbo-stream action="remove" target="participant-{{ id }}">
+  <turbo-stream action="remove" target="race-{{ id }}">
   </turbo-stream>
 {% endblock %}

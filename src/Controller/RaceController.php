@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Race;
+use App\Form\RaceStartType;
 use App\Form\RaceType;
 use App\Repository\RaceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -51,6 +53,25 @@ final class RaceController extends AbstractController
         return $this->render('race/show.html.twig', [
             'race' => $race,
         ]);
+    }
+
+
+    #[Route('/{id}/progress', name: 'app_race_progress', methods: ['GET', 'POST'])]
+    public function progress(Request $request, Race $race, EntityManagerInterface $entityManager): Response
+    {
+
+      $startRaceForm = $this->createForm(RaceStartType::class);
+      $startRaceForm->handleRequest($request);
+      if ($startRaceForm->isSubmitted() && $startRaceForm->isValid()) {
+        $race->setTimeStart(new DatePoint());
+        $race->setActive(true);
+        $entityManager->flush();
+      }
+
+      return $this->render('race/progress.html.twig', [
+        'race' => $race,
+        'startRaceForm' => $startRaceForm,
+      ]);
     }
 
     #[Route('/{id}/edit', name: 'app_race_edit', methods: ['GET', 'POST'])]

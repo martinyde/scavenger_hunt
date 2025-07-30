@@ -19,6 +19,13 @@ final class ParticipantController extends AbstractController
     {
     }
 
+  /**
+   * List all participants that exist.
+   *
+   * @param \App\Repository\ParticipantRepository $participantRepository
+   *
+   * @return \Symfony\Component\HttpFoundation\Response
+   */
     #[Route(name: 'app_participant_index', methods: ['GET'])]
     public function index(ParticipantRepository $participantRepository): Response
     {
@@ -27,6 +34,14 @@ final class ParticipantController extends AbstractController
         ]);
     }
 
+  /**
+   * Add a new participant.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   * @param \Doctrine\ORM\EntityManagerInterface $entityManager
+   *
+   * @return \Symfony\Component\HttpFoundation\Response
+   */
     #[Route('/new', name: 'app_participant_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -48,6 +63,13 @@ final class ParticipantController extends AbstractController
         ]);
     }
 
+  /**
+   * Show a specific participant.
+   *
+   * @param \App\Entity\Participant $participant
+   *
+   * @return \Symfony\Component\HttpFoundation\Response
+   */
     #[Route('/{id}', name: 'app_participant_show', methods: ['GET'])]
     public function show(Participant $participant): Response
     {
@@ -56,6 +78,15 @@ final class ParticipantController extends AbstractController
         ]);
     }
 
+  /**
+   * Change an existing participant.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   * @param \App\Entity\Participant $participant
+   * @param \Doctrine\ORM\EntityManagerInterface $entityManager
+   *
+   * @return \Symfony\Component\HttpFoundation\Response
+   */
     #[Route('/{id}/edit', name: 'app_participant_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Participant $participant, EntityManagerInterface $entityManager): Response
     {
@@ -74,6 +105,15 @@ final class ParticipantController extends AbstractController
         ]);
     }
 
+  /**
+   * Delete a specific participant.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   * @param \App\Entity\Participant $participant
+   * @param \Doctrine\ORM\EntityManagerInterface $entityManager
+   *
+   * @return \Symfony\Component\HttpFoundation\Response
+   */
     #[Route('/{id}', name: 'app_participant_delete', methods: ['POST'])]
     public function delete(Request $request, Participant $participant, EntityManagerInterface $entityManager): Response
     {

@@ -19,7 +19,6 @@
         {% for race in races %}
             <tr>
                 <td>{{ race.id }}</td>
-                <td>{{ race.timer }}</td>
                 <td>{{ race.raceDuration }}</td>
                 <td>{{ race.taskAccess ? race.taskAccess|json_encode : '' }}</td>
                 <td>

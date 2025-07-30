@@ -6,6 +6,7 @@ use App\Entity\Race;
 use App\Entity\ScavangerHunt;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,7 +15,7 @@ class RaceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('timer')
+            ->add('active')
             ->add('race_duration')
             ->add('scavenger_hunt', EntityType::class, [
                 'class' => ScavangerHunt::class,

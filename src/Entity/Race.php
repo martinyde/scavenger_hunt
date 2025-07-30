@@ -50,12 +50,23 @@ class Race
         return $this->id;
     }
 
-    public function getTimer(): ?DatePoint
+    public function getTimer(): ?DatePoint {
+      return $this->getTimeStart();
+    }
+
+    public function setTimer(?DatePoint $timer): static
+    {
+      $this->timer = $timer;
+
+      return $this;
+    }
+
+    public function getTimeStart(): ?DatePoint
     {
         return $this->timer;
     }
 
-    public function setTimer(?DatePoint $timer): static
+    public function setTimeStart(?DatePoint $timer): static
     {
         $this->timer = $timer;
 
