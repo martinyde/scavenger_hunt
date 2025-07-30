@@ -22,7 +22,7 @@
                 <td>{{ race.raceDuration }}</td>
                 <td>{{ race.taskAccess ? race.taskAccess|json_encode : '' }}</td>
                 <td>
-                    <a href="{{ path('app_race_show', {'id': race.id}) }}">show</a>
+                    <a href="{{ path('app_race_show', {'id': race.id, 'uuid': race.uuid}) }}">show</a>
                     <a href="{{ path('app_race_edit', {'id': race.id}) }}">edit</a>
                 </td>
             </tr>

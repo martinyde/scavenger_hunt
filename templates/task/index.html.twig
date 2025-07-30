@@ -27,7 +27,7 @@
                 <td>{{ task.textBefore }}</td>
                 <td>{{ task.textAfter }}</td>
                 <td>
-                    <a href="{{ path('app_task_show', {'id': task.id}) }}">show</a>
+                    <a href="{{ path('app_task_show', {'id': task.id, 'uuid': task.uuid}) }}">show</a>
                     <a href="{{ path('app_task_edit', {'id': task.id}) }}">edit</a>
                 </td>
             </tr>

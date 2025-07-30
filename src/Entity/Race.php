@@ -4,17 +4,25 @@ namespace App\Entity;
 
 use App\Repository\RaceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Clock\DatePoint;
+use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV7;
 use Symfony\UX\Turbo\Attribute\Broadcast;
 
 #[ORM\Entity(repositoryClass: RaceRepository::class)]
 #[Broadcast]
 class Race
 {
+    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    private ?UuidV7 $uuid = null;
+
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column]
     private ?int $id = null;
 
@@ -43,6 +51,7 @@ class Race
     public function __construct()
     {
         $this->participants = new ArrayCollection();
+        $this->uuid = new UuidV7();
     }
 
     public function getId(): ?int
@@ -147,6 +156,18 @@ class Race
     public function setActive(bool $active): static
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function getUuid(): ?UuidV7
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid(UuidV7 $uuid): static
+    {
+        $this->uuid = $uuid;
 
         return $this;
     }

@@ -42,9 +42,12 @@ final class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_task_show', methods: ['GET'])]
-    public function show(Task $task): Response
+    #[Route('/{id}/{uuid}', name: 'app_task_show', methods: ['GET'])]
+    public function show(Task $task, string $uuid): Response
     {
+        if ($task->getUuid()->toString() !== $uuid) {
+          throw $this->createAccessDeniedException();
+        }
         return $this->render('task/show.html.twig', [
             'task' => $task,
         ]);

@@ -5,12 +5,21 @@ namespace App\Entity;
 use App\Repository\TaskRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
+use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV7;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
 {
+
+    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    private ?UuidV7 $uuid = null;
+
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column]
     private ?int $id = null;
 
@@ -32,7 +41,13 @@ class Task
     #[ORM\ManyToOne(inversedBy: 'tasks')]
     private ?ScavangerHunt $scavangerHunt = null;
 
-    public function getId(): ?int
+    public function __construct()
+    {
+      $this->uuid = new UuidV7();
+    }
+
+
+  public function getId(): ?int
     {
         return $this->id;
     }
@@ -105,6 +120,18 @@ class Task
     public function setScavangerHunt(?ScavangerHunt $scavangerHunt): static
     {
         $this->scavangerHunt = $scavangerHunt;
+
+        return $this;
+    }
+
+    public function getUuid(): ?UuidV7
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid(UuidV7 $uuid): static
+    {
+        $this->uuid = $uuid;
 
         return $this;
     }

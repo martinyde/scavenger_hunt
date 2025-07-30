@@ -12,6 +12,7 @@ use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Uid\UuidV7;
 
 #[Route('/race')]
 final class RaceController extends AbstractController
@@ -47,9 +48,12 @@ final class RaceController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_race_show', methods: ['GET'])]
-    public function show(Race $race): Response
+    #[Route('/{id}/{uuid}', name: 'app_race_show', methods: ['GET'])]
+    public function show(Race $race, string $uuid): Response
     {
+        if ($race->getUuid()->toString() !== $uuid) {
+          throw $this->createAccessDeniedException();
+        }
         return $this->render('race/show.html.twig', [
             'race' => $race,
         ]);
