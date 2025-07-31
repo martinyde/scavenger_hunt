@@ -4,30 +4,53 @@
 
 {% block body %}
     <h1>Race - {{ race.getScavengerHunt.getName }}</h1>
-      <div {{ turbo_stream_listen('App\\Entity\\Race') }}>
-        <div id="race-{{ race.id }}">
-          {% if race.isActive %}
-            {% include 'race/_race.html.twig' with {'race': race} %}
-          {% else %}
-            <div>
-              <div class="spinner-border text-primary"></div>
-              <div>{{ 'Awaiting contestants' }}</div>
-            </div>
+    {{ dump() }}
+    <div {{ turbo_stream_listen('App\\Entity\\Race') }}>
+      <div id="race-{{ race.id }}">
+        {% if race.isActive %}
+          {% include 'race/_race.html.twig' with {'race': race} %}
+          <div>
+            {{ form(taskPassPhraseForm) }}
+          </div>
+          <div>
             <table class="table" {{ turbo_stream_listen('App\\Entity\\Participant') }}>
               <thead>
               <tr>
                 <td>Name</td>
               </tr>
               </thead>
-              <tbody class="participants" id="participants">
-              {% for participant in race.participants %}
-                <tr id="participant-{{ participant.id }}">
-                  {% include 'race/_participant.html.twig' with {'participant': participant} %}
-                </tr>
-              {% endfor %}
+              <tbody id="progress">
+                {% for progress in participant.getProgressTaskEntry %}
+                  <tr>
+                    <td>{{ dump(progress) }}</td>
+                  </tr>
+                {% endfor %}
               </tbody>
             </table>
-          {% endif %}
-        </div>
+          </div>
+        {% else %}
+          <div>
+            <div class="spinner-border text-primary"></div>
+            <div>{{ 'Awaiting contestants' }}</div>
+          </div>
+          <table class="table" {{ turbo_stream_listen('App\\Entity\\Participant') }}>
+            <thead>
+            <tr>
+              <td>Name</td>
+            </tr>
+            </thead>
+            <tbody class="participants" id="participants">
+            {% for participant in race.participants %}
+              <tr id="participant-{{ participant.id }}">
+                {% include 'race/_participant.html.twig' with {'participant': participant} %}
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        {% endif %}
       </div>
+    </div>
+  {% if participant is empty  %}
+    <a href="{{ path('app_participant_join', {'race': race.id, 'raceUuid': race.uuid}) }}">Join</a>
+  {% endif %}
 {% endblock %}

@@ -2,7 +2,6 @@
 
 namespace App\Form;
 
-use App\Entity\Task;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -16,7 +15,7 @@ class TaskPassPhraseType extends AbstractType
   {
     $builder
       ->add('pass_phrase', TextType::class, [
-        'label' => 'Pass phrase',
+        'label' => 'Pass phrasess',
         'constraints' => [
           new NotBlank([
             'message' => 'Please enter your email',
@@ -32,7 +31,7 @@ class TaskPassPhraseType extends AbstractType
   public function configureOptions(OptionsResolver $resolver): void
   {
     $resolver->setDefaults([
-      'data_class' => Task::class,
+      'csrf_protection' => true,
     ]);
   }
 }

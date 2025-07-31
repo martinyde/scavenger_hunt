@@ -2,7 +2,7 @@
 {% block create %}
     <turbo-stream action="append" target="participants">
         <template>
-            <tr id="participant-{{ entity.id }}">
+          <tr id="participant-{{ entity.id }}">
             {% include 'race/_participant.html.twig' with {'participant': entity} %}
           </tr>
         </template>

@@ -6,18 +6,26 @@ use App\Entity\Race;
 use App\Form\RaceStartType;
 use App\Form\TaskPassPhraseType;
 use App\Form\RaceType;
+use App\Repository\ParticipantRepository;
 use App\Repository\RaceRepository;
+use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Uid\UuidV7;
+use Symfony\UX\Turbo\TurboBundle;
 
 #[Route('/race')]
 final class RaceController extends AbstractController
 {
+  public function __construct(
+    protected ParticipantRepository $participantRepository,
+    protected TaskRepository $taskRepository,
+  )
+  {
+  }
   // Make personal (Userid)
     #[Route(name: 'app_race_index', methods: ['GET'])]
     public function index(RaceRepository $raceRepository): Response
@@ -67,17 +75,41 @@ final class RaceController extends AbstractController
       ]);
     }
 
-    #[Route('/{id}/{uuid}', name: 'app_race_show', methods: ['GET'])]
-    public function show(Race $race, string $uuid): Response
+    #[Route('/{id}/{uuid}', name: 'app_race_show', methods: ['GET', 'POST'])]
+    public function show(Race $race, string $uuid, Request $request, EntityManagerInterface $entityManager): Response
     {
         if ($race->getUuid()->toString() !== $uuid) {
           throw $this->createAccessDeniedException();
         }
 
+        $session = $request->getSession();
+        $activeUserId = $session->get('participant_id');
+        $participant = $this->participantRepository->find($activeUserId);
+
         $taskPassPhraseForm = $this->createForm(TaskPassPhraseType::class);
+        $taskPassPhraseForm->handleRequest($request);
+
+        if ($taskPassPhraseForm->isSubmitted() && $taskPassPhraseForm->isValid()) {
+          $raceScavengerHuntId = $race->getScavengerHunt()->getId();
+          $this->participantRepository->find($activeUserId);
+          $tasks = $this->taskRepository->findBy(['scavangerHunt' => $raceScavengerHuntId]);
+          foreach ($tasks as $task) {
+            if ($taskPassPhraseForm->get('pass_phrase')->getData() === $task->getPassKey()) {
+              $participantProgress = $participant->getProgressTaskEntry();
+              $participantProgress[] = $task->getId();
+              $participant->setProgressTaskEntry($participantProgress);
+              $entityManager->persist($participant);
+              $entityManager->flush();
+            }
+          }
+
+          return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $uuid], Response::HTTP_SEE_OTHER);
+        }
+
         return $this->render('race/show.html.twig', [
             'race' => $race,
             'taskPassPhraseForm' => $taskPassPhraseForm,
+            'participant' => $participant ?? null,
         ]);
     }
 
