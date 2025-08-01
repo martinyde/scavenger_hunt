@@ -1,6 +1,6 @@
 {% block success_stream %}
   {{ form_start(tryform, {
-    'action': path('app_lorem_lets'),
+    'action': path('app_form_try', {'id': race.getId}),
     'method': 'POST'
   }) }}
   {{ form_row(tryform.try) }}

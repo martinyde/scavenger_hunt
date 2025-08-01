@@ -7,11 +7,6 @@
 {% endblock %}
 
 {% block update %}
-  <turbo-stream action="replace" target="race-race-{{ entity.id }}">
-    <template>
-      Lorem
-    </template>
-  </turbo-stream>
   <turbo-stream action="replace" target="race-{{ entity.id }}">
     <template>
       {% include 'race/_race.html.twig' with {'race': entity} %}

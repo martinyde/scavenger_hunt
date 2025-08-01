@@ -4,9 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Race;
 use App\Form\RaceStartType;
-use App\Form\TaskPassPhraseType;
 use App\Form\RaceType;
-use App\Form\TaskType;
 use App\Form\TryType;
 use App\Repository\ParticipantRepository;
 use App\Repository\RaceRepository;
@@ -19,7 +17,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\UX\Turbo\TurboBundle;
 
 #[Route('/race')]
 final class RaceController extends AbstractController
@@ -61,24 +58,32 @@ final class RaceController extends AbstractController
         ]);
     }
 
-  #[Route('/lorem/lets', name: 'app_lorem_lets', methods: ['GET', 'POST'])]
-  public function try(Request $request): Response
+  #[Route('/form/try/{id}', name: 'app_form_try', methods: ['GET', 'POST'])]
+  public function try(Request $request, Race $race, EntityManagerInterface $entityManager): Response
   {
     $form = $this->createForm(TryType::class);
-
-    $emptyForm = clone $form;
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
-      if (TurboBundle:: STREAM_FORMAT === $request->getPreferredFormat()) {
-        $request->setRequestFormat(TurboBundle::STREAM_FORMAT);
+      $session = $request->getSession();
+      $activeUserId = $session->get('participant_id');
+      $participant = $activeUserId ? $this->participantRepository->find($activeUserId) : null;
 
-        return $this->renderBlock('race/try.html.twig', 'success_stream', [
-          'tryform' => $emptyForm,
-        ]);
+      $raceScavengerHuntId = $race->getScavengerHunt()->getId();
+      $this->participantRepository->find($activeUserId);
+      $tasks = $this->taskRepository->findBy(['scavangerHunt' => $raceScavengerHuntId]);
+      foreach ($tasks as $task) {
+        if ($form->get('try')->getData() === $task->getPassKey() &&
+          !$participant->getProgressTaskEntry()->contains($task)
+        ) {
+          $participant->setProgressEntryCount($participant->getProgressEntryCount() + 1);
+          $participant->addProgressTaskEntry($task);
+          $entityManager->persist($participant);
+          $entityManager->flush();
+        }
       }
 
-      return $this->redirectToRoute('task_success', [], Response::HTTP_SEE_OTHER);
+      return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $race->getUuid()->toString()], Response::HTTP_SEE_OTHER);
     }
 
     return $this->render('race/try.html.twig', [
@@ -101,8 +106,9 @@ final class RaceController extends AbstractController
         // For Mercure, publish an update that all subscribers will receive
         $tryform = $this->createForm(TryType::class);
         $update = new Update(
-          'new_topic', // The topic - a URL that subscribers will listen to
+          'race_started',
           $this->renderView('broadcast/Try.form.stream.html.twig', [
+            'race' => $race,
             'tryform' => $tryform,
           ])
         );
@@ -119,39 +125,19 @@ final class RaceController extends AbstractController
     }
 
     #[Route('/{id}/{uuid}', name: 'app_race_show', methods: ['GET', 'POST'])]
-    public function show(Race $race, string $uuid, Request $request, EntityManagerInterface $entityManager
+    public function show(Race $race, string $uuid, Request $request,
     ): Response
     {
+        $session = $request->getSession();
+        $activeUserId = $session->get('participant_id');
+        $participant = $activeUserId ? $this->participantRepository->find($activeUserId) : null;
         if ($race->getUuid()->toString() !== $uuid) {
           throw $this->createAccessDeniedException();
         }
         $tryform = $this->createForm(TryType::class);
         $tryform->handleRequest($request);
-        $session = $request->getSession();
-        $activeUserId = $session->get('participant_id');
-        $participant = $activeUserId ? $this->participantRepository->find($activeUserId) : null;
-
-        //$taskPassPhraseForm = $this->createForm(TaskPassPhraseType::class);
-        //$taskPassPhraseForm->handleRequest($request);
 
         if ($tryform->isSubmitted() && $tryform->isValid()) {
-          $raceScavengerHuntId = $race->getScavengerHunt()->getId();
-          $this->participantRepository->find($activeUserId);
-          $tasks = $this->taskRepository->findBy(['scavangerHunt' => $raceScavengerHuntId]);
-          /*
-          foreach ($tasks as $task) {
-            if ($taskPassPhraseForm->get('pass_phrase')->getData() === $task->getPassKey() &&
-              !$participant->getProgressTaskEntry()->contains($task)
-            ) {
-              $participant->setProgressEntryCount($participant->getProgressEntryCount() + 1);
-              $participant->addProgressTaskEntry($task);
-              $entityManager->persist($participant);
-              $entityManager->flush();
-            }
-          }
-
-*/
-
           return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $uuid], Response::HTTP_SEE_OTHER);
         }
 
