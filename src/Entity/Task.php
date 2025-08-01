@@ -6,7 +6,6 @@ use App\Repository\TaskRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV7;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]

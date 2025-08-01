@@ -5,26 +5,32 @@
 {% block body %}
     <h1>Race - {{ race.getScavengerHunt.getName }}</h1>
     {{ dump() }}
-    <div {{ turbo_stream_listen('App\\Entity\\Race') }}>
+  <div {{ turbo_stream_listen('new_topic') }}></div>
+  <div {{ turbo_stream_listen('App\\Entity\\Race') }}></div>
+    <div id="try-form">
+      Waiting...
+    </div>
+    <div>
+      <div id="race-race-{{ race.id }}">
+        aaaaa
+      </div>
       <div id="race-{{ race.id }}">
         {% if race.isActive %}
+          {% include 'race/try.html.twig' with {'tryform': tryform} %}
           {% include 'race/_race.html.twig' with {'race': race} %}
           <div>
-            {{ form(taskPassPhraseForm) }}
-          </div>
-          <div>
-            <table class="table" {{ turbo_stream_listen('App\\Entity\\Participant') }}>
+            <table class="table">
               <thead>
               <tr>
                 <td>Name</td>
               </tr>
               </thead>
               <tbody id="progress">
-                {% for progress in participant.getProgressTaskEntry %}
-                  <tr>
-                    <td>{{ dump(progress) }}</td>
-                  </tr>
-                {% endfor %}
+              {% for progress in participant.getProgressTaskEntry %}
+                <tr>
+                  <td>{{ dump(progress) }}</td>
+                </tr>
+              {% endfor %}
               </tbody>
             </table>
           </div>

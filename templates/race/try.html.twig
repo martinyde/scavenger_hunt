@@ -1,0 +1,10 @@
+{% block success_stream %}
+  {{ form_start(tryform, {
+    'action': path('app_lorem_lets'),
+    'method': 'POST'
+  }) }}
+  {{ form_row(tryform.try) }}
+  <button type="submit" class="btn btn-primary">Try</button>
+  {{ form_end(tryform) }}
+{% endblock %}
+

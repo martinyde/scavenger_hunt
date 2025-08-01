@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ParticipantRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\UX\Turbo\Attribute\Broadcast;
 
@@ -21,6 +23,32 @@ class Participant
     #[ORM\ManyToOne(inversedBy: 'participants')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Race $race = null;
+
+    /**
+     * @var Collection<int, Task>
+     */
+    #[ORM\ManyToMany(targetEntity: Task::class)]
+    #[ORM\JoinTable(name: 'participant_task_entry')]
+    private Collection $progress_task_entry;
+
+    /**
+     * @var Collection<int, Task>
+     */
+    #[ORM\ManyToMany(targetEntity: Task::class)]
+    #[ORM\JoinTable(name: 'participant_task_solution')]
+    private Collection $progress_task_solution;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $progress_entry_count = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $progress_solution_count = null;
+
+    public function __construct()
+    {
+        $this->progress_task_entry = new ArrayCollection();
+        $this->progress_task_solution = new ArrayCollection();
+    }
 
     #[ORM\PrePersist]
     public function onPrePersist()
@@ -61,5 +89,77 @@ class Participant
     public function __toString()
     {
       return $this->getName();
+    }
+
+    /**
+     * @return Collection<int, Task>
+     */
+    public function getProgressTaskEntry(): Collection
+    {
+        return $this->progress_task_entry;
+    }
+
+    public function addProgressTaskEntry(Task $progressTaskEntry): static
+    {
+        if (!$this->progress_task_entry->contains($progressTaskEntry)) {
+            $this->progress_task_entry->add($progressTaskEntry);
+        }
+
+        return $this;
+    }
+
+    public function removeProgressTaskEntry(Task $progressTaskEntry): static
+    {
+        $this->progress_task_entry->removeElement($progressTaskEntry);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Task>
+     */
+    public function getProgressTaskSolution(): Collection
+    {
+        return $this->progress_task_solution;
+    }
+
+    public function addProgressTaskSolution(Task $progressTaskSolution): static
+    {
+        if (!$this->progress_task_solution->contains($progressTaskSolution)) {
+            $this->progress_task_solution->add($progressTaskSolution);
+        }
+
+        return $this;
+    }
+
+    public function removeProgressTaskSolution(Task $progressTaskSolution): static
+    {
+        $this->progress_task_solution->removeElement($progressTaskSolution);
+
+        return $this;
+    }
+
+    public function getProgressEntryCount(): ?int
+    {
+        return $this->progress_entry_count;
+    }
+
+    public function setProgressEntryCount(?int $progress_entry_count): static
+    {
+        $this->progress_entry_count = $progress_entry_count;
+
+        return $this;
+    }
+
+    public function getProgressSolutionCount(): ?int
+    {
+        return $this->progress_solution_count;
+    }
+
+    public function setProgressSolutionCount(?int $progress_solution_count): static
+    {
+        $this->progress_solution_count = $progress_solution_count;
+
+        return $this;
     }
 }

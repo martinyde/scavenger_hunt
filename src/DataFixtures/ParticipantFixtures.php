@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Participant;
 use App\Entity\Race;
+use App\Entity\Task;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -61,8 +62,8 @@ class ParticipantFixtures extends Fixture implements DependentFixtureInterface
           $participant->setName($fixtureParticipant['name']);
           $participant->setRace($this->getReference($fixtureParticipant['race'],Race::class));
 
-          $participant->setProgressTaskEntry([]);
-          $participant->setProgressTaskSolution([]);
+          $participant->addProgressTaskEntry($this->getReference('task:oak', Task::class));
+          $participant->addProgressTaskEntry($this->getReference('task:chronos', Task::class));
           $manager->persist($participant);
         }
 
