@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Race;
 use App\Entity\Task;
+use App\Form\GuessType;
 use App\Form\TaskType;
+use App\Repository\ParticipantRepository;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,6 +17,12 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/task')]
 final class TaskController extends AbstractController
 {
+    public function __construct(
+      protected ParticipantRepository $participantRepository,
+    )
+    {
+    }
+
     #[Route(name: 'app_task_index', methods: ['GET'])]
     public function index(TaskRepository $taskRepository): Response
     {
@@ -71,14 +80,48 @@ final class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_task_delete', methods: ['POST'])]
-    public function delete(Request $request, Task $task, EntityManagerInterface $entityManager): Response
+    #[Route('/guess/{id}/{uuid}/{race}', name: 'app_task_guess', methods: ['GET', 'POST'])]
+    public function guess(Request $request, Task $task, Race $race, string $uuid, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$task->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($task);
-            $entityManager->flush();
+      if ($task->getUuid()->toString() !== $uuid) {
+        throw $this->createAccessDeniedException();
+      }
+
+      $session = $request->getSession();
+      $activeUserId = $session->get('participant_id');
+      $participant = $activeUserId ? $this->participantRepository->find($activeUserId) : null;
+
+      $guessForm = $this->createForm(GuessType::class);
+      $guessForm->handleRequest($request);
+
+      if ($guessForm->isSubmitted() && $guessForm->isValid()) {
+        if (in_array($guessForm->get('guess')->getData(), $task->getSolutions()) && !$participant->getProgressTaskSolution()->contains($task)) {
+          $participant->setProgressSolutionCount($participant->getProgressSolutionCount() + 1);
+          $participant->addProgressTaskSolution($task);
+          $entityManager->persist($participant);
+          $entityManager->flush();
+
+          return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $race->getUuid()->toString()], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_task_guess', ['id' => $task->getId(), 'uuid' => $task->getUuid()->toString(), 'race' => $race->getId()], Response::HTTP_SEE_OTHER);
+      }
+
+      return $this->render('task/guess.html.twig', [
+        'task' => $task,
+        'guessForm' => $guessForm,
+        'race' => $race
+      ]);
     }
+
+    #[Route('/{id}', name: 'app_task_delete', methods: ['POST'])]
+      public function delete(Request $request, Task $task, EntityManagerInterface $entityManager): Response
+      {
+          if ($this->isCsrfTokenValid('delete'.$task->getId(), $request->getPayload()->getString('_token'))) {
+              $entityManager->remove($task);
+              $entityManager->flush();
+          }
+
+          return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);
+      }
 }

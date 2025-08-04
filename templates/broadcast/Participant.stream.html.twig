@@ -10,9 +10,19 @@
 {% endblock %}
 
 {% block update %}
+    <turbo-stream action="update" target="participant-progress-entry-{{ entity.id }}">
+      <template>
+        {% include 'race/_participant-progress-entry.html.twig' with {'participant': entity} %}
+      </template>
+    </turbo-stream>
+    <turbo-stream action="update" target="participant-progress-solution-{{ entity.id }}">
+      <template>
+        {% include 'race/_participant-progress-solution.html.twig' with {'participant': entity} %}
+      </template>
+    </turbo-stream>
     <turbo-stream action="update" target="participant-{{ entity.id }}">
         <template>
-          {% include 'race/_participant.html.twig' with {'participant': entity} %}
+          {% include 'race/_participant-progress.html.twig' with {'participant': entity} %}
         </template>
     </turbo-stream>
 {% endblock %}

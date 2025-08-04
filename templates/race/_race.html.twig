@@ -7,4 +7,40 @@
       </tr>
     </tbody>
   </table>
+  <div id="try-form">
+    {{ include('race/try.html.twig', {tryform: tryform}) }}
+  </div>
+  <div>
+    <table class="table">
+      <thead>
+      <tr>
+        <td>Name</td>
+      </tr>
+      </thead>
+      <tbody id="participant-progress">
+        {% if (participant is defined) %}
+          {% for progressTask in participant.getProgressTaskEntry %}
+            <tr>
+              <td>
+                {% set solutions = participant.getProgressTaskSolution().toArray() %}
+                {% set resolved = false %}
+                {% set solutionTexts = [] %}
+                {% for task in solutions %}
+                  {% if progressTask.id == task.id %}
+                    {% set resolved = true %}
+                    {% set solutionTexts = solutionTexts|merge(task.getSolutions) %}
+                  {% endif %}
+                {% endfor %}
+                {% if resolved is true %}
+                  {{ progressTask.title }} Resolved. Solutions: {{ solutionTexts|join(', ') }}
+                {% else %}
+                  <a href="{{ path('app_task_guess', {'id': progressTask.id, 'uuid': progressTask.uuid, 'race': race.id}) }}">{{ progressTask.title }}</a>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
 </div>

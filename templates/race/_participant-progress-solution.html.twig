@@ -1,0 +1,3 @@
+<div id="participant-progress-solution-{{ participant.id }}">
+  {{ participant.getProgressSolutionCount is null ? 0 : participant.getProgressSolutionCount }} / {{ participant.getRace.getScavengerHunt.getTasks|length }}
+</div>
