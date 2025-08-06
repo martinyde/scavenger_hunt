@@ -103,10 +103,10 @@ final class RaceController extends AbstractController
         $race->setActive(true);
         $entityManager->flush();
 
-        // For Mercure, publish an update that all subscribers will receive
         $tryform = $this->createForm(TryType::class);
+
         $update = new Update(
-          'race_started',
+          'race_state_changed',
           $this->renderView('broadcast/Try.form.stream.html.twig', [
             'race' => $race,
             'tryform' => $tryform,
@@ -118,9 +118,16 @@ final class RaceController extends AbstractController
         return $this->redirectToRoute('app_race_progress', ['id' => $race->getId()], Response::HTTP_SEE_OTHER);
       }
 
+      $now = new DatePoint();
+
       return $this->render('race/progress.html.twig', [
         'race' => $race,
         'startRaceForm' => $startRaceForm,
+        'timer' => [
+          'secondsLeft' => $race->getTimeStart()->modify('+' . $race->getRaceDuration() . ' seconds')->getTimestamp() - $now->getTimestamp(),
+          'duration' => $race->getRaceDuration(),
+          'raceState' => $race->isActive()
+        ],
       ]);
     }
 
@@ -141,10 +148,16 @@ final class RaceController extends AbstractController
           return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $uuid], Response::HTTP_SEE_OTHER);
         }
 
+        $now = new DatePoint();
+
         return $this->render('race/show.html.twig', [
             'race' => $race,
             'tryform' => $tryform,
             'participant' => $participant ?? null,
+            'timer' => [
+              'secondsLeft' => $race->getTimeStart()->modify('+' . $race->getRaceDuration() . ' seconds')->getTimestamp() - $now->getTimestamp(),
+              'timeLeft' => $now->diff($race->getTimeStart()->modify('+' . $race->getRaceDuration() . ' seconds'))->format('%H:%I:%S'),
+            ],
         ]);
     }
 

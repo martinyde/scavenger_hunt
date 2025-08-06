@@ -1,5 +1,12 @@
 <turbo-stream action="replace" target="race-{{ race.id }}">
   <template>
-    {% include 'race/_race.html.twig' with {'race': race, 'tryform': tryform} %}
+    {% set extra_data = global_data(race) %}
+    {% if race.isActive and tryform is not null %}
+      <div id="race-{{ race.id }}">
+        {% include 'race/_race.html.twig' with {'race': race, 'tryform': tryform} %}
+      </div>
+    {% else %}
+      ABC
+    {% endif %}
   </template>
 </turbo-stream>

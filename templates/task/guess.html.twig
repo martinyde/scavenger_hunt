@@ -3,10 +3,19 @@
 {% block title %}Edit Task{% endblock %}
 
 {% block body %}
+    {% set extra_data = global_data(race) %}
     <h1>Resolve</h1>
-  <div>
-    {{ task.getTextBefore }}
-  </div>
+    <table class="table">
+      <tbody>
+      <tr>
+        <th>Timer</th>
+        <td>{% include 'race/timer.html.twig' with {'timer': extra_data.timer} %}</td>
+      </tr>
+      </tbody>
+    </table>
+    <div>
+      {{ task.getTextBefore }}
+    </div>
     <div>
       <img src="">
     </div>
@@ -19,7 +28,6 @@
       <button type="submit" class="btn btn-primary">Guess</button>
       {{ form_end(guessForm) }}
     </div>
-
 
     <a href="{{ path('app_race_show', {'id': race.id, 'uuid': race.uuid}) }}">back to list</a>
 {% endblock %}

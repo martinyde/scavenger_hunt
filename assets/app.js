@@ -6,5 +6,9 @@ import './bootstrap.js';
  * (and its CSS file) in your base layout (base.html.twig).
  */
 
+
+// Add js
+import './js/countdown'
+
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/app.css';

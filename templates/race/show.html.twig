@@ -3,15 +3,28 @@
 {% block title %}Race{% endblock %}
 
 {% block body %}
+    {% set extra_data = global_data(race) %}
     <h1>Race - {{ race.getScavengerHunt.getName }}</h1>
-    <div {{ turbo_stream_listen('race_started') }}></div>
+    <div {{ turbo_stream_listen('race_state_changed') }}></div>
     <div {{ turbo_stream_listen('App\\Entity\\Participant') }}></div>
     <div>
       <div id="race-{{ race.id }}">
         {% if race.isActive %}
-          {% include 'race/_race.html.twig' with {'race': race, 'tryform': tryform, 'participant': participant} %}
+          {% if participant in race.getParticipants.toArray() %}
+            {% include 'race/_race.html.twig' with {'race': race, 'tryform': tryform, 'participant': participant, 'extra_data': extra_data} %}
+          {% else %}
+            Show denied template
+          {% endif %}
         {% else %}
           <div>
+            <table class="table">
+              <tbody>
+              <tr>
+                <th>Timer</th>
+                <td>{% include 'race/timer.html.twig' with {'timer': extra_data.timer} %}</td>
+              </tr>
+              </tbody>
+            </table>
             <div class="spinner-border text-primary"></div>
             <div>{{ 'Awaiting contestants' }}</div>
           </div>
@@ -32,7 +45,7 @@
         {% endif %}
       </div>
     </div>
-  {% if participant is empty  %}
+  {% if participant is empty and not race.isActive %}
     <a href="{{ path('app_participant_join', {'race': race.id, 'raceUuid': race.uuid}) }}">Join</a>
   {% endif %}
 {% endblock %}

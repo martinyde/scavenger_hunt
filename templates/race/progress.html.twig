@@ -7,22 +7,18 @@
   <h1>Race - {{ race.getScavengerHunt.getName }}</h1>
   <table class="table">
     <tbody>
-    <tr>
-      <th>Timer</th>
-      <td>{{ race.getTimeStart ? race.getTimeStart|date("i") : 0 }}/{{ race.raceDuration }}</td>
-      <td>{{ form(startRaceForm) }}</td>
-    </tr>
-    <tr>
-      <th>Task_access</th>
-      <td></td>
-      <td>{{ race.taskAccess ? race.taskAccess|json_encode : '' }}</td>
-    </tr>
+      <tr>
+        <th>Timer</th>
+        <td>{% include 'race/timer.html.twig' with {'timer': timer} %}</td>
+        <td>{{ form(startRaceForm) }}</td>
+      </tr>
     </tbody>
   </table>
   <table class="table" {{ turbo_stream_listen('App\\Entity\\Participant') }}>
     <thead>
     <tr>
       <td>Name</td>
+      <td>Progress</td>
     </tr>
     </thead>
     <tbody class="participants" id="participants">
@@ -33,10 +29,4 @@
     {% endfor %}
     </tbody>
   </table>
-
-  <a href="{{ path('app_race_index') }}">back to list</a>
-
-  <a href="{{ path('app_race_edit', {'id': race.id}) }}">edit</a>
-
-  {{ include('race/_delete_form.html.twig') }}
 {% endblock %}

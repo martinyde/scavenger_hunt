@@ -1,13 +1,14 @@
 <div>
-  <table class="table">
-    <tbody>
+  <div id="try-form">
+    <table class="table">
+      <tbody>
       <tr>
         <th>Timer</th>
-        <td>{{ race.getTimeStart ? race.getTimeStart|date("i") : 0 }}/{{ race.raceDuration }}</td>
+        <td>{% include 'race/timer.html.twig' with {'timer': extra_data.timer} %}</td>
       </tr>
-    </tbody>
-  </table>
-  <div id="try-form">
+      </tbody>
+    </table>
+    <div class="text-center fw-bold">{{ extra_data.puzzle.grid|raw }}</div>
     {{ include('race/try.html.twig', {tryform: tryform}) }}
   </div>
   <div>
@@ -32,9 +33,13 @@
                   {% endif %}
                 {% endfor %}
                 {% if resolved is true %}
-                  {{ progressTask.title }} Resolved. Solutions: {{ solutionTexts|join(', ') }}
+                  <span>{{ progressTask.title }} Resolved. Solutions: {{ solutionTexts|join(', ') }}</span>
+                  -
+                  <span>{{ progressTask.getPassKey }}</span>
                 {% else %}
-                  <a href="{{ path('app_task_guess', {'id': progressTask.id, 'uuid': progressTask.uuid, 'race': race.id}) }}">{{ progressTask.title }}</a>
+                  <span><a href="{{ path('app_task_guess', {'id': progressTask.id, 'uuid': progressTask.uuid, 'race': race.id}) }}">{{ progressTask.title }}</a></span>
+                  -
+                  <span>{{ progressTask.getPassKey }}</span>
                 {% endif %}
               </td>
             </tr>
