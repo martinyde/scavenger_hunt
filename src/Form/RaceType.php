@@ -15,12 +15,7 @@ class RaceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('active')
             ->add('race_duration')
-            ->add('scavenger_hunt', EntityType::class, [
-                'class' => ScavangerHunt::class,
-                'choice_label' => 'id',
-            ])
         ;
     }
 

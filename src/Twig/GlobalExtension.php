@@ -45,7 +45,7 @@ class GlobalExtension extends AbstractExtension
       // Add timer
       $now = new DatePoint();
       $data['timer'] = [
-        'secondsLeft' => $entity->getTimeStart()->modify('+' . $entity->getRaceDuration() . ' seconds')->getTimestamp() - $now->getTimestamp(),
+        'secondsLeft' => $entity->getTimeStart() ? $entity->getTimeStart()->modify('+' . $entity->getRaceDuration() . ' seconds')->getTimestamp() - $now->getTimestamp(): $entity->getRaceDuration(),
         'duration' => $entity->getRaceDuration(),
         'raceState' => $entity->isActive()
       ];

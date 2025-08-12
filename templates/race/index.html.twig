@@ -9,9 +9,8 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Timer</th>
                 <th>Race_duration</th>
-                <th>Task_access</th>
+                <th>State</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -20,10 +19,11 @@
             <tr>
                 <td>{{ race.id }}</td>
                 <td>{{ race.raceDuration }}</td>
-                <td>{{ race.taskAccess ? race.taskAccess|json_encode : '' }}</td>
+                <td>{{ race.isActive ? 'Active' : 'Inactive' }}</td>
                 <td>
                     <a href="{{ path('app_race_show', {'id': race.id, 'uuid': race.uuid}) }}">show</a>
                     <a href="{{ path('app_race_edit', {'id': race.id}) }}">edit</a>
+                    <a href="{{ path('app_race_progress', {'id': race.id}) }}">progress</a>
                 </td>
             </tr>
         {% else %}
@@ -33,6 +33,4 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_race_new') }}">Create new</a>
 {% endblock %}
