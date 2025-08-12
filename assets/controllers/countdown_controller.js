@@ -1,13 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 /*
- * This is an example Stimulus controller!
- *
- * Any element with a data-controller="hello" attribute will cause
- * this controller to be executed. The name "hello" comes from the filename:
- * hello_controller.js -> "hello"
- *
- * Delete this file or adapt it for your use!
+ * Stimulus controller triggered in timer.html.twig
  */
 export default class extends Controller {
     connect() {
@@ -45,22 +39,5 @@ export default class extends Controller {
       function addZero(number) {
         return (number < 10 ? '0' : '') + number;
       }
-
-      function detectBackNavigation() {
-        // Check if the newer Performance Navigation Timing API is available
-        if (performance.getEntriesByType && performance.getEntriesByType('navigation').length > 0) {
-          // Modern browsers
-          const navigationType = performance.getEntriesByType('navigation')[0].type;
-          return navigationType === 'back_forward';
-        } else if (window.performance && window.performance.navigation) {
-          // Older browsers
-          return window.performance.navigation.type === 2;
-        }
-
-        // Fallback if neither API is available
-        return false;
-      }
     }
-
-
 }
