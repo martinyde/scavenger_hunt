@@ -8,6 +8,8 @@ use App\Form\ParticipantType;
 use App\Form\RaceJoinType;
 use App\Repository\ParticipantRepository;
 use App\Repository\RaceRepository;
+use App\Service\GenericHelper;
+use App\Service\ParticipantHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +19,12 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/participant')]
 final class ParticipantController extends AbstractController
 {
-    public function __construct(protected RaceRepository $raceRepository, protected ParticipantRepository $participantRepository)
+    public function __construct(
+      protected RaceRepository $raceRepository,
+      protected ParticipantRepository $participantRepository,
+      protected ParticipantHelper $participantHelper,
+      protected GenericHelper $genericHelper,
+    )
     {
     }
 
@@ -44,17 +51,15 @@ final class ParticipantController extends AbstractController
    *
    * @return \Symfony\Component\HttpFoundation\Response
    */
-    #[Route('/new', name: 'app_participant_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/new/{race}', name: 'app_participant_new', methods: ['GET', 'POST'])]
+    public function new(Request $request): Response
     {
         $participant = new Participant();
         $form = $this->createForm(ParticipantType::class, $participant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $participant->setRace($this->raceRepository->find(4));
-            $entityManager->persist($participant);
-            $entityManager->flush();
+            $this->participantHelper->createParticipant($participant);
 
             return $this->redirectToRoute('app_participant_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -81,9 +86,7 @@ final class ParticipantController extends AbstractController
     $session = $request->getSession();
     $participantSession = $session->get('participant_id');
 
-    if ($race->getUuid()->toString() !== $raceUuid) {
-      throw $this->createAccessDeniedException('UUID Mismatch');
-    }
+    $this->genericHelper->validateRaceUuid($race, $raceUuid);
 
     // @todo Maybe allow session in other races.
     if (!empty($participantSession)) {
@@ -93,7 +96,6 @@ final class ParticipantController extends AbstractController
     $participant = new Participant();
     $form = $this->createForm(RaceJoinType::class, $participant);
     $form->handleRequest($request);
-
 
     if ($form->isSubmitted() && $form->isValid()) {
       $participant->setRace($this->raceRepository->find($race->getId()));
