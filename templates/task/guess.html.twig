@@ -29,5 +29,5 @@
       {{ form_end(guessForm) }}
     </div>
 
-    <a href="{{ path('app_race_show', {'id': race.id, 'uuid': race.uuid}) }}">back to list</a>
+    <a href="{{ path('app_race_show', {'id': race.id, 'uuid': race.uuid, 'participantUuid': participant.getUuid.toString}) }}">back to list</a>
 {% endblock %}

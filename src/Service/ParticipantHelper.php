@@ -22,6 +22,11 @@ class ParticipantHelper {
     $this->entityManager->flush();
   }
 
+  public function createSessionParticipant($participant): void {
+    $session = $this->request->getSession();
+    $session->set('participant_id', $participant->getId());
+  }
+
   /**
    * @param int $participantId
    *

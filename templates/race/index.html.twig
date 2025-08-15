@@ -9,7 +9,8 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Race_duration</th>
+                <th>Scavenger hunt name</th>
+                <th>Race duration</th>
                 <th>State</th>
                 <th>actions</th>
             </tr>
@@ -18,6 +19,7 @@
         {% for race in races %}
             <tr>
                 <td>{{ race.id }}</td>
+                <td>{{ race.scavengerHunt.getName }}</td>
                 <td>{{ race.raceDuration }}</td>
                 <td>{{ race.isActive ? 'Active' : 'Inactive' }}</td>
                 <td>

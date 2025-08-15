@@ -6,6 +6,8 @@ use App\Repository\ParticipantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV7;
 use Symfony\UX\Turbo\Attribute\Broadcast;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
@@ -44,10 +46,14 @@ class Participant
     #[ORM\Column(nullable: true)]
     private ?int $progress_solution_count = null;
 
+    #[ORM\Column(type: 'uuid')]
+    private ?UuidV7 $uuid;
+
     public function __construct()
     {
         $this->progress_task_entry = new ArrayCollection();
         $this->progress_task_solution = new ArrayCollection();
+        $this->uuid = new UuidV7();
     }
 
     #[ORM\PrePersist]
@@ -159,6 +165,18 @@ class Participant
     public function setProgressSolutionCount(?int $progress_solution_count): static
     {
         $this->progress_solution_count = $progress_solution_count;
+
+        return $this;
+    }
+
+    public function getUuid(): ?UuidV7
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid(UuidV7 $uuid): static
+    {
+        $this->uuid = $uuid;
 
         return $this;
     }

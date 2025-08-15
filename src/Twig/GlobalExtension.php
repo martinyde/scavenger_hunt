@@ -4,12 +4,19 @@ namespace App\Twig;
 
 use App\Entity\Race;
 use Symfony\Component\Clock\DatePoint;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use WordSearch;
 
 class GlobalExtension extends AbstractExtension
 {
+
+  public function __construct(
+    protected RequestStack $request,
+  ) {
+  }
+
   public function getFunctions(): array
   {
     return [
@@ -19,9 +26,10 @@ class GlobalExtension extends AbstractExtension
 
   public function getGlobalData(object $entity): array
   {
-    if ($entity instanceof Race) {
-      $data = [];
+    $data = [];
+    $data['participant_uuid'] = $this->request->getCurrentRequest()->attributes->get('participantUuid');
 
+    if ($entity instanceof Race) {
       // Add Word search
       $passKeys = [];
       $size = 15;

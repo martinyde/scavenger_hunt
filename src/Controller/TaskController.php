@@ -8,22 +8,26 @@ use App\Form\GuessType;
 use App\Form\TaskType;
 use App\Repository\ParticipantRepository;
 use App\Repository\TaskRepository;
+use App\Service\GenericHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/task')]
 final class TaskController extends AbstractController
 {
     public function __construct(
       protected ParticipantRepository $participantRepository,
+      protected GenericHelper         $genericHelper,
     )
     {
     }
 
     #[Route(name: 'app_task_index', methods: ['GET'])]
+    #[IsGranted('access_admin')]
     public function index(TaskRepository $taskRepository): Response
     {
         return $this->render('task/index.html.twig', [
@@ -32,6 +36,7 @@ final class TaskController extends AbstractController
     }
 
     #[Route('/new', name: 'app_task_new', methods: ['GET', 'POST'])]
+    #[IsGranted('view')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $task = new Task();
@@ -63,6 +68,7 @@ final class TaskController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_task_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('view')]
     public function edit(Request $request, Task $task, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(TaskType::class, $task);
@@ -83,13 +89,9 @@ final class TaskController extends AbstractController
     #[Route('/guess/{id}/{uuid}/{race}', name: 'app_task_guess', methods: ['GET', 'POST'])]
     public function guess(Request $request, Task $task, Race $race, string $uuid, EntityManagerInterface $entityManager): Response
     {
-      if ($task->getUuid()->toString() !== $uuid) {
-        throw $this->createAccessDeniedException();
-      }
+      $this->genericHelper->validateEntityUuid($task, $uuid);
 
-      $session = $request->getSession();
-      $activeUserId = $session->get('participant_id');
-      $participant = $activeUserId ? $this->participantRepository->find($activeUserId) : null;
+      $participant = $this->genericHelper->getCurrentParticipant();
 
       $guessForm = $this->createForm(GuessType::class);
       $guessForm->handleRequest($request);
@@ -101,7 +103,7 @@ final class TaskController extends AbstractController
           $entityManager->persist($participant);
           $entityManager->flush();
 
-          return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $race->getUuid()->toString()], Response::HTTP_SEE_OTHER);
+          return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $race->getUuid()->toString(), 'participantUuid' => $participant->getUuid()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->redirectToRoute('app_task_guess', ['id' => $task->getId(), 'uuid' => $task->getUuid()->toString(), 'race' => $race->getId()], Response::HTTP_SEE_OTHER);
@@ -110,18 +112,20 @@ final class TaskController extends AbstractController
       return $this->render('task/guess.html.twig', [
         'task' => $task,
         'guessForm' => $guessForm,
-        'race' => $race
+        'race' => $race,
+        'participant' => $participant,
       ]);
     }
 
     #[Route('/{id}', name: 'app_task_delete', methods: ['POST'])]
-      public function delete(Request $request, Task $task, EntityManagerInterface $entityManager): Response
-      {
-          if ($this->isCsrfTokenValid('delete'.$task->getId(), $request->getPayload()->getString('_token'))) {
-              $entityManager->remove($task);
-              $entityManager->flush();
-          }
+    #[IsGranted('view')]
+    public function delete(Request $request, Task $task, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$task->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($task);
+            $entityManager->flush();
+        }
 
-          return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);
-      }
+        return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);
+    }
 }

@@ -1,0 +1,25 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" href="#">Front</a>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+          <a class="nav-link" href="{{ path('app_scavanger_hunt_index') }}">Scavenger hunts</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('app_race_index') }}">Races</a>
+        </li>
+        <li class="nav-item">
+        </li>
+      </ul>
+      {% if app.user  %}
+        <div class="me-3">{{ app.user.email }}</div><div><a href="{{ path('app_logout') }}">Logout</a></div>
+      {% else %}
+        <a href="{{ path('app_login') }}">Login</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>

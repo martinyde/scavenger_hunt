@@ -9,13 +9,16 @@ use App\Form\RaceType;
 use App\Form\TryType;
 use App\Repository\ParticipantRepository;
 use App\Repository\RaceRepository;
+use App\Repository\ScavangerHuntRepository;
 use App\Repository\TaskRepository;
+use App\Service\GenericHelper;
 use App\Service\RaceHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/race')]
 final class RaceController extends AbstractController
@@ -24,15 +27,26 @@ final class RaceController extends AbstractController
     protected ParticipantRepository $participantRepository,
     protected TaskRepository        $taskRepository,
     protected RaceHelper            $raceHelper,
+    protected GenericHelper         $genericHelper,
+    protected ScavangerHuntRepository $scavangerHuntRepository,
   )
   {
   }
   // Make personal (Userid)
     #[Route(name: 'app_race_index', methods: ['GET'])]
+    #[IsGranted('view')]
     public function index(RaceRepository $raceRepository): Response
     {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+        $scavengerHunts = $this->scavangerHuntRepository->findBy(['user' => $user->getId()]);
+        $races = [];
+        foreach ($scavengerHunts as $scavangerHunt) {
+          $races = [...$races, ...$scavangerHunt->getRaces()->toArray()];
+        }
+
         return $this->render('race/index.html.twig', [
-            'races' => $raceRepository->findAll(),
+            'races' => $races,
         ]);
     }
 
@@ -56,22 +70,24 @@ final class RaceController extends AbstractController
         ]);
     }
 
-  #[Route('/form/try/{id}', name: 'app_form_try', methods: ['GET', 'POST'])]
-  public function try(Request $request, Race $race): Response
-  {
-    $form = $this->createForm(TryType::class);
-    $form->handleRequest($request);
+    #[Route('/form/try/{id}', name: 'app_form_try', methods: ['GET', 'POST'])]
+    public function try(Request $request, Race $race): Response
+    {
+      $participant = $this->genericHelper->getCurrentParticipant();
+      $form = $this->createForm(TryType::class);
+      $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-      $this->raceHelper->guessAccessKey($race, $form);
+      if ($form->isSubmitted() && $form->isValid()) {
+        $this->raceHelper->guessAccessKey($race, $form, $participant->getUuid());
 
-      return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $race->getUuid()->toString()], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $race->getUuid()->toString(), 'participantUuid' => $participant->getUuid()], Response::HTTP_SEE_OTHER);
+      }
+
+      return $this->render('race/try.html.twig', [
+        'participant' => $participant,
+        'tryform' => $form,
+      ]);
     }
-
-    return $this->render('race/try.html.twig', [
-      'tryform' => $form,
-    ]);
-  }
 
     #[Route('/progress/{id}', name: 'app_race_progress', methods: ['GET', 'POST'])]
     public function progress(Request $request, Race $race): Response
@@ -96,25 +112,23 @@ final class RaceController extends AbstractController
       ]);
     }
 
-    #[Route('/{id}/{uuid}', name: 'app_race_show', methods: ['GET', 'POST'])]
-    public function show(Race $race, string $uuid, Request $request): Response
+    #[Route('/{id}/{uuid}/{participantUuid}', name: 'app_race_show', methods: ['GET', 'POST'])]
+    public function show(Race $race, string $uuid, Request $request, ?string $participantUuid = null): Response
     {
-        if ($race->getUuid()->toString() !== $uuid) {
-          throw $this->createAccessDeniedException();
-        }
+        $this->genericHelper->validateEntityUuid($race, $uuid);
+        $participant = $this->genericHelper->getCurrentParticipant();
 
-        $participant = $this->raceHelper->getParticipant();
         $tryForm = $this->createForm(TryType::class);
         $tryForm->handleRequest($request);
 
         if ($tryForm->isSubmitted() && $tryForm->isValid()) {
-          return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $uuid], Response::HTTP_SEE_OTHER);
+          return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $uuid, 'participantUuid' => $participantUuid], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('race/show.html.twig', [
             'race' => $race,
             'tryform' => $tryForm,
-            'participant' => $participant ?? null,
+            'participant' => $participant,
             'timer' => [
               'secondsLeft' => $this->raceHelper->getSecondsLeft($race),
               'duration' => $race->getRaceDuration(),

@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Participant;
 use App\Entity\Race;
 use App\Entity\ScavangerHunt;
 use App\Form\TryType;
@@ -50,11 +51,12 @@ class RaceHelper {
   /**
    * @param \App\Entity\Race $race
    * @param \Symfony\Component\Form\FormInterface $form
+   * @param string $participantUuid
    *
    * @return void
    */
-  public function guessAccessKey(Race $race, FormInterface $form): void {
-    $participant = $this->getParticipant();
+  public function guessAccessKey(Race $race, FormInterface $form, string $participantUuid): void {
+    $participant = $this->getParticipant($participantUuid);
     $raceScavengerHuntId = $race->getScavengerHunt()->getId();
     $tasks = $this->taskRepository->findBy(['scavangerHunt' => $raceScavengerHuntId]);
 
@@ -81,7 +83,6 @@ class RaceHelper {
     $this->entityManager->flush();
 
     $tryForm = $this->formFactory->create(TryType::class);
-
     try {
       $update = new Update(
         'race_state_changed',
@@ -113,12 +114,11 @@ class RaceHelper {
   }
 
   /**
+   * @param $uuid
+   *
    * @return \App\Entity\Participant|null
    */
-  public function getParticipant(): ?object {
-    $session = $this->request->getSession();
-    $activeUserId = $session->get('participant_id');
-
-    return $activeUserId ? $this->participantRepository->find($activeUserId) : null;
+  public function getParticipant($uuid): ?Participant {
+    return $this->participantRepository->findOneBy(['uuid' => $uuid]);
   }
 }

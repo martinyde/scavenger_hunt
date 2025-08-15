@@ -16,7 +16,7 @@ export default class extends Controller {
           let current = new Date();
           let count = +start - +current;
 
-          let s = Math.floor((count /  1000)) % 60;
+          let s = Math.floor((count / 1000)) % 60;
           let m = Math.floor((count / 60000)) % 60;
           let h = Math.floor((count / 3600000)) % 60;
 

@@ -22,7 +22,21 @@
               <tr>
                 <th>Timer</th>
                 <td>{% include 'race/timer.html.twig' with {'timer': extra_data.timer} %}</td>
+                <td></td>
               </tr>
+              {% if participant in race.getParticipants.toArray() %}
+              <tr>
+                <th>Team</th>
+                <td>{{ participant.getName }}</td>
+                <td>
+                  {% if participant in race.getParticipants.toArray() %}
+                  Join: <a href="{{ path('app_participant_join', {'race': race.id, 'raceUuid': race.uuid, 'participant': participant.id}) }}">
+                    {{ path('app_participant_join', {'race': race.id, 'raceUuid': race.uuid, 'participant': participant.id}) }}
+                  </a>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endif %}
               </tbody>
             </table>
             <div class="spinner-border text-primary"></div>
@@ -46,6 +60,6 @@
       </div>
     </div>
   {% if participant is empty and not race.isActive %}
-    <a href="{{ path('app_participant_join', {'race': race.id, 'raceUuid': race.uuid}) }}">Join</a>
+    <a href="{{ path('app_participant_add', {'race': race.id, 'raceUuid': race.uuid}) }}">Add new team</a>
   {% endif %}
 {% endblock %}

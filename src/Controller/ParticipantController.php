@@ -15,6 +15,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Uid\UuidV7;
 
 #[Route('/participant')]
 final class ParticipantController extends AbstractController
@@ -36,6 +38,7 @@ final class ParticipantController extends AbstractController
    * @return \Symfony\Component\HttpFoundation\Response
    */
     #[Route(name: 'app_participant_index', methods: ['GET'])]
+    #[IsGranted('access_admin')]
     public function index(ParticipantRepository $participantRepository): Response
     {
         return $this->render('participant/index.html.twig', [
@@ -80,37 +83,38 @@ final class ParticipantController extends AbstractController
    *
    * @return \Symfony\Component\HttpFoundation\Response
    */
-  #[Route('/join/{race}/{raceUuid}', name: 'app_participant_join', methods: ['GET', 'POST'])]
-  public function join(Race $race, string $raceUuid, Request $request, EntityManagerInterface $entityManager): Response
+  #[Route('/add/{race}/{raceUuid}', name: 'app_participant_add', methods: ['GET', 'POST'])]
+  public function add(Race $race, string $raceUuid, Request $request, EntityManagerInterface $entityManager): Response
   {
-    $session = $request->getSession();
-    $participantSession = $session->get('participant_id');
-
-    $this->genericHelper->validateRaceUuid($race, $raceUuid);
-
-    // @todo Maybe allow session in other races.
-    if (!empty($participantSession)) {
-      throw $this->createAccessDeniedException('Participant session already exists.');
-    }
-
+    $this->genericHelper->validateEntityUuid($race, $raceUuid);
     $participant = new Participant();
     $form = $this->createForm(RaceJoinType::class, $participant);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
+      $participant->setUuid(new UuidV7());
       $participant->setRace($this->raceRepository->find($race->getId()));
 
       $entityManager->persist($participant);
       $entityManager->flush();
-      $session->set('participant_id', $participant->getId());
 
-      return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $race->getUuid()], Response::HTTP_SEE_OTHER);
+      $this->participantHelper->createSessionParticipant($participant);
+      return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $race->getUuid(), 'participantUuid' => $participant->getUuid()], Response::HTTP_SEE_OTHER);
     }
 
     return $this->render('participant/new.html.twig', [
       'participant' => $participant,
       'form' => $form,
     ]);
+  }
+
+  #[Route('/join/{race}/{raceUuid}/{participant}', name: 'app_participant_join', methods: ['GET'])]
+  public function join(Race $race, string $raceUuid, Participant $participant): Response
+  {
+    $this->genericHelper->validateEntityUuid($race, $raceUuid);
+    $this->participantHelper->createSessionParticipant($participant);
+
+    return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $race->getUuid(), 'participantUuid' => $participant->getUuid()], Response::HTTP_SEE_OTHER);
   }
 
   /**
@@ -121,6 +125,7 @@ final class ParticipantController extends AbstractController
    * @return \Symfony\Component\HttpFoundation\Response
    */
     #[Route('/{id}', name: 'app_participant_show', methods: ['GET'])]
+    #[IsGranted('access_admin')]
     public function show(Participant $participant): Response
     {
         return $this->render('participant/show.html.twig', [
@@ -138,6 +143,7 @@ final class ParticipantController extends AbstractController
    * @return \Symfony\Component\HttpFoundation\Response
    */
     #[Route('/{id}/edit', name: 'app_participant_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('access_admin')]
     public function edit(Request $request, Participant $participant, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ParticipantType::class, $participant);
@@ -165,6 +171,7 @@ final class ParticipantController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      */
       #[Route('/{id}', name: 'app_participant_delete', methods: ['POST'])]
+      #[IsGranted('access_admin')]
       public function delete(Request $request, Participant $participant, EntityManagerInterface $entityManager): Response
       {
           if ($this->isCsrfTokenValid('delete'.$participant->getId(), $request->getPayload()->getString('_token'))) {
