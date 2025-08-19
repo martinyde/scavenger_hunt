@@ -1,4 +1,30 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+    <div class="mb-3">
+      {{ form_row(form.title) }}
+    </div>
+    <div class="mb-3">
+    {{ form_row(form.passKey) }}
+    </div>
+    <div class="mb-3">
+    {{ form_row(form.text_before) }}
+    </div>
+    <div class="mb-3">
+    {{ form_row(form.text_after) }}
+    </div>
+    {% if form.solutions %}
+      <div class="form-group mb-3 border border-dark-subtle p-3">
+        {{ form_label(form.solutions) }}
+        <div id="solutions-wrapper"
+             data-prototype="{{ form_widget(form.solutions.vars.prototype)|e('html_attr') }}">
+          {% for solutionField in form.solutions %}
+            <div class="solution-row">
+              {{ form_widget(solutionField) }}
+              <button type="button" class="btn btn-danger btn-sm remove-solution">Remove</button>
+            </div>
+          {% endfor %}
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" id="add-solution">Add Solution</button>
+      </div>
+    {% endif %}
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

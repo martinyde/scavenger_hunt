@@ -20,16 +20,16 @@
                 <td>{{ task.title }}</td>
             </tr>
             <tr>
-                <th>Solutions</th>
-                <td>{{ dump(task.solutions) }}</td>
-            </tr>
-            <tr>
                 <th>Text_before</th>
                 <td>{{ task.textBefore }}</td>
             </tr>
             <tr>
                 <th>Text_after</th>
                 <td>{{ task.textAfter }}</td>
+            </tr>
+            <tr>
+              <th>Solutions</th>
+              <td>{{ task.solutions|join(', ') }}</td>
             </tr>
         </tbody>
     </table>

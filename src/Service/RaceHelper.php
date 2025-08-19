@@ -7,6 +7,7 @@ use App\Entity\Race;
 use App\Entity\ScavangerHunt;
 use App\Form\TryType;
 use App\Repository\ParticipantRepository;
+use App\Repository\RaceRepository;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Clock\DatePoint;
@@ -120,5 +121,12 @@ class RaceHelper {
    */
   public function getParticipant($uuid): ?Participant {
     return $this->participantRepository->findOneBy(['uuid' => $uuid]);
+  }
+
+  public function getFinishedRaces(): array {
+    /** @var RaceRepository $repo */
+    $repo = $this->entityManager->getRepository(Race::class);
+
+    return $repo->findFinishedRaces();
   }
 }

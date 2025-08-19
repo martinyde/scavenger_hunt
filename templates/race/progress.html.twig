@@ -21,7 +21,7 @@
       <td>Progress</td>
     </tr>
     </thead>
-    <tbody class="participants" id="participants">
+    <tbody class="participants" id="participants-progress-list">
     {% for participant in race.participants %}
       <tr id="participant-progress-{{ participant.id }}">
         {% include 'race/_participant-progress.html.twig' with {'participant': participant, 'scavengerHunt': race.getScavengerHunt} %}

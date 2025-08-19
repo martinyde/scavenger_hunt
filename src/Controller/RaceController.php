@@ -74,7 +74,7 @@ final class RaceController extends AbstractController
     public function try(Request $request, Race $race): Response
     {
       $participant = $this->genericHelper->getCurrentParticipant();
-      $form = $this->createForm(TryType::class);
+      $form = $this->createForm(TryType::class, ['request' => $request]);
       $form->handleRequest($request);
 
       if ($form->isSubmitted() && $form->isValid()) {
@@ -112,13 +112,32 @@ final class RaceController extends AbstractController
       ]);
     }
 
+
+    #[Route('/{id}/edit', name: 'app_race_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Race $race, EntityManagerInterface $entityManager): Response
+    {
+      $form = $this->createForm(RaceType::class, $race);
+      $form->handleRequest($request);
+
+      if ($form->isSubmitted() && $form->isValid()) {
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_race_index', [], Response::HTTP_SEE_OTHER);
+      }
+
+      return $this->render('race/edit.html.twig', [
+        'race' => $race,
+        'form' => $form,
+      ]);
+    }
+
     #[Route('/{id}/{uuid}/{participantUuid}', name: 'app_race_show', methods: ['GET', 'POST'])]
     public function show(Race $race, string $uuid, Request $request, ?string $participantUuid = null): Response
     {
-        $this->genericHelper->validateEntityUuid($race, $uuid);
+        //$this->genericHelper->validateEntityUuid($race, $uuid);
         $participant = $this->genericHelper->getCurrentParticipant();
 
-        $tryForm = $this->createForm(TryType::class);
+        $tryForm = $this->createForm(TryType::class, ['request' => $request]);
         $tryForm->handleRequest($request);
 
         if ($tryForm->isSubmitted() && $tryForm->isValid()) {
@@ -136,23 +155,6 @@ final class RaceController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_race_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Race $race, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(RaceType::class, $race);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_race_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('race/edit.html.twig', [
-            'race' => $race,
-            'form' => $form,
-        ]);
-    }
 
     #[Route('/{id}', name: 'app_race_delete', methods: ['POST'])]
     public function delete(Request $request, Race $race, EntityManagerInterface $entityManager): Response

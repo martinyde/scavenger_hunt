@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,6 +16,9 @@ class TryType extends AbstractType
       ->add('try', TextType::class, [
         'mapped' => false,
       ])
+      ->add('token', HiddenType::class, [
+        'data' => $options['data']['request']->attributes->get('participantUuid'),
+      ]);
     ;
   }
 

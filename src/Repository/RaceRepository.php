@@ -16,6 +16,16 @@ class RaceRepository extends ServiceEntityRepository
         parent::__construct($registry, Race::class);
     }
 
+    public function findFinishedRaces(): mixed
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        return $this->createQueryBuilder('r')
+            ->andWhere("r.active = false")
+            ->andWhere($qb->expr()->isNotNull("r.timer"))
+            ->getQuery()->getResult();
+    }
+
     //    /**
     //     * @return Race[] Returns an array of Race objects
     //     */

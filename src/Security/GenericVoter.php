@@ -3,6 +3,7 @@
 namespace App\Security;
 
 use App\Entity\ScavangerHunt;
+use App\Entity\Task;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
@@ -53,6 +54,9 @@ class GenericVoter extends Voter
     }
 
     if ($this->hasRole($user, 'ROLE_USER')) {
+      if ($entity instanceof Task) {
+        return $entity->getScavangerHunt()->getUser() === $user;
+      }
       if ($entity instanceof ScavangerHunt) {
         return $entity->getUser() === $user;
       }

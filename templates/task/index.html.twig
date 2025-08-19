@@ -11,9 +11,9 @@
                 <th>Id</th>
                 <th>PassKey</th>
                 <th>Title</th>
-                <th>Solutions</th>
                 <th>Text_before</th>
                 <th>Text_after</th>
+                <th>Solutions</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -23,13 +23,13 @@
                 <td>{{ task.id }}</td>
                 <td>{{ task.passKey }}</td>
                 <td>{{ task.title }}</td>
-                <td>{{ task.solutions|join('|') }}</td>
                 <td>{{ task.textBefore }}</td>
                 <td>{{ task.textAfter }}</td>
                 <td>
                     <a href="{{ path('app_task_show', {'id': task.id, 'uuid': task.uuid}) }}">show</a>
                     <a href="{{ path('app_task_edit', {'id': task.id}) }}">edit</a>
                 </td>
+                <td>{{ task.solutions|join('|') }}</td>
             </tr>
         {% else %}
             <tr>
@@ -38,6 +38,4 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_task_new') }}">Create new</a>
 {% endblock %}

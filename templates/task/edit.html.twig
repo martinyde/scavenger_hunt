@@ -4,10 +4,11 @@
 
 {% block body %}
     <h1>Edit Task</h1>
+    <div class="container-md">
+      {{ include('task/_form.html.twig', {'button_label': 'Update'}) }}
 
-    {{ include('task/_form.html.twig', {'button_label': 'Update'}) }}
+      <a href="{{ path('app_scavanger_hunt_edit', {id: task.scavangerHunt.id}) }}">Cancel</a>
 
-    <a href="{{ path('app_task_index') }}">back to list</a>
-
-    {{ include('task/_delete_form.html.twig') }}
+      {{ include('task/_delete_form.html.twig') }}
+    </div>
 {% endblock %}

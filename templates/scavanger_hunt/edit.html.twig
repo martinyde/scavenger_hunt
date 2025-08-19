@@ -3,11 +3,40 @@
 {% block title %}Edit ScavangerHunt{% endblock %}
 
 {% block body %}
-    <h1>Edit ScavangerHunt</h1>
+  <h1>Edit ScavangerHunt</h1>
 
-    {{ include('scavanger_hunt/_form.html.twig', {'button_label': 'Update'}) }}
+  {{ include('scavanger_hunt/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_scavanger_hunt_index') }}">back to list</a>
+  <a href="{{ path('app_scavanger_hunt_index') }}">back to list</a>
 
-    {{ include('scavanger_hunt/_delete_form.html.twig') }}
+  {{ include('scavanger_hunt/_delete_form.html.twig') }}
+
+  <a href="{{ path('app_task_new', { 'id': scavanger_hunt.getId }) }}">Add task</a>
+  {% if scavanger_hunt.getTasks|length > 0 %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Tasks</th>
+          <th>Pass key</th>
+          <th>Solution count</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for task in scavanger_hunt.getTasks %}
+        <tr>
+          <td>{{ task.title }}</td>
+          <td>{{ task.passKey }}</td>
+          <td>{{ task.solutions|length }}</td>
+          <td>
+            <a href="{{ path('app_task_show', {'id': task.id, 'uuid': task.uuid}) }}">show</a>
+            <a href="{{ path('app_task_edit', {'id': task.id}, true) }}">edit</a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+
 {% endblock %}

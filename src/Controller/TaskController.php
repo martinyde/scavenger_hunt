@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Race;
+use App\Entity\ScavangerHunt;
 use App\Entity\Task;
 use App\Form\GuessType;
 use App\Form\TaskType;
@@ -35,25 +36,52 @@ final class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_task_new', methods: ['GET', 'POST'])]
+    #[Route('/new/{id}', name: 'app_task_new', methods: ['GET', 'POST'])]
     #[IsGranted('view')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, ScavangerHunt $scavangerHunt, EntityManagerInterface $entityManager): Response
     {
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $task->setScavangerHunt($scavangerHunt);
             $entityManager->persist($task);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_scavanger_hunt_edit', ['id' => $scavangerHunt->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('task/new.html.twig', [
             'task' => $task,
             'form' => $form,
         ]);
+    }
+
+    #[Route('/{id}/edit', name: 'app_task_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('view', subject: 'task')]
+    public function edit(Request $request, Task $task, EntityManagerInterface $entityManager, int $id): Response
+    {
+      $form = $this->createForm(TaskType::class, $task);
+      $form->handleRequest($request);
+
+      if ($form->isSubmitted() && $form->isValid()) {
+        $solutions = $task->getSolutions();
+        foreach ($solutions as $key => $solution) {
+          if (empty($solution)) {
+            unset($solutions[$key]);
+            $task->setSolutions($solutions);
+          }
+        }
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_scavanger_hunt_edit', ['id' => $task->getScavangerHunt()->getId()], Response::HTTP_SEE_OTHER);
+      }
+
+      return $this->render('task/edit.html.twig', [
+        'task' => $task,
+        'form' => $form,
+      ]);
     }
 
     #[Route('/{id}/{uuid}', name: 'app_task_show', methods: ['GET'])]
@@ -64,25 +92,6 @@ final class TaskController extends AbstractController
         }
         return $this->render('task/show.html.twig', [
             'task' => $task,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_task_edit', methods: ['GET', 'POST'])]
-    #[IsGranted('view')]
-    public function edit(Request $request, Task $task, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(TaskType::class, $task);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('task/edit.html.twig', [
-            'task' => $task,
-            'form' => $form,
         ]);
     }
 

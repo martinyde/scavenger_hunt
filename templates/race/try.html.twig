@@ -1,5 +1,4 @@
 {% block success_stream %}
-  {{ dump(app.request.attributes) }}
   {{ form_start(tryform, {
     'action': path('app_form_try', {'id': race.getId}),
     'method': 'POST'

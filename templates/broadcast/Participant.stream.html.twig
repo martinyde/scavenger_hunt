@@ -1,5 +1,12 @@
 {# Learn how to use Turbo Streams: https://github.com/symfony/ux-turbo#broadcast-doctrine-entities-update #}
 {% block create %}
+    <turbo-stream action="append" target="participants-progress-list">
+      <template>
+        <tr id="participant-{{ entity.id }}">
+          {% include 'race/_participant-progress.html.twig' with {'participant': entity} %}
+        </tr>
+      </template>
+    </turbo-stream>
     <turbo-stream action="append" target="participants">
         <template>
           <tr id="participant-{{ entity.id }}">
