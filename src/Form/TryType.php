@@ -16,9 +16,6 @@ class TryType extends AbstractType
       ->add('try', TextType::class, [
         'mapped' => false,
       ])
-      ->add('token', HiddenType::class, [
-        'data' => $options['data']['request']->attributes->get('participantUuid'),
-      ]);
     ;
   }
 

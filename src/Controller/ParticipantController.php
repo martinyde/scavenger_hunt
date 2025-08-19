@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Uid\UuidV7;
+use Symfony\Component\HttpFoundation\Cookie;
 
 #[Route('/participant')]
 final class ParticipantController extends AbstractController
@@ -98,8 +99,11 @@ final class ParticipantController extends AbstractController
       $entityManager->persist($participant);
       $entityManager->flush();
 
-      $this->participantHelper->createSessionParticipant($participant);
-      return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $race->getUuid(), 'participantUuid' => $participant->getUuid()], Response::HTTP_SEE_OTHER);
+      $partitionedCookie = $this->genericHelper->setParticpantCookie($participant);
+      $redirectResponse = $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $race->getUuid(), 'participantUuid' => $participant->getUuid()], Response::HTTP_SEE_OTHER);
+      $redirectResponse->headers->setCookie($partitionedCookie);
+
+      return $redirectResponse;
     }
 
     return $this->render('participant/new.html.twig', [
@@ -112,9 +116,12 @@ final class ParticipantController extends AbstractController
   public function join(Race $race, string $raceUuid, Participant $participant): Response
   {
     $this->genericHelper->validateEntityUuid($race, $raceUuid);
-    $this->participantHelper->createSessionParticipant($participant);
 
-    return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $race->getUuid(), 'participantUuid' => $participant->getUuid()], Response::HTTP_SEE_OTHER);
+    $partitionedCookie = $this->genericHelper->setParticpantCookie($participant);
+    $redirectResponse = $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $race->getUuid(), 'participantUuid' => $participant->getUuid()], Response::HTTP_SEE_OTHER);
+    $redirectResponse->headers->setCookie($partitionedCookie);
+
+    return $redirectResponse;
   }
 
   /**

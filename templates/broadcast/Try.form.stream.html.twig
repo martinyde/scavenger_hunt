@@ -6,7 +6,7 @@
         {% include 'race/_race.html.twig' with {'race': race, 'tryform': tryform} %}
       </div>
     {% else %}
-      ABC
+      {% include 'race/_race-finished.html.twig' with {'race': race} %}
     {% endif %}
   </template>
 </turbo-stream>

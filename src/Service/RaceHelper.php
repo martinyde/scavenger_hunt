@@ -115,6 +115,7 @@ class RaceHelper {
   }
 
   /**
+   *
    * @param $uuid
    *
    * @return \App\Entity\Participant|null
@@ -123,10 +124,26 @@ class RaceHelper {
     return $this->participantRepository->findOneBy(['uuid' => $uuid]);
   }
 
+  /**
+   * Get list of all finished races.
+   *
+   * @return array
+   */
   public function getFinishedRaces(): array {
     /** @var RaceRepository $repo */
     $repo = $this->entityManager->getRepository(Race::class);
 
     return $repo->findFinishedRaces();
+  }
+
+  /**
+   * Whether a race is finished.
+   *
+   * @param \App\Entity\Race $race
+   *
+   * @return bool
+   */
+  public function isFinished(Race $race): bool {
+    return !$race->isActive() && !empty($race->getTimer());
   }
 }

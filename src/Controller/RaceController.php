@@ -134,18 +134,19 @@ final class RaceController extends AbstractController
     #[Route('/{id}/{uuid}/{participantUuid}', name: 'app_race_show', methods: ['GET', 'POST'])]
     public function show(Race $race, string $uuid, Request $request, ?string $participantUuid = null): Response
     {
-        //$this->genericHelper->validateEntityUuid($race, $uuid);
-        $participant = $this->genericHelper->getCurrentParticipant();
+        $this->genericHelper->validateEntityUuid($race, $uuid);
+        $participant = $this->genericHelper->getCurrentParticipant($participantUuid);
 
         $tryForm = $this->createForm(TryType::class, ['request' => $request]);
         $tryForm->handleRequest($request);
 
         if ($tryForm->isSubmitted() && $tryForm->isValid()) {
-          return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $uuid, 'participantUuid' => $participantUuid], Response::HTTP_SEE_OTHER);
+          return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $uuid, 'participantUuid' => $participant->getUuid()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('race/show.html.twig', [
             'race' => $race,
+            'raceHelper' => $this->raceHelper,
             'tryform' => $tryForm,
             'participant' => $participant,
             'timer' => [

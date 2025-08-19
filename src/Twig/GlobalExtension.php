@@ -3,6 +3,7 @@
 namespace App\Twig;
 
 use App\Entity\Race;
+use App\Service\GenericHelper;
 use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
@@ -14,6 +15,7 @@ class GlobalExtension extends AbstractExtension
 
   public function __construct(
     protected RequestStack $request,
+    protected GenericHelper $genericHelper,
   ) {
   }
 
@@ -27,7 +29,6 @@ class GlobalExtension extends AbstractExtension
   public function getGlobalData(object $entity): array
   {
     $data = [];
-    $data['participant_uuid'] = $this->request->getCurrentRequest()->attributes->get('participantUuid');
 
     if ($entity instanceof Race) {
       // Add Word search

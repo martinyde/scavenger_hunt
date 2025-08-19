@@ -7,6 +7,7 @@ use App\Entity\Race;
 use App\Entity\Task;
 use App\Repository\ParticipantRepository;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class GenericHelper {
@@ -30,9 +31,36 @@ class GenericHelper {
     }
   }
 
-  public function getCurrentParticipant(): ?Participant {
-    $participantId = $this->request->getSession()->get('participant_id');
+  /**
+   * Set a cookie for the participant that lasts a week.
+   *
+   * @param \App\Entity\Participant $participant
+   *
+   * @return \Symfony\Component\HttpFoundation\Cookie
+   */
+  public function setParticpantCookie(Participant $participant): Cookie {
+    $this->request->getCurrentRequest()->cookies->remove('participant');
+    $cookie = new Cookie(
+      'participant',
+      $participant->getUuid(),
+      new \DateTimeImmutable('+1 week'),
+    );
+    return $cookie->withPartitioned();
+  }
 
-    return $participantId ? $this->participantRepository->find($participantId) : null;
+  /**
+   * Get the current participant from uuid or from cookie.
+   *
+   * @param string|NULL $participantUuid
+   *
+   * @return \App\Entity\Participant|null,
+   */
+  public function getCurrentParticipant(string $participantUuid = NULL): ?Participant {
+    if (empty($uuid)) {
+      $participantUuid = $this->request->getCurrentRequest()->cookies->get('participant');
+    }
+    $participant = $this->participantRepository->findOneBy(['uuid' => $participantUuid]);
+
+    return $participant ?? null;
   }
 }
