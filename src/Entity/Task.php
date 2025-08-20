@@ -3,10 +3,15 @@
 namespace App\Entity;
 
 use App\Repository\TaskRepository;
+use App\Validator\Passkey;
+use App\Validator\Solutions;
+use App\Validator\SolutionsValidator;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Uid\UuidV7;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
@@ -133,5 +138,11 @@ class Task
         $this->uuid = $uuid;
 
         return $this;
+    }
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata): void
+    {
+      $metadata->addPropertyConstraint('passKey', new Passkey());
+      $metadata->addPropertyConstraint('solutions', new Solutions());
     }
 }

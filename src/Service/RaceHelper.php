@@ -62,9 +62,7 @@ class RaceHelper {
     $tasks = $this->taskRepository->findBy(['scavangerHunt' => $raceScavengerHuntId]);
 
     foreach ($tasks as $task) {
-      if ($form->get('try')->getData() === $task->getPassKey() &&
-        !$participant->getProgressTaskEntry()->contains($task)
-      ) {
+      if ($this->validateAccessKey($form, $task, $participant)) {
         $participant->setProgressEntryCount($participant->getProgressEntryCount() + 1);
         $participant->addProgressTaskEntry($task);
         $this->entityManager->persist($participant);
@@ -145,5 +143,28 @@ class RaceHelper {
    */
   public function isFinished(Race $race): bool {
     return !$race->isActive() && !empty($race->getTimer());
+  }
+
+  /**
+   * Validate the access key typed in form against a task.
+   *
+   * @param $form
+   * @param $task
+   * @param $participant
+   *
+   * @return bool
+   */
+  private function validateAccessKey($form, $task, $participant): bool {
+    if ($participant->getProgressTaskEntry()->contains($task)) {
+      return false;
+    }
+    $formData = $form->get('try')->getData();
+    $passkey = $task->getPassKey();
+
+    if (strtolower($formData) !== strtolower($passkey)) {
+      return false;
+    }
+
+    return true;
   }
 }

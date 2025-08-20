@@ -17,7 +17,8 @@ class GuessType extends AbstractType
     $builder
       ->add('guess', TextType::class, [
         'mapped' => false,
-        'label' => false
+        'label' => false,
+        'attr' => ['class' => 'text-uppercase']
       ])
     ;
   }

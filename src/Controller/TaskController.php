@@ -10,6 +10,7 @@ use App\Form\TaskType;
 use App\Repository\ParticipantRepository;
 use App\Repository\TaskRepository;
 use App\Service\GenericHelper;
+use App\Service\TaskHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +24,7 @@ final class TaskController extends AbstractController
     public function __construct(
       protected ParticipantRepository $participantRepository,
       protected GenericHelper         $genericHelper,
+      protected TaskHelper            $taskHelper,
     )
     {
     }
@@ -45,9 +47,7 @@ final class TaskController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $task->setScavangerHunt($scavangerHunt);
-            $entityManager->persist($task);
-            $entityManager->flush();
+            $this->taskHelper->createTask($task, $scavangerHunt);
 
             return $this->redirectToRoute('app_scavanger_hunt_edit', ['id' => $scavangerHunt->getId()], Response::HTTP_SEE_OTHER);
         }
@@ -66,14 +66,7 @@ final class TaskController extends AbstractController
       $form->handleRequest($request);
 
       if ($form->isSubmitted() && $form->isValid()) {
-        $solutions = $task->getSolutions();
-        foreach ($solutions as $key => $solution) {
-          if (empty($solution)) {
-            unset($solutions[$key]);
-            $task->setSolutions($solutions);
-          }
-        }
-        $entityManager->flush();
+        $this->taskHelper->editTask($task);
 
         return $this->redirectToRoute('app_scavanger_hunt_edit', ['id' => $task->getScavangerHunt()->getId()], Response::HTTP_SEE_OTHER);
       }
@@ -87,9 +80,8 @@ final class TaskController extends AbstractController
     #[Route('/{id}/{uuid}', name: 'app_task_show', methods: ['GET'])]
     public function show(Task $task, string $uuid): Response
     {
-        if ($task->getUuid()->toString() !== $uuid) {
-          throw $this->createAccessDeniedException();
-        }
+        $this->genericHelper->validateEntityUuid($task, $uuid);
+
         return $this->render('task/show.html.twig', [
             'task' => $task,
         ]);
@@ -106,7 +98,7 @@ final class TaskController extends AbstractController
       $guessForm->handleRequest($request);
 
       if ($guessForm->isSubmitted() && $guessForm->isValid()) {
-        if (in_array($guessForm->get('guess')->getData(), $task->getSolutions()) && !$participant->getProgressTaskSolution()->contains($task)) {
+        if ($this->taskHelper->validateGuess($guessForm, $task, $participant)) {
           $participant->setProgressSolutionCount($participant->getProgressSolutionCount() + 1);
           $participant->addProgressTaskSolution($task);
           $entityManager->persist($participant);

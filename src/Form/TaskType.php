@@ -18,7 +18,7 @@ class TaskType extends AbstractType
             ->add('passKey', TextType::class, [
               'label' => 'Passkey',
               'label_attr' => ['class' => 'form-label'],
-              'attr' => ['class' => 'form-control'],
+              'attr' => ['class' => 'form-control text-uppercase'],
             ])
             ->add('title', TextType::class, [
               'label' => 'Title',

@@ -4,6 +4,7 @@ namespace App\Twig;
 
 use App\Entity\Race;
 use App\Service\GenericHelper;
+use App\Service\WordSearchFactory;
 use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
@@ -40,9 +41,10 @@ class GlobalExtension extends AbstractExtension
         $passKeys[] = $task->getPassKey();
       }
       try {
-        $puzzle = WordSearch\Factory::create(
+        $puzzle = WordSearchFactory::create(
           $passKeys,
           $size,
+          'da'
         );
       }
       catch (\Exception $e) {

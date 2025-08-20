@@ -8,24 +8,13 @@ export function initForm() {
     // Setup counter for unique indices
     let index = solutionsWrapper.querySelectorAll('.solution-row').length;
 
+    if (index === 0) {
+      addLine(solutionsWrapper, index)
+    }
+
     // Add new solution field
     addButton.addEventListener('click', function() {
-      const prototype = solutionsWrapper.dataset.prototype;
-      const newForm = prototype.replace(/__name__/g, index);
-
-      const div = document.createElement('div');
-      div.classList.add('solution-row');
-      div.innerHTML = newForm;
-
-      // Add a remove button
-      const removeButton = document.createElement('button');
-      removeButton.type = 'button';
-      removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'remove-solution');
-      removeButton.textContent = 'Remove';
-      div.appendChild(removeButton);
-
-      solutionsWrapper.appendChild(div);
-      index++;
+      addLine(solutionsWrapper, index)
     });
 
   // Remove solution field (using event delegation)
@@ -35,4 +24,25 @@ export function initForm() {
       }
     });
   }
+
+  function addLine(solutionsWrapper, index) {
+    const prototype = solutionsWrapper.dataset.prototype;
+    const newForm = prototype.replace(/__name__/g, index);
+
+    const div = document.createElement('div');
+    div.classList.add('solution-row');
+    div.innerHTML = newForm;
+
+    // Add a remove button
+    const removeButton = document.createElement('button');
+    removeButton.type = 'button';
+    removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'remove-solution');
+    removeButton.textContent = 'Remove';
+    div.appendChild(removeButton);
+
+    div.getElementsByTagName('input')[0].classList.add('text-uppercase')
+    solutionsWrapper.appendChild(div);
+    index++;
+  }
 }
+

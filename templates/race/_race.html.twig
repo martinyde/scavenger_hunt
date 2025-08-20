@@ -1,9 +1,10 @@
+{# Display when race is in progress. #}
 <div>
   <div id="try-form">
     <table class="table">
       <tbody>
       <tr>
-        <th>Timer</th>
+        <th>{{ 'Timer' }}</th>
         <td>{% include 'race/timer.html.twig' with {'timer': extra_data.timer} %}</td>
       </tr>
       </tbody>
@@ -15,7 +16,7 @@
     <table class="table">
       <thead>
       <tr>
-        <td>Name</td>
+        <td>{{ 'Name' }}</td>
       </tr>
       </thead>
       <tbody id="participant-progress">
