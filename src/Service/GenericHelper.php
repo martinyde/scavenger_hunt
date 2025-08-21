@@ -2,10 +2,12 @@
 
 namespace App\Service;
 
+use App\Entity\Highscore;
 use App\Entity\Participant;
 use App\Entity\Race;
 use App\Entity\Task;
 use App\Repository\ParticipantRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -14,6 +16,7 @@ class GenericHelper {
 
   public function __construct(
     protected RequestStack $request,
+    protected EntityManagerInterface $entityManager,
     protected ParticipantRepository $participantRepository,
   ) {}
 
@@ -62,5 +65,28 @@ class GenericHelper {
     $participant = $this->participantRepository->findOneBy(['uuid' => $participantUuid]);
 
     return $participant ?? null;
+  }
+
+  /**
+   * Add all participants to highscore table.
+   *
+   * @param \App\Entity\Race $race
+   *
+   * @return void
+   */
+  public function createHighscores(Race $race): void {
+    foreach ($race->getParticipants() as $participant) {
+      $highScore = new Highscore();
+      $highScore->setParticipant($participant);
+      $highScore->setParticipantName($participant->getName());
+      $highScore->setRace($race);
+      $highScore->setScavengerHunt($race->getScavengerHunt());
+      $highScore->setProgressTaskEntry($participant->getProgressEntryCount() ?? 0);
+      $highScore->setProgressTaskSolution($participant->getProgressSolutionCount() ?? 0);
+      $highScore->setTime(123);
+      $highScore->setCreated(new \DateTime());
+      $this->entityManager->persist($highScore);
+    }
+    $this->entityManager->flush();
   }
 }

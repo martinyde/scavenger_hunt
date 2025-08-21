@@ -37,6 +37,9 @@ class Highscore
     #[ORM\Column]
     private ?\DateTime $created = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $participant_name = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -122,6 +125,18 @@ class Highscore
     public function setCreated(\DateTime $created): static
     {
         $this->created = $created;
+
+        return $this;
+    }
+
+    public function getParticipantName(): ?string
+    {
+        return $this->participant_name;
+    }
+
+    public function setParticipantName(string $participant_name): static
+    {
+        $this->participant_name = $participant_name;
 
         return $this;
     }

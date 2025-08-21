@@ -52,6 +52,12 @@ class Participant
     #[ORM\OneToOne(mappedBy: 'participant', cascade: ['persist', 'remove'])]
     private ?Highscore $highscore = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $finished = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $finished_time = null;
+
     public function __construct()
     {
         $this->progress_task_entry = new ArrayCollection();
@@ -197,6 +203,30 @@ class Participant
         }
 
         $this->highscore = $highscore;
+
+        return $this;
+    }
+
+    public function isFinished(): ?bool
+    {
+        return $this->finished;
+    }
+
+    public function setFinished(?bool $finished): static
+    {
+        $this->finished = $finished;
+
+        return $this;
+    }
+
+    public function getFinishedTime(): ?int
+    {
+        return $this->finished_time;
+    }
+
+    public function setFinishedTime(?int $finished_time): static
+    {
+        $this->finished_time = $finished_time;
 
         return $this;
     }
