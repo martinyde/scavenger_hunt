@@ -47,10 +47,17 @@ class Race
     #[ORM\Column]
     private ?bool $active = null;
 
+    /**
+     * @var Collection<int, Highscore>
+     */
+    #[ORM\OneToMany(targetEntity: Highscore::class, mappedBy: 'race')]
+    private Collection $highscores;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
         $this->uuid = new UuidV7();
+        $this->highscores = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -167,6 +174,36 @@ class Race
     public function setUuid(UuidV7 $uuid): static
     {
         $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Highscore>
+     */
+    public function getHighscores(): Collection
+    {
+        return $this->highscores;
+    }
+
+    public function addHighscore(Highscore $highscore): static
+    {
+        if (!$this->highscores->contains($highscore)) {
+            $this->highscores->add($highscore);
+            $highscore->setRace($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHighscore(Highscore $highscore): static
+    {
+        if ($this->highscores->removeElement($highscore)) {
+            // set the owning side to null (unless already changed)
+            if ($highscore->getRace() === $this) {
+                $highscore->setRace(null);
+            }
+        }
 
         return $this;
     }

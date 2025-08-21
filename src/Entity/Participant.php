@@ -49,6 +49,9 @@ class Participant
     #[ORM\Column(type: 'uuid')]
     private ?UuidV7 $uuid;
 
+    #[ORM\OneToOne(mappedBy: 'participant', cascade: ['persist', 'remove'])]
+    private ?Highscore $highscore = null;
+
     public function __construct()
     {
         $this->progress_task_entry = new ArrayCollection();
@@ -177,6 +180,23 @@ class Participant
     public function setUuid(UuidV7 $uuid): static
     {
         $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    public function getHighscore(): ?Highscore
+    {
+        return $this->highscore;
+    }
+
+    public function setHighscore(Highscore $highscore): static
+    {
+        // set the owning side of the relation if necessary
+        if ($highscore->getParticipant() !== $this) {
+            $highscore->setParticipant($this);
+        }
+
+        $this->highscore = $highscore;
 
         return $this;
     }

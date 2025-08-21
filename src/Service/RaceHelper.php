@@ -146,6 +146,22 @@ class RaceHelper {
   }
 
   /**
+   * Remove finished races.
+   *
+   * @return void
+   */
+  public function removeFinishedRaces(): void {
+    $finishedRaces = $this->getFinishedRaces();
+    foreach ($finishedRaces as $race) {
+      foreach ($race->getParticipants() as $participant) {
+        $this->entityManager->remove($participant);
+      }
+      $this->entityManager->remove($race);
+    }
+    $this->entityManager->flush();
+  }
+
+  /**
    * Validate the access key typed in form against a task.
    *
    * @param $form
