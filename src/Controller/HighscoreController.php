@@ -44,7 +44,6 @@ final class HighscoreController extends AbstractController
     #[Route('/scavanger_hunt/{scavangerHunt}', name: 'app_highscore_scavenger_hunt_index', methods: ['GET'])]
     public function scavengerHuntIndex(HighscoreRepository $highscoreRepository, ScavangerHunt $scavangerHunt): Response
     {
-      $b = 1;
       return $this->render('highscore/index.html.twig', [
         'highscores' => $highscoreRepository->getScavengerHuntHighScores($scavangerHunt),
       ]);

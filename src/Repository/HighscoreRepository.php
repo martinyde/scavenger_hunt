@@ -20,8 +20,6 @@ class HighscoreRepository extends ServiceEntityRepository
 
     public function getScavengerHuntHighScores(ScavangerHunt $scavangerHunt): mixed
     {
-      $a = $scavangerHunt->getId();
-      $b = 1;
       return $this->createQueryBuilder('h')
         ->andWhere('h.scavenger_hunt = :scavenger_hunt')
         ->setParameter('scavenger_hunt', $scavangerHunt->getId())
