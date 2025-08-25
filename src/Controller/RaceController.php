@@ -3,13 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Race;
-use App\Entity\ScavangerHunt;
+use App\Entity\ScavengerHunt;
 use App\Form\RaceStartType;
 use App\Form\RaceType;
 use App\Form\TryType;
 use App\Repository\ParticipantRepository;
 use App\Repository\RaceRepository;
-use App\Repository\ScavangerHuntRepository;
+use App\Repository\ScavengerHuntRepository;
 use App\Repository\TaskRepository;
 use App\Service\GenericHelper;
 use App\Service\RaceHelper;
@@ -28,7 +28,7 @@ final class RaceController extends AbstractController
     protected TaskRepository        $taskRepository,
     protected RaceHelper            $raceHelper,
     protected GenericHelper         $genericHelper,
-    protected ScavangerHuntRepository $scavangerHuntRepository,
+    protected ScavengerHuntRepository $scavengerHuntRepository,
   )
   {
   }
@@ -39,10 +39,10 @@ final class RaceController extends AbstractController
     {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
-        $scavengerHunts = $this->scavangerHuntRepository->findBy(['user' => $user->getId()]);
+        $scavengerHunts = $this->scavengerHuntRepository->findBy(['user' => $user->getId()]);
         $races = [];
-        foreach ($scavengerHunts as $scavangerHunt) {
-          $races = [...$races, ...$scavangerHunt->getRaces()->toArray()];
+        foreach ($scavengerHunts as $scavengerHunt) {
+          $races = [...$races, ...$scavengerHunt->getRaces()->toArray()];
         }
 
         return $this->render('race/index.html.twig', [
@@ -51,21 +51,21 @@ final class RaceController extends AbstractController
     }
 
     #[Route('/new/{id}', name: 'app_race_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ScavangerHunt $scavangerHunt): Response
+    public function new(Request $request, ScavengerHunt $scavengerHunt): Response
     {
         $race = new Race();
         $form = $this->createForm(RaceType::class, $race);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->raceHelper->createRace($race, $scavangerHunt);
+            $this->raceHelper->createRace($race, $scavengerHunt);
 
             return $this->redirectToRoute('app_race_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('race/new.html.twig', [
             'race' => $race,
-            'scavangerHunt' => $scavangerHunt,
+            'scavengerHunt' => $scavengerHunt,
             'form' => $form,
         ]);
     }

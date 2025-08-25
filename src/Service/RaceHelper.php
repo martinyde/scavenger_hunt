@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Entity\Participant;
 use App\Entity\Race;
-use App\Entity\ScavangerHunt;
+use App\Entity\ScavengerHunt;
 use App\Form\TryType;
 use App\Repository\ParticipantRepository;
 use App\Repository\RaceRepository;
@@ -35,11 +35,11 @@ class RaceHelper {
 
   /**
    * @param \App\Entity\Race $race
-   * @param \App\Entity\ScavangerHunt $scavengerHunt
+   * @param \App\Entity\ScavengerHunt $scavengerHunt
    *
    * @return \App\Entity\Race
    */
-  public function createRace(Race $race, ScavangerHunt $scavengerHunt): Race {
+  public function createRace(Race $race, ScavengerHunt $scavengerHunt): Race {
     $race->setScavengerHunt($scavengerHunt);
     $race->setUuid(new UuidV7());
     $race->setActive(false);
@@ -59,7 +59,7 @@ class RaceHelper {
   public function guessAccessKey(Race $race, FormInterface $form, string $participantUuid): void {
     $participant = $this->getParticipant($participantUuid);
     $raceScavengerHuntId = $race->getScavengerHunt()->getId();
-    $tasks = $this->taskRepository->findBy(['scavangerHunt' => $raceScavengerHuntId]);
+    $tasks = $this->taskRepository->findBy(['scavengerHunt' => $raceScavengerHuntId]);
 
     foreach ($tasks as $task) {
       if ($this->validateAccessKey($form, $task, $participant)) {

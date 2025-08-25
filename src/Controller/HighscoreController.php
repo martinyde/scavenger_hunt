@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Highscore;
 use App\Entity\Race;
-use App\Entity\ScavangerHunt;
+use App\Entity\ScavengerHunt;
 use App\Form\HighscoreType;
 use App\Repository\HighscoreRepository;
 use App\Service\GenericHelper;
@@ -41,11 +41,11 @@ final class HighscoreController extends AbstractController
       ]);
     }
 
-    #[Route('/scavanger_hunt/{scavangerHunt}', name: 'app_highscore_scavenger_hunt_index', methods: ['GET'])]
-    public function scavengerHuntIndex(HighscoreRepository $highscoreRepository, ScavangerHunt $scavangerHunt): Response
+    #[Route('/scavenger_hunt/{scavengerHunt}', name: 'app_highscore_scavenger_hunt_index', methods: ['GET'])]
+    public function scavengerHuntIndex(HighscoreRepository $highscoreRepository, ScavengerHunt $scavengerHunt): Response
     {
       return $this->render('highscore/index.html.twig', [
-        'highscores' => $highscoreRepository->getScavengerHuntHighScores($scavangerHunt),
+        'highscores' => $highscoreRepository->getScavengerHuntHighScores($scavengerHunt),
       ]);
     }
 

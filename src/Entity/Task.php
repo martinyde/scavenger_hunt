@@ -43,7 +43,7 @@ class Task
     private ?string $text_after = null;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
-    private ?ScavangerHunt $scavangerHunt = null;
+    private ?ScavengerHunt $scavengerHunt = null;
 
     public function __construct()
     {
@@ -116,14 +116,14 @@ class Task
         return $this;
     }
 
-    public function getScavangerHunt(): ?ScavangerHunt
+    public function getScavengerHunt(): ?ScavengerHunt
     {
-        return $this->scavangerHunt;
+        return $this->scavengerHunt;
     }
 
-    public function setScavangerHunt(?ScavangerHunt $scavangerHunt): static
+    public function setScavengerHunt(?ScavengerHunt $scavengerHunt): static
     {
-        $this->scavangerHunt = $scavangerHunt;
+        $this->scavengerHunt = $scavengerHunt;
 
         return $this;
     }

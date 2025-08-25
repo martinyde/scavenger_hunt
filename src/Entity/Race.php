@@ -42,7 +42,7 @@ class Race
 
     #[ORM\ManyToOne(inversedBy: 'races')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?ScavangerHunt $scavenger_hunt = null;
+    private ?ScavengerHunt $scavenger_hunt = null;
 
     #[ORM\Column]
     private ?bool $active = null;
@@ -145,12 +145,12 @@ class Race
         return $this;
     }
 
-    public function getScavengerHunt(): ?ScavangerHunt
+    public function getScavengerHunt(): ?ScavengerHunt
     {
         return $this->scavenger_hunt;
     }
 
-    public function setScavengerHunt(?ScavangerHunt $scavenger_hunt): static
+    public function setScavengerHunt(?ScavengerHunt $scavenger_hunt): static
     {
         $this->scavenger_hunt = $scavenger_hunt;
 

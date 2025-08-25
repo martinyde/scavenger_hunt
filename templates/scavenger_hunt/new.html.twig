@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New ScavengerHunt{% endblock %}
+
+{% block body %}
+    <h1>Create new ScavengerHunt</h1>
+
+    {{ include('scavenger_hunt/_form.html.twig') }}
+
+    <a href="{{ path('app_scavenger_hunt_index') }}">back to list</a>
+{% endblock %}

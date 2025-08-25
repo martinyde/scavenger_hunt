@@ -5,7 +5,7 @@ namespace App\Form;
 use App\Entity\Highscore;
 use App\Entity\Participant;
 use App\Entity\Race;
-use App\Entity\ScavangerHunt;
+use App\Entity\ScavengerHunt;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -30,7 +30,7 @@ class HighscoreType extends AbstractType
                 'choice_label' => 'id',
             ])
             ->add('scavenger_hunt', EntityType::class, [
-                'class' => ScavangerHunt::class,
+                'class' => ScavengerHunt::class,
                 'choice_label' => 'id',
             ])
         ;

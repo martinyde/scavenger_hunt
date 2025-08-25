@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Entity\ScavangerHunt;
+use App\Entity\ScavengerHunt;
 use App\Entity\Task;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -13,8 +13,8 @@ class TaskHelper {
   ) {
   }
 
-  public function createTask(Task $task, ScavangerHunt $scavengerHunt): void {
-    $task->setScavangerHunt($scavengerHunt);
+  public function createTask(Task $task, ScavengerHunt $scavengerHunt): void {
+    $task->setScavengerHunt($scavengerHunt);
     $this->entityManager->persist($task);
     $this->entityManager->flush();
   }

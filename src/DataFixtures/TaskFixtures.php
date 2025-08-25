@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\ScavangerHunt;
+use App\Entity\ScavengerHunt;
 use App\Entity\Task;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -295,10 +295,10 @@ class TaskFixtures extends Fixture implements DependentFixtureInterface
         $task->setTextBefore($clue['text_before']);
         $task->setTextAfter($clue['text_after']);
         $task->setSolutions($clue['solutions']);
-        $task->setScavangerHunt(
+        $task->setScavengerHunt(
           $this->getReference(
             $key > 20 ? 'scavenger-hunt:TreasureHunter' : 'scavenger-hunt:ClueSeeker',
-            ScavangerHunt::class
+            ScavengerHunt::class
           )
         );
 

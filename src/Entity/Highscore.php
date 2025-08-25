@@ -23,7 +23,7 @@ class Highscore
 
     #[ORM\ManyToOne(inversedBy: 'highscores')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?ScavangerHunt $scavenger_hunt = null;
+    private ?ScavengerHunt $scavenger_hunt = null;
 
     #[ORM\Column]
     private ?int $progress_task_entry = null;
@@ -69,12 +69,12 @@ class Highscore
         return $this;
     }
 
-    public function getScavengerHunt(): ?ScavangerHunt
+    public function getScavengerHunt(): ?ScavengerHunt
     {
         return $this->scavenger_hunt;
     }
 
-    public function setScavengerHunt(?ScavangerHunt $scavenger_hunt): static
+    public function setScavengerHunt(?ScavengerHunt $scavenger_hunt): static
     {
         $this->scavenger_hunt = $scavenger_hunt;
 

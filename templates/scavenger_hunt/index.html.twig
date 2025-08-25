@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ScavengerHunt index{% endblock %}
+
+{% block body %}
+    <h1>ScavengerHunt index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for scavenger_hunt in scavenger_hunts %}
+            <tr>
+                <td>{{ scavenger_hunt.id }}</td>
+                <td>{{ scavenger_hunt.name }}</td>
+                <td>
+                    <a href="{{ path('app_scavenger_hunt_show', {'id': scavenger_hunt.id}) }}">show</a>
+                    <a href="{{ path('app_scavenger_hunt_edit', {'id': scavenger_hunt.id}) }}">edit</a>
+                    <a href="{{ path('app_race_new', {'id': scavenger_hunt.id}) }}">Create race</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_scavenger_hunt_new') }}">Create new</a>
+{% endblock %}

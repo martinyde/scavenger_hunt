@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Highscore;
 use App\Entity\Race;
-use App\Entity\ScavangerHunt;
+use App\Entity\ScavengerHunt;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -18,11 +18,11 @@ class HighscoreRepository extends ServiceEntityRepository
         parent::__construct($registry, Highscore::class);
     }
 
-    public function getScavengerHuntHighScores(ScavangerHunt $scavangerHunt): mixed
+    public function getScavengerHuntHighScores(ScavengerHunt $scavengerHunt): mixed
     {
       return $this->createQueryBuilder('h')
         ->andWhere('h.scavenger_hunt = :scavenger_hunt')
-        ->setParameter('scavenger_hunt', $scavangerHunt->getId())
+        ->setParameter('scavenger_hunt', $scavengerHunt->getId())
         ->orderBy('h.progress_task_solution', 'DESC')
         ->addOrderBy('h.progress_task_entry', 'DESC')
         ->addOrderBy('h.time', 'ASC')

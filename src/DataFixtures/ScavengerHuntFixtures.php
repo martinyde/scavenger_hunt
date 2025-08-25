@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\ScavangerHunt;
+use App\Entity\ScavengerHunt;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -35,7 +35,7 @@ class ScavengerHuntFixtures extends Fixture implements DependentFixtureInterface
       ];
 
       foreach ($fixtureScavengerHunts as $key => $fixtureScavengerHunt) {
-        $scavengerHunt = new ScavangerHunt();
+        $scavengerHunt = new ScavengerHunt();
         $scavengerHunt->setName($fixtureScavengerHunt['name']);
         $scavengerHunt->setUser(
           $this->getReference(
