@@ -28,6 +28,12 @@ final class ScavangerHuntController extends AbstractController
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
 
+        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+          return $this->render('scavanger_hunt/index.html.twig', [
+            'scavanger_hunts' => $scavangerHuntRepository->findAll()]
+          );
+        }
+
         return $this->render('scavanger_hunt/index.html.twig', [
             'scavanger_hunts' => $scavangerHuntRepository->findBy(['user' => $user->getId()]),
         ]);

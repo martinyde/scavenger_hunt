@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Highscore;
+use App\Entity\Race;
+use App\Entity\ScavangerHunt;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +18,27 @@ class HighscoreRepository extends ServiceEntityRepository
         parent::__construct($registry, Highscore::class);
     }
 
-    //    /**
-    //     * @return Highscore[] Returns an array of Highscore objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('h')
-    //            ->andWhere('h.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('h.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getScavengerHuntHighScores(ScavangerHunt $scavangerHunt): mixed
+    {
+      $a = $scavangerHunt->getId();
+      $b = 1;
+      return $this->createQueryBuilder('h')
+        ->andWhere('h.scavenger_hunt = :scavenger_hunt')
+        ->setParameter('scavenger_hunt', $scavangerHunt->getId())
+        ->orderBy('h.progress_task_solution', 'DESC')
+        ->addOrderBy('h.progress_task_entry', 'DESC')
+        ->addOrderBy('h.time', 'ASC')
+        ->getQuery()->getResult();
+    }
 
-    //    public function findOneBySomeField($value): ?Highscore
-    //    {
-    //        return $this->createQueryBuilder('h')
-    //            ->andWhere('h.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function getRaceHighScores(Race $race): mixed
+    {
+      return $this->createQueryBuilder('h')
+        ->andWhere('h.race = :race')
+        ->setParameter('race', $race->getId())
+        ->orderBy('h.progress_task_solution', 'DESC')
+        ->addOrderBy('h.progress_task_entry', 'DESC')
+        ->addOrderBy('h.time', 'ASC')
+        ->getQuery()->getResult();
+    }
 }
