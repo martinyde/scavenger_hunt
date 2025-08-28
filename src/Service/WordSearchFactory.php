@@ -11,7 +11,7 @@ class WordSearchFactory
     /**
      * Create a puzzle.
      *
-     * @param array  $words list of words
+     * @param array<string> $words list of words
      * @param int    $size  grid size
      * @param string $lang  language
      *

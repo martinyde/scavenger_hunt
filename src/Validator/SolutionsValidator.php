@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
 class SolutionsValidator extends ConstraintValidator
 {
-    public function validate(mixed $value, Constraint $constraint): void
+  public function validate(mixed $value, Constraint $constraint): void
     {
         $errors = [];
         foreach ($value as $input) {
@@ -23,9 +23,11 @@ class SolutionsValidator extends ConstraintValidator
         }
 
         if (!empty($errors)) {
+          if ($constraint instanceof Solutions) {
             $this->context->buildViolation($constraint->message)
               ->setParameter('{{ errors }}', implode(', ', $errors))
               ->addViolation();
+          }
         }
     }
 }
