@@ -15,7 +15,7 @@
         <li class="nav-item">
         </li>
       </ul>
-      {% if app.user  %}
+      {% if app.user %}
         <div class="me-3">{{ app.user.email }}</div><div><a href="{{ path('app_logout') }}">Logout</a></div>
       {% else %}
         <a href="{{ path('app_login') }}">Login</a>

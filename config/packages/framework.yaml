@@ -1,16 +1,15 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
-    secret: '%env(APP_SECRET)%'
+    secret: "%env(APP_SECRET)%"
 
     # Note that the session will be started ONLY if you read or write from it.
     session:
         enabled: true
         handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
-        cookie_lifetime: 432000  # 5 days in seconds
-        gc_maxlifetime: 432000   # Should match cookie_lifetime
+        cookie_lifetime: 432000 # 5 days in seconds
+        gc_maxlifetime: 432000 # Should match cookie_lifetime
 
-
-  #esi: true
+    #esi: true
     #fragments: true
 
 when@test:

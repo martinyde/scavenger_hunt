@@ -5,13 +5,13 @@
 {% block body %}
   <h1>Edit ScavengerHunt</h1>
 
-  {{ include('scavenger_hunt/_form.html.twig', {'button_label': 'Update'}) }}
+  {{ include('scavenger_hunt/_form.html.twig', {button_label: 'Update'}) }}
 
   <a href="{{ path('app_scavenger_hunt_index') }}">back to list</a>
 
   {{ include('scavenger_hunt/_delete_form.html.twig') }}
 
-  <a href="{{ path('app_task_new', { 'id': scavenger_hunt.getId }) }}">Add task</a>
+  <a href="{{ path('app_task_new', {id: scavenger_hunt.getId}) }}">Add task</a>
   {% if scavenger_hunt.getTasks|length > 0 %}
     <table class="table">
       <thead>
@@ -29,14 +29,13 @@
           <td>{{ task.passKey }}</td>
           <td>{{ task.solutions|length }}</td>
           <td>
-            <a href="{{ path('app_task_show', {'id': task.id, 'uuid': task.uuid}) }}">show</a>
-            <a href="{{ path('app_task_edit', {'id': task.id}, true) }}">edit</a>
+            <a href="{{ path('app_task_show', {id: task.id, uuid: task.uuid}) }}">show</a>
+            <a href="{{ path('app_task_edit', {id: task.id}, true) }}">edit</a>
           </td>
         </tr>
       {% endfor %}
       </tbody>
     </table>
   {% endif %}
-
 
 {% endblock %}

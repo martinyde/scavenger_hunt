@@ -4,7 +4,7 @@
 
 {% block body %}
   <h1>Edit Task</h1>
-  {{ include('task/_form.html.twig', {'button_label': 'Update'}) }}
+  {{ include('task/_form.html.twig', {button_label: 'Update'}) }}
 
   <a href="{{ path('app_scavenger_hunt_edit', {id: task.scavengerHunt.id}) }}">Cancel</a>
 

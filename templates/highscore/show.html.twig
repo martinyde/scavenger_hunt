@@ -36,7 +36,7 @@
 
     <a href="{{ path('app_highscore_index') }}">back to list</a>
 
-    <a href="{{ path('app_highscore_edit', {'id': highscore.id}) }}">edit</a>
+    <a href="{{ path('app_highscore_edit', {id: highscore.id}) }}">edit</a>
 
     {{ include('highscore/_delete_form.html.twig') }}
 {% endblock %}

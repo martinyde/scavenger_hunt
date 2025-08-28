@@ -5,7 +5,7 @@
       <tbody>
       <tr>
         <th>{{ 'Timer' }}</th>
-        <td>{% include 'race/timer.html.twig' with {'timer': extra_data.timer} %}</td>
+        <td>{{ include('race/timer.html.twig', {timer: extra_data.timer}) }}</td>
       </tr>
       </tbody>
     </table>
@@ -38,7 +38,7 @@
                   -
                   <span>{{ progressTask.getPassKey }}</span>
                 {% else %}
-                  <span><a href="{{ path('app_task_guess', {'id': progressTask.id, 'uuid': progressTask.uuid, 'race': race.id}) }}">{{ progressTask.title }}</a></span>
+                  <span><a href="{{ path('app_task_guess', {id: progressTask.id, uuid: progressTask.uuid, race: race.id}) }}">{{ progressTask.title }}</a></span>
                   -
                   <span>{{ progressTask.getPassKey }}</span>
                 {% endif %}

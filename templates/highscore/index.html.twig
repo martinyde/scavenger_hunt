@@ -5,7 +5,7 @@
 {% block body %}
     <h1>{{ 'Highscore index' }}</h1>
 
-    {% include 'highscore/_highscore-list.html.twig' with {'highscores': highscores} %}
+    {{ include('highscore/_highscore-list.html.twig', {highscores: highscores}) }}
 
     <a href="{{ path('app_highscore_new') }}">Create new</a>
 {% endblock %}

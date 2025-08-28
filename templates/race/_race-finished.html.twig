@@ -1,4 +1,4 @@
 {# Display when race has finished. #}
 <div>
-  {% include 'highscore/_highscore-list.html.twig' with {'highscores': race.getHighscores} %}
+  {{ include('highscore/_highscore-list.html.twig', {highscores: race.getHighscores}) }}
 </div>

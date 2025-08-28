@@ -2,24 +2,24 @@
 
 ## Installation
 
-1) Start docker
-    
+1 ) Start docker
+
 ```shell
 docker compose up -d
 ```
 
-2) Install packages
+2 ) Install packages
 
 ```shell
 docker compose composer install
 ```
-   
-3) Build database
+
+3 ) Build database
 
 ```shell
 docker compose exec phpfpm bin/console doctrine:migrations:migrate
 ```
-   
+
 ## Apply fixtures
 
 ```shell

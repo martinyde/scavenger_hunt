@@ -23,8 +23,8 @@
                 <td>{{ participant.progressTaskEntry ? participant.progressTaskEntry|json_encode : '' }}</td>
                 <td>{{ participant.progressTaskSolution ? participant.progressTaskSolution|json_encode : '' }}</td>
                 <td>
-                    <a href="{{ path('app_participant_show', {'id': participant.id}) }}">show</a>
-                    <a href="{{ path('app_participant_edit', {'id': participant.id}) }}">edit</a>
+                    <a href="{{ path('app_participant_show', {id: participant.id}) }}">show</a>
+                    <a href="{{ path('app_participant_edit', {id: participant.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}

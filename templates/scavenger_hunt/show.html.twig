@@ -20,7 +20,7 @@
 
     <a href="{{ path('app_scavenger_hunt_index') }}">back to list</a>
 
-    <a href="{{ path('app_scavenger_hunt_edit', {'id': scavenger_hunt.id}) }}">edit</a>
+    <a href="{{ path('app_scavenger_hunt_edit', {id: scavenger_hunt.id}) }}">edit</a>
 
     {{ include('scavenger_hunt/_delete_form.html.twig') }}
 {% endblock %}
