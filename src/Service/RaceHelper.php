@@ -62,8 +62,7 @@ class RaceHelper
     /**
      * @return void
      */
-    public function startRace(Race $race)
-    {
+    public function startRace(Race $race): void {
         $race->setTimeStart(new DatePoint());
         $race->setActive(true);
         $this->entityManager->flush();

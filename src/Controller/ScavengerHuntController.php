@@ -20,7 +20,7 @@ final class ScavengerHuntController extends AbstractController
     ) {
     }
 
-    #[Route(name: 'app_scavenger_hunt_index', methods: ['GET'])]
+    #[Route('/scavenger/hunt', name: 'app_scavenger_hunt_index', methods: ['GET'])]
     #[IsGranted('view')]
     public function index(ScavengerHuntRepository $scavengerHuntRepository): Response
     {

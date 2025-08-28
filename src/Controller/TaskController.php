@@ -27,7 +27,7 @@ final class TaskController extends AbstractController
     ) {
     }
 
-    #[Route(name: 'app_task_index', methods: ['GET'])]
+    #[Route('/task', name: 'app_task_index', methods: ['GET'])]
     #[IsGranted('access_admin')]
     public function index(TaskRepository $taskRepository): Response
     {

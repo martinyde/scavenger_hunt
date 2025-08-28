@@ -31,7 +31,7 @@ final class ParticipantController extends AbstractController
     /**
      * List all participants that exist.
      */
-    #[Route(name: 'app_participant_index', methods: ['GET'])]
+    #[Route('/participant', name: 'app_participant_index', methods: ['GET'])]
     #[IsGranted('access_admin')]
     public function index(ParticipantRepository $participantRepository): Response
     {

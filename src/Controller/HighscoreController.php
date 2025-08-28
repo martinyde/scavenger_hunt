@@ -22,7 +22,7 @@ final class HighscoreController extends AbstractController
     ) {
     }
 
-    #[Route(name: 'app_highscore_index', methods: ['GET'])]
+    #[Route('/highscore', name: 'app_highscore_index', methods: ['GET'])]
     public function index(HighscoreRepository $highscoreRepository): Response
     {
         return $this->render('highscore/index.html.twig', [

@@ -34,7 +34,7 @@ final class RaceController extends AbstractController
     }
 
     // Make personal (Userid)
-    #[Route(name: 'app_race_index', methods: ['GET'])]
+    #[Route('/race', name: 'app_race_index', methods: ['GET'])]
     #[IsGranted('view')]
     public function index(RaceRepository $raceRepository): Response
     {

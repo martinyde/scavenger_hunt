@@ -6,9 +6,6 @@
       <tr>
         <th>{{ 'Timer' }}</th>
         <td>{% include 'race/timer.html.twig' with {'timer': extra_data.timer} %}</td>
-        {% if (participant is defined) %}
-            <td><a href="{{ path('app_race_participant_finish', {'participant': participant.id, 'participantUuid': participant.uuid, 'race': race.id}) }}">{{ 'Leave race' }}</a></td>
-        {% endif %}
       </tr>
       </tbody>
     </table>
