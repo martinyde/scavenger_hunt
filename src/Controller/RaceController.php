@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Participant;
 use App\Entity\Race;
 use App\Entity\ScavengerHunt;
 use App\Form\RaceStartType;
@@ -163,6 +164,14 @@ final class RaceController extends AbstractController
         ]);
     }
 
+    #[Route('/participant-finish/{participant}/{participantUuid}/{race}', name: 'app_race_participant_finish', methods: ['GET'])]
+    public function participantFinish(Participant $participant, string $participantUuid, Race $race, EntityManagerInterface $entityManager): Response
+    {
+      $this->genericHelper->validateEntityUuid($participant, $participantUuid);
+      $this->genericHelper->createHighscore($participant);
+      $entityManager->flush();
+      return $this->redirectToRoute('app_highscore_race_index', ['race' => $race->getId()], Response::HTTP_SEE_OTHER);
+    }
 
     #[Route('/{id}', name: 'app_race_delete', methods: ['POST'])]
     public function delete(Request $request, Race $race, EntityManagerInterface $entityManager): Response

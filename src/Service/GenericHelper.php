@@ -6,6 +6,7 @@ use App\Entity\Highscore;
 use App\Entity\Participant;
 use App\Entity\Race;
 use App\Entity\Task;
+use App\Repository\HighscoreRepository;
 use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
@@ -18,6 +19,7 @@ class GenericHelper {
     protected RequestStack $request,
     protected EntityManagerInterface $entityManager,
     protected ParticipantRepository $participantRepository,
+    protected HighscoreRepository $highscoreRepository,
   ) {}
 
   /**
@@ -28,7 +30,7 @@ class GenericHelper {
    *
    * @return void
    */
-  public function validateEntityUuid(Race|Task $entity, string $uuid): void {
+  public function validateEntityUuid(Race|Task|Participant $entity, string $uuid): void {
     if ($entity->getUuid()->toString() !== $uuid) {
       throw new AccessDeniedException('UUID Mismatch');
     }
@@ -76,17 +78,24 @@ class GenericHelper {
    */
   public function createHighscores(Race $race): void {
     foreach ($race->getParticipants() as $participant) {
-      $highScore = new Highscore();
-      $highScore->setParticipant($participant);
-      $highScore->setParticipantName($participant->getName());
-      $highScore->setRace($race);
-      $highScore->setScavengerHunt($race->getScavengerHunt());
-      $highScore->setProgressTaskEntry($participant->getProgressEntryCount() ?? 0);
-      $highScore->setProgressTaskSolution($participant->getProgressSolutionCount() ?? 0);
-      $highScore->setTime(123);
-      $highScore->setCreated(new \DateTime());
-      $this->entityManager->persist($highScore);
+      if ($this->highscoreRepository->findOneBy(['participant' => $participant])) {
+        break;
+      }
+      $this->createHighscore($participant);
     }
     $this->entityManager->flush();
+  }
+
+  public function createHighscore(Participant $participant): void {
+    $highScore = new Highscore();
+    $highScore->setParticipant($participant);
+    $highScore->setParticipantName($participant->getName());
+    $highScore->setRace($participant->getRace());
+    $highScore->setScavengerHunt($participant->getRace()->getScavengerHunt());
+    $highScore->setProgressTaskEntry($participant->getProgressEntryCount() ?? 0);
+    $highScore->setProgressTaskSolution($participant->getProgressSolutionCount() ?? 0);
+    $highScore->setTime(123);
+    $highScore->setCreated(new \DateTime());
+    $this->entityManager->persist($highScore);
   }
 }

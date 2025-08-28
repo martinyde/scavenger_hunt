@@ -3,9 +3,9 @@
 {% block title %}Highscore index{% endblock %}
 
 {% block body %}
-    <h1>Highscore index</h1>
+    <h1>{{ 'Highscore index' }}</h1>
 
-    {% include 'highscore/_highscore-list.html.twig' with {'highscores': race.getHighscores} %}
+    {% include 'highscore/_highscore-list.html.twig' with {'highscores': highscores} %}
 
     <a href="{{ path('app_highscore_new') }}">Create new</a>
 {% endblock %}
