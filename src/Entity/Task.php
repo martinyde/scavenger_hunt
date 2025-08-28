@@ -5,18 +5,14 @@ namespace App\Entity;
 use App\Repository\TaskRepository;
 use App\Validator\Passkey;
 use App\Validator\Solutions;
-use App\Validator\SolutionsValidator;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Uid\UuidV7;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
 {
-
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
@@ -27,12 +23,18 @@ class Task
     #[ORM\Column]
     private ?int $id = null;
 
+    /**
+     * @Passkey
+     */
     #[ORM\Column(length: 255)]
     private ?string $passKey = null;
 
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
+    /**
+     * @Solutions
+     */
     #[ORM\Column(type: Types::SIMPLE_ARRAY)]
     private array $solutions = [];
 
@@ -47,11 +49,10 @@ class Task
 
     public function __construct()
     {
-      $this->uuid = new UuidV7();
+        $this->uuid = new UuidV7();
     }
 
-
-  public function getId(): ?int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -138,11 +139,5 @@ class Task
         $this->uuid = $uuid;
 
         return $this;
-    }
-
-    public static function loadValidatorMetadata(ClassMetadata $metadata): void
-    {
-      $metadata->addPropertyConstraint('passKey', new Passkey());
-      $metadata->addPropertyConstraint('solutions', new Solutions());
     }
 }

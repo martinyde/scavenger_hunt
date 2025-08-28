@@ -11,14 +11,14 @@ use Symfony\Component\Scheduler\ScheduleProviderInterface;
 #[AsSchedule(name: 'default')]
 class RaceEndScheduler implements ScheduleProviderInterface
 {
-  public function __construct()
-  {
+    public function __construct()
+    {
+    }
 
-  }
-  public function getSchedule(): Schedule
-  {
-    return (new Schedule())->with(
-      RecurringMessage::every('1 second', new RaceEndMessage())
-    );
-  }
+    public function getSchedule(): Schedule
+    {
+        return (new Schedule())->with(
+            RecurringMessage::every('1 second', new RaceEndMessage())
+        );
+    }
 }

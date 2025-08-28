@@ -6,13 +6,12 @@ use App\Repository\ParticipantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV7;
 use Symfony\UX\Turbo\Attribute\Broadcast;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
 #[Broadcast]
-class Participant
+class Participant implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -68,12 +67,12 @@ class Participant
     #[ORM\PrePersist]
     public function onPrePersist()
     {
-      // This runs before the entity is first persisted
-      $this->progress_task_entry = [];
-      $this->progress_task_solution = [];
+        // This runs before the entity is first persisted
+        $this->progress_task_entry = [];
+        $this->progress_task_solution = [];
     }
 
-  public function getId(): ?int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -101,9 +100,10 @@ class Participant
 
         return $this;
     }
-    public function __toString()
+
+    public function __toString(): string
     {
-      return $this->getName();
+        return (string) $this->getName();
     }
 
     /**

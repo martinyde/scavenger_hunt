@@ -41,9 +41,8 @@ class RaceFixtures extends Fixture implements DependentFixtureInterface
 
     public function getDependencies(): array
     {
-      return [
-        ScavengerHuntFixtures::class,
-      ];
+        return [
+            ScavengerHuntFixtures::class,
+        ];
     }
-
 }

@@ -20,23 +20,23 @@ class HighscoreRepository extends ServiceEntityRepository
 
     public function getScavengerHuntHighScores(ScavengerHunt $scavengerHunt): mixed
     {
-      return $this->createQueryBuilder('h')
-        ->andWhere('h.scavenger_hunt = :scavenger_hunt')
-        ->setParameter('scavenger_hunt', $scavengerHunt->getId())
-        ->orderBy('h.progress_task_solution', 'DESC')
-        ->addOrderBy('h.progress_task_entry', 'DESC')
-        ->addOrderBy('h.time', 'ASC')
-        ->getQuery()->getResult();
+        return $this->createQueryBuilder('h')
+          ->andWhere('h.scavenger_hunt = :scavenger_hunt')
+          ->setParameter('scavenger_hunt', $scavengerHunt->getId())
+          ->orderBy('h.progress_task_solution', 'DESC')
+          ->addOrderBy('h.progress_task_entry', 'DESC')
+          ->addOrderBy('h.time', 'ASC')
+          ->getQuery()->getResult();
     }
 
     public function getRaceHighScores(Race $race): mixed
     {
-      return $this->createQueryBuilder('h')
-        ->andWhere('h.race = :race')
-        ->setParameter('race', $race->getId())
-        ->orderBy('h.progress_task_solution', 'DESC')
-        ->addOrderBy('h.progress_task_entry', 'DESC')
-        ->addOrderBy('h.time', 'ASC')
-        ->getQuery()->getResult();
+        return $this->createQueryBuilder('h')
+          ->andWhere('h.race = :race')
+          ->setParameter('race', $race->getId())
+          ->orderBy('h.progress_task_solution', 'DESC')
+          ->addOrderBy('h.progress_task_entry', 'DESC')
+          ->addOrderBy('h.time', 'ASC')
+          ->getQuery()->getResult();
     }
 }

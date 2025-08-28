@@ -4,9 +4,9 @@ namespace App\Entity;
 
 use App\Repository\RaceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\Uid\UuidV7;
 use Symfony\UX\Turbo\Attribute\Broadcast;
@@ -68,15 +68,16 @@ class Race
         return $this->id;
     }
 
-    public function getTimer(): ?DatePoint {
-      return $this->getTimeStart();
+    public function getTimer(): ?DatePoint
+    {
+        return $this->getTimeStart();
     }
 
     public function setTimer(?DatePoint $timer): static
     {
-      $this->timer = $timer;
+        $this->timer = $timer;
 
-      return $this;
+        return $this;
     }
 
     public function getTimeStart(): ?DatePoint

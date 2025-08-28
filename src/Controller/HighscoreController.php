@@ -15,13 +15,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/highscore')]
 final class HighscoreController extends AbstractController
 {
     public function __construct(
-      protected GenericHelper $genericHelper,
-    )
-    {
+        protected GenericHelper $genericHelper,
+    ) {
     }
 
     #[Route(name: 'app_highscore_index', methods: ['GET'])]
@@ -32,24 +30,24 @@ final class HighscoreController extends AbstractController
         ]);
     }
 
-    #[Route('/race/{race}', name: 'app_highscore_race_index', methods: ['GET'])]
+    #[Route('/highscore/race/{race}', name: 'app_highscore_race_index', methods: ['GET'])]
     public function raceIndex(HighscoreRepository $highscoreRepository, Race $race): Response
     {
-      return $this->render('highscore/index.html.twig', [
-        'highscores' => $highscoreRepository->getRaceHighScores($race),
-      ]);
+        return $this->render('highscore/index.html.twig', [
+            'highscores' => $highscoreRepository->getRaceHighScores($race),
+        ]);
     }
 
-    #[Route('/scavenger_hunt/{scavengerHunt}', name: 'app_highscore_scavenger_hunt_index', methods: ['GET'])]
+    #[Route('/highscore/scavenger_hunt/{scavengerHunt}', name: 'app_highscore_scavenger_hunt_index', methods: ['GET'])]
     public function scavengerHuntIndex(HighscoreRepository $highscoreRepository, ScavengerHunt $scavengerHunt): Response
     {
-      return $this->render('highscore/index.html.twig', [
-        'highscores' => $highscoreRepository->getScavengerHuntHighScores($scavengerHunt),
-      ]);
+        return $this->render('highscore/index.html.twig', [
+            'highscores' => $highscoreRepository->getScavengerHuntHighScores($scavengerHunt),
+        ]);
     }
 
     #[IsGranted('access_admin')]
-    #[Route('/new', name: 'app_highscore_new', methods: ['GET', 'POST'])]
+    #[Route('/highscore/new', name: 'app_highscore_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $highscore = new Highscore();
@@ -69,7 +67,7 @@ final class HighscoreController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_highscore_show', methods: ['GET'])]
+    #[Route('/highscore/{id}', name: 'app_highscore_show', methods: ['GET'])]
     public function show(Highscore $highscore): Response
     {
         return $this->render('highscore/show.html.twig', [
@@ -78,7 +76,7 @@ final class HighscoreController extends AbstractController
     }
 
     #[IsGranted('access_admin')]
-    #[Route('/{id}/edit', name: 'app_highscore_edit', methods: ['GET', 'POST'])]
+    #[Route('/highscore/{id}/edit', name: 'app_highscore_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Highscore $highscore, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(HighscoreType::class, $highscore);
@@ -97,7 +95,7 @@ final class HighscoreController extends AbstractController
     }
 
     #[IsGranted('access_admin')]
-    #[Route('/{id}', name: 'app_highscore_delete', methods: ['POST'])]
+    #[Route('/highscore/{id}', name: 'app_highscore_delete', methods: ['POST'])]
     public function delete(Request $request, Highscore $highscore, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$highscore->getId(), $request->getPayload()->getString('_token'))) {
