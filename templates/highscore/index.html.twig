@@ -5,39 +5,7 @@
 {% block body %}
     <h1>Highscore index</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Progress_task_entry</th>
-                <th>Progress_task_solution</th>
-                <th>Time</th>
-                <th>Created</th>
-                <th>Participant_name</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for highscore in highscores %}
-            <tr>
-                <td>{{ highscore.id }}</td>
-                <td>{{ highscore.progressTaskEntry }}</td>
-                <td>{{ highscore.progressTaskSolution }}</td>
-                <td>{{ highscore.time }}</td>
-                <td>{{ highscore.created ? highscore.created|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ highscore.participantName }}</td>
-                <td>
-                    <a href="{{ path('app_highscore_show', {'id': highscore.id}) }}">show</a>
-                    <a href="{{ path('app_highscore_edit', {'id': highscore.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="7">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    {% include 'highscore/_highscore-list.html.twig' with {'highscores': race.getHighscores} %}
 
     <a href="{{ path('app_highscore_new') }}">Create new</a>
 {% endblock %}

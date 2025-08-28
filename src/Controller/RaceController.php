@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -74,6 +75,12 @@ final class RaceController extends AbstractController
     public function try(Request $request, Race $race): Response
     {
       $participant = $this->genericHelper->getCurrentParticipant();
+
+      if (empty($participant)) {
+        throw new AccessDeniedHttpException(
+          'Not a participant'
+        );
+      }
       $form = $this->createForm(TryType::class, ['request' => $request]);
       $form->handleRequest($request);
 

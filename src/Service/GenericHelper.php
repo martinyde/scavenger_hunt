@@ -58,7 +58,7 @@ class GenericHelper {
    *
    * @return \App\Entity\Participant|null,
    */
-  public function getCurrentParticipant(string $participantUuid = NULL): ?Participant {
+  public function getCurrentParticipant(?string $participantUuid = NULL): ?Participant {
     if (empty($uuid)) {
       $participantUuid = $this->request->getCurrentRequest()->cookies->get('participant');
     }
