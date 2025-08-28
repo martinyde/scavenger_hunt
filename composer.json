@@ -128,6 +128,18 @@
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
-        }
+        },
+        "coding-standards-analysis": [
+          "./vendor/bin/phpstan analyse src migrations"
+        ],
+        "coding-standards-apply": [
+          "PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix"
+        ],
+        "coding-standards-baseline": [
+          "./vendor/bin/phpstan analyse src migrations --generate-baseline"
+        ],
+        "coding-standards-check": [
+          "PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix --dry-run"
+        ]
     }
 }
