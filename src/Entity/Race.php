@@ -31,7 +31,6 @@ class Race
     #[ORM\Column(nullable: true)]
     private ?int $race_duration = null;
 
-
     /**
      * @var ?array<Task> $task_access
      */
@@ -108,19 +107,19 @@ class Race
         return $this;
     }
 
-  /**
-   * @return array<Task>|null
-   */
+    /**
+     * @return array<Task>|null
+     */
     public function getTaskAccess(): ?array
     {
         return $this->task_access;
     }
 
-  /**
-   * @param array<Task>|null $task_access
-   *
-   * @return $this
-   */
+    /**
+     * @param array<Task>|null $task_access
+     *
+     * @return $this
+     */
     public function setTaskAccess(?array $task_access): static
     {
         $this->task_access = $task_access;

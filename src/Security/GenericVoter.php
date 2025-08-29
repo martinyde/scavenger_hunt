@@ -87,11 +87,9 @@ class GenericVoter extends Voter
         return in_array($roleName, $roles);
     }
 
-  /**
-   * @param \App\Entity\User $user
-   *
-   * @return array<string>
-   */
+    /**
+     * @return array<string>
+     */
     private function getUserRoles(User $user): array
     {
         return $this->roleHierarchy->getReachableRoleNames($user->getRoles());

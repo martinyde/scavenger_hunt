@@ -22,11 +22,11 @@ class PasskeyValidator extends ConstraintValidator
         }
 
         if (!empty($errors)) {
-          if ($constraint instanceof Passkey) {
-            $this->context->buildViolation($constraint->message)
-              ->setParameter('{{ errors }}', implode(', ', $errors))
-              ->addViolation();
-          }
+            if ($constraint instanceof Passkey) {
+                $this->context->buildViolation($constraint->message)
+                  ->setParameter('{{ errors }}', implode(', ', $errors))
+                  ->addViolation();
+            }
         }
     }
 }

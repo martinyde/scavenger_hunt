@@ -90,7 +90,7 @@ class RaceHelper
             return $race->getTimeStart() ? $race->getTimeStart()->modify('+'.$race->getRaceDuration().' seconds')->getTimestamp() - $now->getTimestamp() : $race->getRaceDuration();
         } catch (\Throwable) {
             // @todo what do we want here?
-          return 0;
+            return 0;
         }
     }
 
@@ -99,11 +99,11 @@ class RaceHelper
         return $this->participantRepository->findOneBy(['uuid' => $uuid]);
     }
 
-  /**
-   *  Get list of all finished races.
-   *
-   * @return array<mixed>
-   */
+    /**
+     *  Get list of all finished races.
+     *
+     * @return array<mixed>
+     */
     public function getFinishedRaces(): array
     {
         /** @var RaceRepository $repo */

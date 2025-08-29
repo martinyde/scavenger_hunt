@@ -83,17 +83,17 @@ class Task
         return $this;
     }
 
-  /**
-   * @return array<string>
-   */
+    /**
+     * @return array<string>
+     */
     public function getSolutions(): array
     {
         return $this->solutions;
     }
 
-  /**
-   * @param array<string> $solutions
-   */
+    /**
+     * @param array<string> $solutions
+     */
     public function setSolutions(array $solutions): static
     {
         $this->solutions = $solutions;

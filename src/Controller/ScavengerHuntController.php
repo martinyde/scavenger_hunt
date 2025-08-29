@@ -47,7 +47,7 @@ final class ScavengerHuntController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-          /** @var User $user */
+            /** @var User $user */
             $user = $this->getUser();
             $scavengerHunt->setUser($user);
             $entityManager->persist($scavengerHunt);

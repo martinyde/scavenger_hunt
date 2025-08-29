@@ -6,8 +6,7 @@ use WordSearch\Alphabet;
 
 class Danish extends Alphabet
 {
-
-  /** @phpstan-ignore missingType.property */
+    /** @phpstan-ignore missingType.property */
     protected $alphabet = [
         'a',
         'b',

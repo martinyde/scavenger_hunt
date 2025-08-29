@@ -35,15 +35,9 @@ class TaskHelper
         $this->entityManager->flush();
     }
 
-  /**
-   *  Validate the submitted guess.
-   *
-   * @param \Symfony\Component\Form\FormInterface $form
-   * @param \App\Entity\Task $task
-   * @param \App\Entity\Participant $participant
-   *
-   * @return bool
-   */
+    /**
+     *  Validate the submitted guess.
+     */
     public function validateGuess(FormInterface $form, Task $task, Participant $participant): bool
     {
         if ($participant->getProgressTaskSolution()->contains($task)) {
