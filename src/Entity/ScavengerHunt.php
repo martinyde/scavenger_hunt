@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\ScavangerHuntRepository;
+use App\Repository\ScavengerHuntRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ScavangerHuntRepository::class)]
-class ScavangerHunt
+#[ORM\Entity(repositoryClass: ScavengerHuntRepository::class)]
+class ScavengerHunt
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,7 +21,7 @@ class ScavangerHunt
     /**
      * @var Collection<int, Task>
      */
-    #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'scavangerHunt')]
+    #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'scavengerHunt')]
     private Collection $tasks;
 
     /**
@@ -30,7 +30,7 @@ class ScavangerHunt
     #[ORM\OneToMany(targetEntity: Race::class, mappedBy: 'scavenger_hunt', orphanRemoval: true)]
     private Collection $races;
 
-    #[ORM\ManyToOne(inversedBy: 'scavangerHunts')]
+    #[ORM\ManyToOne(inversedBy: 'scavengerHunts')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
@@ -76,7 +76,7 @@ class ScavangerHunt
     {
         if (!$this->tasks->contains($task)) {
             $this->tasks->add($task);
-            $task->setScavangerHunt($this);
+            $task->setScavengerHunt($this);
         }
 
         return $this;
@@ -86,8 +86,8 @@ class ScavangerHunt
     {
         if ($this->tasks->removeElement($task)) {
             // set the owning side to null (unless already changed)
-            if ($task->getScavangerHunt() === $this) {
-                $task->setScavangerHunt(null);
+            if ($task->getScavengerHunt() === $this) {
+                $task->setScavengerHunt(null);
             }
         }
 

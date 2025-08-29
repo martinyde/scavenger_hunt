@@ -9,7 +9,7 @@
     <tbody>
       <tr>
         <th>Timer</th>
-        <td>{% include 'race/timer.html.twig' with {'timer': timer} %}</td>
+        <td>{{ include('race/timer.html.twig', {timer: timer}) }}</td>
         <td>{{ form(startRaceForm) }}</td>
       </tr>
     </tbody>
@@ -24,7 +24,7 @@
     <tbody class="participants" id="participants-progress-list">
     {% for participant in race.participants %}
       <tr id="participant-progress-{{ participant.id }}">
-        {% include 'race/_participant-progress.html.twig' with {'participant': participant, 'scavengerHunt': race.getScavengerHunt} %}
+        {{ include('race/_participant-progress.html.twig', {participant: participant, scavengerHunt: race.getScavengerHunt}) }}
       </tr>
     {% endfor %}
     </tbody>

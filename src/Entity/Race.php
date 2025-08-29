@@ -4,9 +4,9 @@ namespace App\Entity;
 
 use App\Repository\RaceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\Uid\UuidV7;
 use Symfony\UX\Turbo\Attribute\Broadcast;
@@ -18,7 +18,7 @@ class Race
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    private ?UuidV7 $uuid;
+    private UuidV7 $uuid;
 
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
@@ -31,6 +31,9 @@ class Race
     #[ORM\Column(nullable: true)]
     private ?int $race_duration = null;
 
+    /**
+     * @var ?array<Task> $task_access
+     */
     #[ORM\Column(nullable: true)]
     private ?array $task_access = null;
 
@@ -42,7 +45,7 @@ class Race
 
     #[ORM\ManyToOne(inversedBy: 'races')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?ScavangerHunt $scavenger_hunt = null;
+    private ?ScavengerHunt $scavenger_hunt = null;
 
     #[ORM\Column]
     private ?bool $active = null;
@@ -68,15 +71,16 @@ class Race
         return $this->id;
     }
 
-    public function getTimer(): ?DatePoint {
-      return $this->getTimeStart();
+    public function getTimer(): ?DatePoint
+    {
+        return $this->getTimeStart();
     }
 
     public function setTimer(?DatePoint $timer): static
     {
-      $this->timer = $timer;
+        $this->timer = $timer;
 
-      return $this;
+        return $this;
     }
 
     public function getTimeStart(): ?DatePoint
@@ -103,11 +107,19 @@ class Race
         return $this;
     }
 
+    /**
+     * @return array<Task>|null
+     */
     public function getTaskAccess(): ?array
     {
         return $this->task_access;
     }
 
+    /**
+     * @param array<Task>|null $task_access
+     *
+     * @return $this
+     */
     public function setTaskAccess(?array $task_access): static
     {
         $this->task_access = $task_access;
@@ -145,12 +157,12 @@ class Race
         return $this;
     }
 
-    public function getScavengerHunt(): ?ScavangerHunt
+    public function getScavengerHunt(): ?ScavengerHunt
     {
         return $this->scavenger_hunt;
     }
 
-    public function setScavengerHunt(?ScavangerHunt $scavenger_hunt): static
+    public function setScavengerHunt(?ScavengerHunt $scavenger_hunt): static
     {
         $this->scavenger_hunt = $scavenger_hunt;
 

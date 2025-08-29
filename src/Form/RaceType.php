@@ -15,17 +15,17 @@ class RaceType extends AbstractType
     {
         $builder
             ->add('race_duration', TextType::class, [
-              'help' => 'Duration in seconds. (3600 = 1 hour), (86400 = 1 day)',
-              'attr' => ['class' => 'form-control']
+                'help' => 'Duration in seconds. (3600 = 1 hour), (86400 = 1 day)',
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('type', ChoiceType::class, [
-              'choices' => [
-                'Single race' => 'single',
-                'Repeating race' => 'repeating',
-              ],
-              'help' => '<div>A repeating race restarts immediately after time runs out. It requires little to no maintenance after it has been started.</div><div>A single has a clear finish when time runs out.</div>',
-              'help_html' => true,
-              'attr' => ['class' => 'form-control']
+                'choices' => [
+                    'Single race' => 'single',
+                    'Repeating race' => 'repeating',
+                ],
+                'help' => '<div>A repeating race restarts immediately after time runs out. It requires little to no maintenance after it has been started.</div><div>A single has a clear finish when time runs out.</div>',
+                'help_html' => true,
+                'attr' => ['class' => 'form-control'],
             ])
         ;
     }

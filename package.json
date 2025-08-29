@@ -6,7 +6,6 @@
     "@symfony/ux-turbo": "file:vendor/symfony/ux-turbo/assets",
     "@symfony/webpack-encore": "^5.1.0"
   },
-
   "scripts": {
     "dev-server": "encore dev-server",
     "dev": "encore dev",

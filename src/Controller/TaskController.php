@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Race;
-use App\Entity\ScavangerHunt;
+use App\Entity\ScavengerHunt;
 use App\Entity\Task;
 use App\Form\GuessType;
 use App\Form\TaskType;
@@ -18,18 +18,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/task')]
 final class TaskController extends AbstractController
 {
     public function __construct(
-      protected ParticipantRepository $participantRepository,
-      protected GenericHelper         $genericHelper,
-      protected TaskHelper            $taskHelper,
-    )
-    {
+        protected ParticipantRepository $participantRepository,
+        protected GenericHelper $genericHelper,
+        protected TaskHelper $taskHelper,
+    ) {
     }
 
-    #[Route(name: 'app_task_index', methods: ['GET'])]
+    #[Route('/task', name: 'app_task_index', methods: ['GET'])]
     #[IsGranted('access_admin')]
     public function index(TaskRepository $taskRepository): Response
     {
@@ -38,18 +36,18 @@ final class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/new/{id}', name: 'app_task_new', methods: ['GET', 'POST'])]
+    #[Route('/task/new/{id}', name: 'app_task_new', methods: ['GET', 'POST'])]
     #[IsGranted('view')]
-    public function new(Request $request, ScavangerHunt $scavangerHunt, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, ScavengerHunt $scavengerHunt, EntityManagerInterface $entityManager): Response
     {
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->taskHelper->createTask($task, $scavangerHunt);
+            $this->taskHelper->createTask($task, $scavengerHunt);
 
-            return $this->redirectToRoute('app_scavanger_hunt_edit', ['id' => $scavangerHunt->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_scavenger_hunt_edit', ['id' => $scavengerHunt->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('task/new.html.twig', [
@@ -58,26 +56,26 @@ final class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_task_edit', methods: ['GET', 'POST'])]
+    #[Route('/task/{id}/edit', name: 'app_task_edit', methods: ['GET', 'POST'])]
     #[IsGranted('view', subject: 'task')]
     public function edit(Request $request, Task $task, EntityManagerInterface $entityManager, int $id): Response
     {
-      $form = $this->createForm(TaskType::class, $task);
-      $form->handleRequest($request);
+        $form = $this->createForm(TaskType::class, $task);
+        $form->handleRequest($request);
 
-      if ($form->isSubmitted() && $form->isValid()) {
-        $this->taskHelper->editTask($task);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->taskHelper->editTask($task);
 
-        return $this->redirectToRoute('app_scavanger_hunt_edit', ['id' => $task->getScavangerHunt()->getId()], Response::HTTP_SEE_OTHER);
-      }
+            return $this->redirectToRoute('app_scavenger_hunt_edit', ['id' => $task->getScavengerHunt()->getId()], Response::HTTP_SEE_OTHER);
+        }
 
-      return $this->render('task/edit.html.twig', [
-        'task' => $task,
-        'form' => $form,
-      ]);
+        return $this->render('task/edit.html.twig', [
+            'task' => $task,
+            'form' => $form,
+        ]);
     }
 
-    #[Route('/{id}/{uuid}', name: 'app_task_show', methods: ['GET'])]
+    #[Route('/task/{id}/{uuid}', name: 'app_task_show', methods: ['GET'])]
     public function show(Task $task, string $uuid): Response
     {
         $this->genericHelper->validateEntityUuid($task, $uuid);
@@ -87,38 +85,38 @@ final class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/guess/{id}/{uuid}/{race}', name: 'app_task_guess', methods: ['GET', 'POST'])]
+    #[Route('/task/guess/{id}/{uuid}/{race}', name: 'app_task_guess', methods: ['GET', 'POST'])]
     public function guess(Request $request, Task $task, Race $race, string $uuid, EntityManagerInterface $entityManager): Response
     {
-      $this->genericHelper->validateEntityUuid($task, $uuid);
+        $this->genericHelper->validateEntityUuid($task, $uuid);
 
-      $participant = $this->genericHelper->getCurrentParticipant();
+        $participant = $this->genericHelper->getCurrentParticipant();
 
-      $guessForm = $this->createForm(GuessType::class);
-      $guessForm->handleRequest($request);
+        $guessForm = $this->createForm(GuessType::class);
+        $guessForm->handleRequest($request);
 
-      if ($guessForm->isSubmitted() && $guessForm->isValid()) {
-        if ($this->taskHelper->validateGuess($guessForm, $task, $participant)) {
-          $participant->setProgressSolutionCount($participant->getProgressSolutionCount() + 1);
-          $participant->addProgressTaskSolution($task);
-          $entityManager->persist($participant);
-          $entityManager->flush();
+        if ($guessForm->isSubmitted() && $guessForm->isValid()) {
+            if ($this->taskHelper->validateGuess($guessForm, $task, $participant)) {
+                $participant->setProgressSolutionCount($participant->getProgressSolutionCount() + 1);
+                $participant->addProgressTaskSolution($task);
+                $entityManager->persist($participant);
+                $entityManager->flush();
 
-          return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $race->getUuid()->toString(), 'participantUuid' => $participant->getUuid()], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_race_show', ['id' => $race->getId(), 'uuid' => $race->getUuid()->toString(), 'participantUuid' => $participant->getUuid()], Response::HTTP_SEE_OTHER);
+            }
+
+            return $this->redirectToRoute('app_task_guess', ['id' => $task->getId(), 'uuid' => $task->getUuid()->toString(), 'race' => $race->getId()], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->redirectToRoute('app_task_guess', ['id' => $task->getId(), 'uuid' => $task->getUuid()->toString(), 'race' => $race->getId()], Response::HTTP_SEE_OTHER);
-      }
-
-      return $this->render('task/guess.html.twig', [
-        'task' => $task,
-        'guessForm' => $guessForm,
-        'race' => $race,
-        'participant' => $participant,
-      ]);
+        return $this->render('task/guess.html.twig', [
+            'task' => $task,
+            'guessForm' => $guessForm,
+            'race' => $race,
+            'participant' => $participant,
+        ]);
     }
 
-    #[Route('/{id}', name: 'app_task_delete', methods: ['POST'])]
+    #[Route('/task/{id}', name: 'app_task_delete', methods: ['POST'])]
     #[IsGranted('view')]
     public function delete(Request $request, Task $task, EntityManagerInterface $entityManager): Response
     {

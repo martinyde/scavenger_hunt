@@ -1,7 +1,7 @@
 {% block success_stream %}
   {{ form_start(tryform, {
-    'action': path('app_form_try', {'id': race.getId}),
-    'method': 'POST'
+    action: path('app_form_try', {id: race.getId}),
+    method: 'POST',
   }) }}
   {{ form_row(tryform.try) }}
   <button type="submit" class="btn btn-primary">Try</button>

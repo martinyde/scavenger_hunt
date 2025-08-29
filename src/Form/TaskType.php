@@ -16,33 +16,33 @@ class TaskType extends AbstractType
     {
         $builder
             ->add('passKey', TextType::class, [
-              'label' => 'Passkey',
-              'label_attr' => ['class' => 'form-label'],
-              'attr' => ['class' => 'form-control text-uppercase'],
+                'label' => 'Passkey',
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => ['class' => 'form-control text-uppercase'],
             ])
             ->add('title', TextType::class, [
-              'label' => 'Title',
-              'label_attr' => ['class' => 'form-label'],
-              'attr' => ['class' => 'form-control'],
+                'label' => 'Title',
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('solutions', CollectionType::class, [
-              // each entry in the array will be an "email" field
+                // each entry in the array will be an "email" field
                 'entry_type' => TextType::class,
                 'allow_add' => true,
                 'label' => 'Solutions',
                 'label_attr' => ['class' => 'invisible'],
                 'attr' => ['class' => 'invisible'],
-              ]
+            ]
             )
             ->add('text_before', TextareaType::class, [
-              'label' => 'Text before',
-              'label_attr' => ['class' => 'form-label'],
-              'attr' => ['class' => 'form-control'],
+                'label' => 'Text before',
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('text_after', TextareaType::class, [
-              'label' => 'Text before',
-              'label_attr' => ['class' => 'form-label'],
-              'attr' => ['class' => 'form-control'],
+                'label' => 'Text before',
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => ['class' => 'form-control'],
             ])
         ;
     }

@@ -9,18 +9,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TryType extends AbstractType
 {
-  public function buildForm(FormBuilderInterface $builder, array $options): void
-  {
-    $builder
-      ->add('try', TextType::class, [
-        'mapped' => false,
-        'attr' => ['class' => 'text-uppercase']
-      ])
-    ;
-  }
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+          ->add('try', TextType::class, [
+              'mapped' => false,
+              'attr' => ['class' => 'text-uppercase'],
+          ])
+        ;
+    }
 
-  public function configureOptions(OptionsResolver $resolver): void
-  {
-    $resolver->setDefaults([]);
-  }
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([]);
+    }
 }

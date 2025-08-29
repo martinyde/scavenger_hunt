@@ -6,13 +6,12 @@ use App\Repository\ParticipantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV7;
 use Symfony\UX\Turbo\Attribute\Broadcast;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
 #[Broadcast]
-class Participant
+class Participant implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -47,7 +46,7 @@ class Participant
     private ?int $progress_solution_count = null;
 
     #[ORM\Column(type: 'uuid')]
-    private ?UuidV7 $uuid;
+    private UuidV7 $uuid;
 
     #[ORM\OneToOne(mappedBy: 'participant', cascade: ['persist', 'remove'])]
     private ?Highscore $highscore = null;
@@ -66,14 +65,14 @@ class Participant
     }
 
     #[ORM\PrePersist]
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
-      // This runs before the entity is first persisted
-      $this->progress_task_entry = [];
-      $this->progress_task_solution = [];
+        // This runs before the entity is first persisted
+        $this->progress_task_entry = new ArrayCollection();
+        $this->progress_task_solution = new ArrayCollection();
     }
 
-  public function getId(): ?int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -101,9 +100,10 @@ class Participant
 
         return $this;
     }
-    public function __toString()
+
+    public function __toString(): string
     {
-      return $this->getName();
+        return (string) $this->getName();
     }
 
     /**

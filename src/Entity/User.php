@@ -39,14 +39,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private bool $isVerified = false;
 
     /**
-     * @var Collection<int, ScavangerHunt>
+     * @var Collection<int, ScavengerHunt>
      */
-    #[ORM\OneToMany(targetEntity: ScavangerHunt::class, mappedBy: 'user', orphanRemoval: true)]
-    private Collection $scavangerHunts;
+    #[ORM\OneToMany(targetEntity: ScavengerHunt::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $scavengerHunts;
 
     public function __construct()
     {
-        $this->scavangerHunts = new ArrayCollection();
+        $this->scavengerHunts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -119,7 +119,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __serialize(): array
     {
         $data = (array) $this;
-        $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
+        $data["\0".self::class."\0password"] = hash('crc32c', (string) $this->password);
 
         return $data;
     }
@@ -143,29 +143,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, ScavangerHunt>
+     * @return Collection<int, ScavengerHunt>
      */
-    public function getScavangerHunts(): Collection
+    public function getScavengerHunts(): Collection
     {
-        return $this->scavangerHunts;
+        return $this->scavengerHunts;
     }
 
-    public function addScavangerHunt(ScavangerHunt $scavangerHunt): static
+    public function addScavengerHunt(ScavengerHunt $scavengerHunt): static
     {
-        if (!$this->scavangerHunts->contains($scavangerHunt)) {
-            $this->scavangerHunts->add($scavangerHunt);
-            $scavangerHunt->setUser($this);
+        if (!$this->scavengerHunts->contains($scavengerHunt)) {
+            $this->scavengerHunts->add($scavengerHunt);
+            $scavengerHunt->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeScavangerHunt(ScavangerHunt $scavangerHunt): static
+    public function removeScavengerHunt(ScavengerHunt $scavengerHunt): static
     {
-        if ($this->scavangerHunts->removeElement($scavangerHunt)) {
+        if ($this->scavengerHunts->removeElement($scavengerHunt)) {
             // set the owning side to null (unless already changed)
-            if ($scavangerHunt->getUser() === $this) {
-                $scavangerHunt->setUser(null);
+            if ($scavengerHunt->getUser() === $this) {
+                $scavengerHunt->setUser(null);
             }
         }
 

@@ -3,10 +3,10 @@
     {% set extra_data = global_data(race) %}
     {% if race.isActive and tryform is not null %}
       <div id="race-{{ race.id }}">
-        {% include 'race/_race.html.twig' with {'race': race, 'tryform': tryform} %}
+        {{ include('race/_race.html.twig', {race: race, tryform: tryform}) }}
       </div>
     {% else %}
-      {% include 'race/_race-finished.html.twig' with {'race': race} %}
+      {{ include('race/_race-finished.html.twig', {race: race}) }}
     {% endif %}
   </template>
 </turbo-stream>

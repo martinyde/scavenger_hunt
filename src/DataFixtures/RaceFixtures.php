@@ -3,7 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Race;
-use App\Entity\ScavangerHunt;
+use App\Entity\ScavengerHunt;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -15,7 +15,7 @@ class RaceFixtures extends Fixture implements DependentFixtureInterface
         $race = new Race();
         $race->setRaceDuration(7200);
         $race->setActive(false);
-        $race->setScavengerHunt($this->getReference('scavenger-hunt:TreasureHunter', ScavangerHunt::class));
+        $race->setScavengerHunt($this->getReference('scavenger-hunt:TreasureHunter', ScavengerHunt::class));
         $race->setType('single');
         $manager->persist($race);
         $this->setReference('race:1', $race);
@@ -23,7 +23,7 @@ class RaceFixtures extends Fixture implements DependentFixtureInterface
         $race = new Race();
         $race->setRaceDuration(3600);
         $race->setActive(false);
-        $race->setScavengerHunt($this->getReference('scavenger-hunt:TreasureHunter', ScavangerHunt::class));
+        $race->setScavengerHunt($this->getReference('scavenger-hunt:TreasureHunter', ScavengerHunt::class));
         $race->setType('single');
         $manager->persist($race);
         $this->setReference('race:2', $race);
@@ -32,7 +32,7 @@ class RaceFixtures extends Fixture implements DependentFixtureInterface
         $race->setRaceDuration(7200);
         $race->setActive(false);
         $race->setType('repeating');
-        $race->setScavengerHunt($this->getReference('scavenger-hunt:ClueSeeker', ScavangerHunt::class));
+        $race->setScavengerHunt($this->getReference('scavenger-hunt:ClueSeeker', ScavengerHunt::class));
         $manager->persist($race);
         $this->setReference('race:3', $race);
 
@@ -41,9 +41,8 @@ class RaceFixtures extends Fixture implements DependentFixtureInterface
 
     public function getDependencies(): array
     {
-      return [
-        ScavengerHuntFixtures::class,
-      ];
+        return [
+            ScavengerHuntFixtures::class,
+        ];
     }
-
 }

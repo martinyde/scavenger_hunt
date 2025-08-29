@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\ScavangerHunt;
+use App\Entity\ScavengerHunt;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<ScavangerHunt>
+ * @extends ServiceEntityRepository<ScavengerHunt>
  */
-class ScavangerHuntRepository extends ServiceEntityRepository
+class ScavengerHuntRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, ScavangerHunt::class);
+        parent::__construct($registry, ScavengerHunt::class);
     }
 
     //    /**
-    //     * @return ScavangerHunt[] Returns an array of ScavangerHunt objects
+    //     * @return ScavengerHunt[] Returns an array of ScavengerHunt objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class ScavangerHuntRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?ScavangerHunt
+    //    public function findOneBySomeField($value): ?ScavengerHunt
     //    {
     //        return $this->createQueryBuilder('s')
     //            ->andWhere('s.exampleField = :val')

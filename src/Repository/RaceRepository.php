@@ -21,8 +21,8 @@ class RaceRepository extends ServiceEntityRepository
         $qb = $this->getEntityManager()->createQueryBuilder();
 
         return $this->createQueryBuilder('r')
-            ->andWhere("r.active = false")
-            ->andWhere($qb->expr()->isNotNull("r.timer"))
+            ->andWhere('r.active = false')
+            ->andWhere($qb->expr()->isNotNull('r.timer'))
             ->getQuery()->getResult();
     }
 

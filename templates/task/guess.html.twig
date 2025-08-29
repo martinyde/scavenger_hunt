@@ -9,7 +9,7 @@
       <tbody>
       <tr>
         <th>Timer</th>
-        <td>{% include 'race/timer.html.twig' with {'timer': extra_data.timer} %}</td>
+        <td>{{ include('race/timer.html.twig', {timer: extra_data.timer}) }}</td>
       </tr>
       </tbody>
     </table>
@@ -29,5 +29,5 @@
       {{ form_end(guessForm) }}
     </div>
 
-    <a href="{{ path('app_race_show', {'id': race.id, 'uuid': race.uuid, 'participantUuid': participant.getUuid.toString}) }}">back to list</a>
+    <a href="{{ path('app_race_show', {id: race.id, uuid: race.uuid, participantUuid: participant.getUuid.toString}) }}">back to list</a>
 {% endblock %}
