@@ -18,7 +18,7 @@ class Race
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    private ?UuidV7 $uuid;
+    private UuidV7 $uuid;
 
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
@@ -31,6 +31,10 @@ class Race
     #[ORM\Column(nullable: true)]
     private ?int $race_duration = null;
 
+
+    /**
+     * @var ?array<Task> $task_access
+     */
     #[ORM\Column(nullable: true)]
     private ?array $task_access = null;
 
@@ -104,11 +108,19 @@ class Race
         return $this;
     }
 
+  /**
+   * @return array<Task>|null
+   */
     public function getTaskAccess(): ?array
     {
         return $this->task_access;
     }
 
+  /**
+   * @param array<Task>|null $task_access
+   *
+   * @return $this
+   */
     public function setTaskAccess(?array $task_access): static
     {
         $this->task_access = $task_access;

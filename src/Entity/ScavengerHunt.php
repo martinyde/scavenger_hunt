@@ -6,7 +6,6 @@ use App\Repository\ScavengerHuntRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: ScavengerHuntRepository::class)]
 class ScavengerHunt
@@ -130,7 +129,7 @@ class ScavengerHunt
         return $this->user;
     }
 
-    public function setUser(?UserInterface $user): static
+    public function setUser(?User $user): static
     {
         $this->user = $user;
 

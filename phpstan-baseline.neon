@@ -1,3 +1,4 @@
 parameters:
     ignoreErrors:
-
+        # https://github.com/phpstan/phpstan-doctrine/issues/610
+        - message: "#^Property App\\\\Entity\\\\.*\\:\\:\\$id \\(int\\|null\\) is never assigned int so it can be removed from the property type\\.$#"

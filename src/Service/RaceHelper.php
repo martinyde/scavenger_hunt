@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Participant;
 use App\Entity\Race;
 use App\Entity\ScavengerHunt;
+use App\Entity\Task;
 use App\Form\TryType;
 use App\Repository\ParticipantRepository;
 use App\Repository\RaceRepository;
@@ -81,7 +82,7 @@ class RaceHelper
         }
     }
 
-    public function getSecondsLeft(Race $race): string
+    public function getSecondsLeft(Race $race): int
     {
         $now = new DatePoint();
 
@@ -89,17 +90,20 @@ class RaceHelper
             return $race->getTimeStart() ? $race->getTimeStart()->modify('+'.$race->getRaceDuration().' seconds')->getTimestamp() - $now->getTimestamp() : $race->getRaceDuration();
         } catch (\Throwable) {
             // @todo what do we want here?
+          return 0;
         }
     }
 
-    public function getParticipant($uuid): ?Participant
+    public function getParticipant(string $uuid): ?Participant
     {
         return $this->participantRepository->findOneBy(['uuid' => $uuid]);
     }
 
-    /**
-     * Get list of all finished races.
-     */
+  /**
+   *  Get list of all finished races.
+   *
+   * @return array<mixed>
+   */
     public function getFinishedRaces(): array
     {
         /** @var RaceRepository $repo */
@@ -134,7 +138,7 @@ class RaceHelper
     /**
      * Validate the access key typed in form against a task.
      */
-    private function validateAccessKey($form, $task, $participant): bool
+    private function validateAccessKey(FormInterface $form, Task $task, Participant $participant): bool
     {
         if ($participant->getProgressTaskEntry()->contains($task)) {
             return false;
