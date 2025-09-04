@@ -59,6 +59,8 @@ class GlobalExtension extends AbstractExtension
                 'raceState' => $entity->isActive(),
             ];
 
+            $data['participant'] = $this->genericHelper->getCurrentParticipant();
+
             return $data;
         }
 

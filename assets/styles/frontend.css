@@ -1,0 +1,72 @@
+body {
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+
+main {
+  position: relative;
+}
+
+#participant-main {
+  padding:0;
+  overflow: hidden;
+}
+
+.participant-spacer {
+  flex-basis: 3em;
+}
+
+#participant-footer {
+  position: fixed;
+  height: 3em;
+  bottom: 0;
+  width: 100%;
+  background: white;
+}
+
+
+#participant-tools {
+  display:flex;
+  overflow-x:hidden;
+
+  .participant-tool-nav {
+    cursor: pointer;
+    text-align: center;
+    padding: 1em;
+  }
+
+  #participant-pass-list > div {
+    z-index: 10;
+    position: relative;
+  }
+}
+
+.word-search {
+  margin: 0 auto;
+  font-size: .8em;
+}
+
+.key-form {
+  max-width: 300px;
+  margin: 1em auto;
+}
+
+#participant-key-finder {
+  width: 100%;
+  display: block;
+  flex: 0 0 100%;
+}
+
+#participant-pass-list {
+  width: 100%;
+  display: block;
+  flex: 0 0 100%;
+
+  &.show {
+    margin-left: -100%;
+    transition: margin-left .25s;
+  }
+  &.hide {
+    margin-left: 0;
+    transition: margin-left .25s;
+  }
+}

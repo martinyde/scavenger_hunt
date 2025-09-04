@@ -1,7 +1,21 @@
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
 body {
     background-color: lightgray;
 }
 
 .word-search td {
     padding: 0 0.5em;
+}
+
+.color-gold {
+  color: #ffd700;
+}
+
+.color-silver {
+  color: #c0c0c0;
+}
+
+.color-bronze {
+  color: #cd7f32;
 }

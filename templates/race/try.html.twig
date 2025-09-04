@@ -3,7 +3,11 @@
     'action': path('app_form_try', {'id': race.getId}),
     'method': 'POST'
   }) }}
-  {{ form_row(tryform.try) }}
-  <button type="submit" class="btn btn-primary">Try</button>
+
+  <div class="input-group mb-3">
+    {{ form_widget(tryform.try) }}
+    <button type="submit" class="btn btn-primary form-control w-25">{{ 'Unlock'|trans }}</button>
+  </div>
+
   {{ form_end(tryform) }}
 {% endblock %}

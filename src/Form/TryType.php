@@ -14,7 +14,7 @@ class TryType extends AbstractType
         $builder
           ->add('try', TextType::class, [
               'mapped' => false,
-              'attr' => ['class' => 'text-uppercase'],
+              'attr' => ['class' => 'form-control text-uppercase w-75'],
           ])
         ;
     }

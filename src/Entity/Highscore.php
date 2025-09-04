@@ -14,15 +14,15 @@ class Highscore
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'highscore', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Participant $participant = null;
 
     #[ORM\ManyToOne(inversedBy: 'highscores')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Race $race = null;
 
     #[ORM\ManyToOne(inversedBy: 'highscores')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?ScavengerHunt $scavenger_hunt = null;
 
     #[ORM\Column]
@@ -50,7 +50,7 @@ class Highscore
         return $this->participant;
     }
 
-    public function setParticipant(Participant $participant): static
+    public function setParticipant(?Participant $participant): static
     {
         $this->participant = $participant;
 

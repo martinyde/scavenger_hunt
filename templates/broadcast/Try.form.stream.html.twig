@@ -2,9 +2,13 @@
   <template>
     {% set extra_data = global_data(race) %}
     {% if race.isActive and tryform is not null %}
-      <div id="race-{{ race.id }}">
-        {% include 'race/_race.html.twig' with {'race': race, 'tryform': tryform} %}
-      </div>
+      {% if extra_data['participant'] and extra_data['participant'] in race.getParticipants.toArray() %}
+        <div id="race-{{ race.id }}">
+          {{ include('race/_race.html.twig', {race: race, tryform: tryform, participant: extra_data['participant']}) }}
+        </div>
+      {% else %}
+        {{ include('race/_race-access-when-active.html.twig') }}
+      {% endif %}
     {% else %}
       {% include 'race/_race-finished.html.twig' with {'race': race} %}
     {% endif %}

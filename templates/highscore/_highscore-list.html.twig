@@ -11,7 +11,17 @@
   <tbody>
   {% for highscore in highscores %}
     <tr>
-      <td>{{ loop.index }}</td>
+      <td>
+        {% if loop.index == 1 %}
+          <i class="bi bi-trophy-fill color-gold"></i>
+        {% elseif loop.index == 2 %}
+          <i class="bi bi-trophy-fill color-silver"></i>
+        {% elseif loop.index == 3 %}
+          <i class="bi bi-trophy-fill color-bronze"></i>
+        {% else %}
+          {{ loop.index }}
+        {% endif %}
+      </td>
       <td>{{ highscore.participantName }}</td>
       <td>{{ highscore.progressTaskSolution }}</td>
       <td>{{ highscore.progressTaskEntry }}</td>

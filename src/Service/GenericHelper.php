@@ -79,7 +79,7 @@ class GenericHelper
         $this->entityManager->flush();
     }
 
-    public function createHighscore(Participant $participant): void
+    public function createHighscore(Participant $participant): Highscore
     {
         $highScore = new Highscore();
         $highScore->setParticipant($participant);
@@ -91,5 +91,7 @@ class GenericHelper
         $highScore->setTime(123);
         $highScore->setCreated(new \DateTime());
         $this->entityManager->persist($highScore);
+
+        return $highScore;
     }
 }
