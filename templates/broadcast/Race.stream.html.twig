@@ -7,8 +7,14 @@
 {% endblock %}
 
 {% block update %}
-  <turbo-stream action="replace" target="race-{{ entity.id }}">
+  <turbo-stream action="replace" target="race-header-{{ entity.id }}">
     <template>
+      {% include 'race/_race-participant-header.html.twig' %}
+    </template>
+  </turbo-stream>
+  <turbo-stream action="replace" target="race-main-{{ entity.id }}">
+    <template>
+      {% include 'race/_race-participant-main.html.twig' %}
     </template>
   </turbo-stream>
 {% endblock %}

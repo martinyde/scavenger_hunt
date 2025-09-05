@@ -1,0 +1,71 @@
+{% if extra_data is defined%}
+  <main id="participant-main" class="container-fluid flex-grow-1" data-controller="slider">
+    <div class="d-flex row h-100">
+      <div id="participant-tools">
+        <div id="participant-key-finder" class="position-relative">
+          <div class="bg-white h-100 pt-5">
+            <div  class="container">
+              <div>
+                <div class="text-center fw-bold">{{ extra_data.puzzle.grid|raw }}</div>
+                <div class="key-form">
+                  {{ include('race/try.html.twig', {tryform: tryform}) }}
+                </div>
+              </div>
+            </div>
+            <div class="btn btn-sm btn-primary p-1 participant-tool-nav position-absolute top-0 end-0">
+              <i class="bi bi-arrow-left"></i>
+              <i class="bi bi-star"></i>
+            </div>
+          </div>
+        </div>
+        <div id="participant-pass-list" class="hide position-relative">
+          <div class="bg-white h-100 pt-5">
+            <div class="btn btn-sm btn-primary p-1 participant-tool-nav position-absolute top-0 start-0">
+              <i class="bi bi-arrow-right"></i>
+              <i class="bi bi-key"></i>
+            </div>
+            <div  class="container overflow-y-auto">
+              <div style="">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <td>{{ 'Name' }}</td>
+                  </tr>
+                  </thead>
+                  <tbody id="participant-progress">
+                  {% for progressTask in participant.getProgressTaskEntry %}
+                    <tr>
+                      <td>
+                        {% set solutions = participant.getProgressTaskSolution().toArray() %}
+                        {% set resolved = false %}
+                        {% set solutionTexts = [] %}
+                        {% for task in solutions %}
+                          {% if progressTask.id == task.id %}
+                            {% set resolved = true %}
+                            {% set solutionTexts = solutionTexts|merge(task.getSolutions) %}
+                          {% endif %}
+                        {% endfor %}
+                        {% if resolved is true %}
+                          <span>{{ progressTask.title }} Resolved. Solutions: {{ solutionTexts|join(', ') }}</span>
+                          -
+                          <span>{{ progressTask.getPassKey }}</span>
+                        {% else %}
+                          <span><a href="{{ path('app_task_guess', {'id': progressTask.id, 'uuid': progressTask.uuid, 'race': race.id}) }}">{{ progressTask.title }}</a></span>
+                          -
+                          <span>{{ progressTask.getPassKey }}</span>
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+{% else %}
+  {{ dump() }}
+{% endif %}

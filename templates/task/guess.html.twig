@@ -1,33 +1,7 @@
-{% extends 'base-fluid.html.twig' %}
+{% extends 'race/show.html.twig' %}
 
 {% block title %}Edit Task{% endblock %}
 
-{% block body %}
-    {% set extra_data = global_data(race) %}
-    <h1>Resolve</h1>
-    <table class="table">
-      <tbody>
-      <tr>
-        <th>Timer</th>
-        <td>{% include 'race/timer.html.twig' with {'timer': extra_data.timer} %}</td>
-      </tr>
-      </tbody>
-    </table>
-    <div>
-      {{ task.getTextBefore }}
-    </div>
-    <div>
-      <img src="">
-    </div>
-    <div>
-      {{ task.getTextAfter }}
-    </div>
-    <div>
-      {{ form_start(guessForm) }}
-      {{ form_row(guessForm.guess) }}
-      <button type="submit" class="btn btn-primary">Guess</button>
-      {{ form_end(guessForm) }}
-    </div>
-
-    <a href="{{ path('app_race_show', {'id': race.id, 'uuid': race.uuid, 'participantUuid': participant.getUuid.toString}) }}">back to list</a>
+{% block race_main %}
+  {% include 'race/guess-page.html.twig' %}
 {% endblock %}

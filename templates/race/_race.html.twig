@@ -1,6 +1,7 @@
 {# Display when race is in progress. #}
 <div class="row d-flex flex-column flex-nowrap vh-100">
   {% if (participant is defined) %}
+    {% set extra_data = global_data(race) %}
     {% block race_participant_header %}
       <header class="bg-white p-3">
         <h1 class="h3">{{ race.getScavengerHunt.getName }}</h1>
