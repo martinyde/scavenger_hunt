@@ -23,9 +23,11 @@ class SolutionsValidator extends ConstraintValidator
         }
 
         if (!empty($errors)) {
+          if ($constraint instanceof Solutions) {
             $this->context->buildViolation($constraint->message)
               ->setParameter('{{ errors }}', implode(', ', $errors))
               ->addViolation();
+          }
         }
     }
 }

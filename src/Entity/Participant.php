@@ -46,7 +46,7 @@ class Participant implements \Stringable
     private ?int $progress_solution_count = null;
 
     #[ORM\Column(type: 'uuid')]
-    private ?UuidV7 $uuid;
+    private UuidV7 $uuid;
 
     #[ORM\OneToOne(mappedBy: 'participant', cascade: ['persist', 'remove'])]
     private ?Highscore $highscore = null;
@@ -62,14 +62,6 @@ class Participant implements \Stringable
         $this->progress_task_entry = new ArrayCollection();
         $this->progress_task_solution = new ArrayCollection();
         $this->uuid = new UuidV7();
-    }
-
-    #[ORM\PrePersist]
-    public function onPrePersist()
-    {
-        // This runs before the entity is first persisted
-        $this->progress_task_entry = [];
-        $this->progress_task_solution = [];
     }
 
     public function getId(): ?int
@@ -178,7 +170,7 @@ class Participant implements \Stringable
         return $this;
     }
 
-    public function getUuid(): ?UuidV7
+    public function getUuid(): UuidV7
     {
         return $this->uuid;
     }
