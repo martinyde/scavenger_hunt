@@ -1,23 +1,27 @@
+{% if race is defined  %}
+  {% set extra_data = global_data(race) %}
+  {% set participant = extra_data['participant'] %}
+{% endif %}
 {% if participant is defined %}
   <header class="bg-white p-3">
     <h1 class="h3">{{ race.getScavengerHunt.getName ?? '' }} </h1>
     <div class="row align-items-center">
-      <div id="participant-info" class="col">
-        <div id="participant-name">
-          <h2 class="small">{{ participant ? participant.getName : '' }} </h2>
+      {% if participant %}
+        <div id="participant-info" class="col">
+          <div id="participant-name">
+            <h2 class="small">{{ participant ? participant.getName : '' }} </h2>
+          </div>
+          <div id="participant-image">
+            <img src="https://placecats.com/80/80" alt="Participant image">
+          </div>
         </div>
-        <div id="participant-image">
-          <img src="https://placecats.com/80/80" alt="Participant image">
-        </div>
-      </div>
+      {% endif %}
       <div id="participant-score" class="col">
         <div class="card">
           <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <i class="bi bi-star-fill color-gold"></i>
-              {% if participant %}
-                <span class="m-2">{{ participant.getProgressEntryCount ?? '0' }}/{{ race.getScavengerHunt.getTasks|length }}</span>
-              {% endif %}
+              <span class="m-2">{{ participant.getProgressEntryCount ?? '0' }}/{{ race.getScavengerHunt.getTasks|length }}</span>
             </li>
             <li class="list-group-item">
               <i class="bi bi-key-fill color-gold"></i>
@@ -29,22 +33,21 @@
           </ul>
         </div>
       </div>
-      <div id="race-end" class="col">
-        {% if participant %}
-        <div id="race-end-action" class="text-center">
-          <a class="btn btn-danger" href="{{ path('app_race_participant_finish', {participant: extra_data.participant.id, participantUuid: extra_data.participant.uuid, race: race.id}) }}">{{ 'Finish now'|trans }}</a>
+      {% if participant %}
+        <div id="race-end" class="col">
+          <div id="race-end-action" class="text-center">
+            <a class="btn btn-danger" href="{{ path('app_race_participant_finish', {participant: extra_data.participant.id, participantUuid: extra_data.participant.uuid, race: race.id}) }}">{{ 'Finish now'|trans }}</a>
+          </div>
+          <div class="d-none">
+            {% if participant in race.getParticipants.toArray() %}
+              {{ 'Join team' }}: <a href="{{ path('app_participant_join', {'race': race.id, 'raceUuid': race.uuid, 'participant': participant.id}) }}">
+              {{ path('app_participant_join', {'race': race.id, 'raceUuid': race.uuid, 'participant': participant.id}) }}
+              <img height="150" src="{{ qr_code_url(absolute_url(path('app_participant_join', {'race': race.id, 'raceUuid': race.uuid, 'participant': participant.id}))) }}" />
+            </a>
+            {% endif %}
+          </div>
         </div>
-        {% endif %}
-        <div class="d-none">
-          {% if participant in race.getParticipants.toArray() %}
-            {{ 'Join team' }}: <a href="{{ path('app_participant_join', {'race': race.id, 'raceUuid': race.uuid, 'participant': participant.id}) }}">
-            {{ path('app_participant_join', {'race': race.id, 'raceUuid': race.uuid, 'participant': participant.id}) }}
-            <img height="150" src="{{ qr_code_url(absolute_url(path('app_participant_join', {'race': race.id, 'raceUuid': race.uuid, 'participant': participant.id}))) }}" />
-          </a>
-          {% endif %}
-        </div>
-      </div>
-
+      {% endif %}
     </div>
   </header>
 {% else %}

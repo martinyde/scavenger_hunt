@@ -12,7 +12,7 @@
   <tbody class="participants" id="participants">
   {% for participant in race.participants %}
     <tr id="participant-{{ participant.id }}">
-      {% include 'race/_participant.html.twig' with {'participant': participant} %}
+      {% include 'participant/_participant.html.twig' with {'participant': participant} %}
     </tr>
   {% endfor %}
   </tbody>

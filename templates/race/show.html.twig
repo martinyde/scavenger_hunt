@@ -9,14 +9,14 @@
   {# Update when a participant progress improves #}
   <div {{ turbo_stream_listen('App\\Entity\\Participant') }}></div>
   <div class="row g-0">
-    {# Replaced by Try.form.stream.html.twig #}
+    {# Replaced by RaceParticipant.stream.html.twig #}
     {% block race_header %}
     <div id="race-header-{{ race.id }}">
       {% include 'race/_race-participant-header.html.twig' %}
     </div>
     {% endblock %}
     {% block race_main %}
-      {# Replaced by Try.form.stream.html.twig #}
+      {# Replaced by RaceParticipant.stream.form.stream.html.twig #}
       <div id="race-main-{{ race.id }}">
         {% if race.isActive %}
           {% if participant in race.getParticipants.toArray() %}

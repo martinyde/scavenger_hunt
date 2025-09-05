@@ -1,8 +1,7 @@
 <turbo-stream action="replace" target="race-header-{{ race.id }}">
   <template>
-    {% set extra_data = global_data(race) %}
     <div id="race-header-{{ race.id }}">
-        {{ include('race/_race-participant-header.html.twig', {race: race, participant: extra_data['participant']}) }}
+      {{ include('race/_race-participant-header.html.twig', {race: race}) }}
     </div>
   </template>
 </turbo-stream>

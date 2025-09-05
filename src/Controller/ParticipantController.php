@@ -44,7 +44,7 @@ final class ParticipantController extends AbstractController
      * Add a new participant.
      */
     #[Route('/participant/new/{race}', name: 'app_participant_new', methods: ['GET', 'POST'])]
-    public function new(Request $request): Response
+    public function new(Request $request, Race $race): Response
     {
         $participant = new Participant();
         $form = $this->createForm(ParticipantType::class, $participant);
@@ -59,6 +59,7 @@ final class ParticipantController extends AbstractController
         return $this->render('participant/new.html.twig', [
             'participant' => $participant,
             'form' => $form,
+            'race' => $race
         ]);
     }
 
@@ -90,6 +91,7 @@ final class ParticipantController extends AbstractController
         return $this->render('participant/new.html.twig', [
             'participant' => $participant,
             'form' => $form,
+            'race' => $race
         ]);
     }
 

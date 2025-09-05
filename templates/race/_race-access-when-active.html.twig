@@ -2,14 +2,6 @@
   <div>
     {{ 'This race is already under way but you can still join'|trans }}
   </div>
-  <table class="table">
-    <tbody>
-    <tr>
-      <th>{{ 'Timer'|trans }}</th>
-      <td>{{ include('race/timer.html.twig', {timer: extra_data.timer}) }}</td>
-    </tr>
-    </tbody>
-  </table>
   <div>
     {% if extra_data['participant'] not in race.participants %}
       <a href="{{ path('app_participant_add', {race: race.id, raceUuid: race.uuid}) }}">{{ 'Add new team'|trans }}</a>

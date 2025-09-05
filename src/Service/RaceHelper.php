@@ -69,7 +69,7 @@ class RaceHelper
         try {
             $update = new Update(
                 'race_state_changed',
-                $this->twig->render('broadcast/Try.form.stream.html.twig', [
+                $this->twig->render('broadcast/RaceParticipant.stream.html.twig', [
                     'race' => $race,
                     'tryform' => $tryForm->createView(),
                 ])
