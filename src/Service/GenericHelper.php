@@ -50,14 +50,16 @@ class GenericHelper
         return $cookie->withPartitioned();
     }
 
-    /**
-     * Get the current participant from uuid or from cookie.
-     *
-     * @return \App\Entity\Participant|null,
-     */
+  /**
+   * Get the current participant from uuid or from cookie.
+   *
+   * @param string|null $participantUuid
+   *
+   * @return \App\Entity\Participant|null
+   */
     public function getCurrentParticipant(?string $participantUuid = null): ?Participant
     {
-        if (empty($uuid)) {
+        if (empty($participantUuid)) {
             $participantUuid = $this->request->getCurrentRequest()->cookies->get('participant');
         }
         $participant = $this->participantRepository->findOneBy(['uuid' => $participantUuid]);

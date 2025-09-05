@@ -2,9 +2,11 @@
 
 namespace App\Service;
 
+use App\Entity\Participant;
 use App\Entity\ScavengerHunt;
 use App\Entity\Task;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\FormInterface;
 
 class TaskHelper
 {
@@ -36,7 +38,7 @@ class TaskHelper
     /**
      * Validate the submitted guess.
      */
-    public function validateGuess($form, $task, $participant): bool
+    public function validateGuess(FormInterface $form, Task $task, Participant $participant): bool
     {
         if ($participant->getProgressTaskSolution()->contains($task)) {
             return false;

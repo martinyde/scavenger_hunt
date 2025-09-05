@@ -10,6 +10,9 @@ use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
+/**
+ * @extends Voter<string, mixed>
+ */
 class GenericVoter extends Voter
 {
     // these strings are just invented: you can use anything
@@ -20,6 +23,12 @@ class GenericVoter extends Voter
     {
     }
 
+  /**
+   * @param string $attribute
+   * @param mixed $subject
+   *
+   * @return bool
+   */
     protected function supports(string $attribute, mixed $subject): bool
     {
         // if the attribute isn't one we support, return false
@@ -30,6 +39,14 @@ class GenericVoter extends Voter
         return true;
     }
 
+  /**
+   * @param string $attribute
+   * @param mixed $subject
+   * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
+   * @param \Symfony\Component\Security\Core\Authorization\Voter\Vote|null $vote
+   *
+   * @return bool
+   */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
         $user = $token->getUser();
@@ -48,7 +65,7 @@ class GenericVoter extends Voter
         };
     }
 
-    private function canView($entity, User $user): bool
+    private function canView(mixed $entity, User $user): bool
     {
         if ($this->hasRole($user, 'ROLE_ADMIN')) {
             return true;
@@ -68,7 +85,7 @@ class GenericVoter extends Voter
         return false;
     }
 
-    private function canAccessAdmin($entity, User $user): bool
+    private function canAccessAdmin(mixed $entity, User $user): bool
     {
         if ($this->hasRole($user, 'ROLE_ADMIN')) {
             return true;
@@ -77,13 +94,16 @@ class GenericVoter extends Voter
         return false;
     }
 
-    private function hasRole(User $user, $roleName): string
+    private function hasRole(User $user, string $roleName): bool
     {
         $roles = $this->getUserRoles($user);
 
         return in_array($roleName, $roles);
     }
 
+  /**
+   * @return array<string>
+   */
     private function getUserRoles(User $user): array
     {
         return $this->roleHierarchy->getReachableRoleNames($user->getRoles());

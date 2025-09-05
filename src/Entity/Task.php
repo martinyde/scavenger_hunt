@@ -32,9 +32,11 @@ class Task
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    /**
-     * @Solutions
-     */
+  /**
+   * @Solutions
+   *
+   * @var array<string> $solutions
+   */ 
     #[ORM\Column(type: Types::SIMPLE_ARRAY)]
     private array $solutions = [];
 
@@ -81,11 +83,17 @@ class Task
         return $this;
     }
 
+  /**
+   * @return array<string>
+   */
     public function getSolutions(): array
     {
         return $this->solutions;
     }
 
+  /**
+   * @param array<string> $solutions
+   */
     public function setSolutions(array $solutions): static
     {
         $this->solutions = $solutions;

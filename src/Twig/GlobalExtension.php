@@ -26,6 +26,13 @@ class GlobalExtension extends AbstractExtension
         ];
     }
 
+  /**
+   * @param object $entity
+   *
+   * @return array<string, mixed>
+   *
+   * @throws \DateMalformedStringException
+   */
     public function getGlobalData(object $entity): array
     {
         $data = [];

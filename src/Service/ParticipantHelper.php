@@ -16,13 +16,19 @@ class ParticipantHelper
     ) {
     }
 
-    public function createParticipant($participant): void
+  /**
+   * @param Participant $participant
+   */
+    public function createParticipant(Participant $participant): void
     {
         $this->entityManager->persist($participant);
         $this->entityManager->flush();
     }
 
-    public function createSessionParticipant($participant): void
+  /**
+   * @param Participant $participant
+   */
+    public function createSessionParticipant(Participant $participant): void
     {
         $session = $this->request->getSession();
         $session->set('participant_id', $participant->getId());
