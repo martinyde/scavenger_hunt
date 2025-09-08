@@ -11,6 +11,7 @@
         <th>Timer</th>
         <td>{% include 'race/timer.html.twig' with {'timer': timer} %}</td>
         <td>{{ form(startRaceForm) }}</td>
+        <td><a href="{{ path('app_race_finish', {'id': race.id, 'uuid': race.uuid}) }}" class="btn btn-sm btn-danger">{{ 'Finish race' }}</a></td>
       </tr>
     </tbody>
   </table>

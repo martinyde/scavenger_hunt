@@ -5,6 +5,7 @@ namespace App\MessageHandler;
 use App\Message\RaceEndMessage;
 use App\Repository\RaceRepository;
 use App\Service\GenericHelper;
+use App\Service\RaceHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
@@ -15,11 +16,12 @@ use Twig\Environment;
 final readonly class RaceEndMessageHandler
 {
     public function __construct(
-        private RaceRepository $raceRepository,
-        private EntityManagerInterface $entityManager,
-        private HubInterface $hub,
-        private Environment $twig,
-        private GenericHelper $genericHelper,
+        protected RaceRepository $raceRepository,
+        protected EntityManagerInterface $entityManager,
+        protected HubInterface $hub,
+        protected Environment $twig,
+        protected GenericHelper $genericHelper,
+        protected RaceHelper $raceHelper,
     ) {
     }
 
@@ -36,9 +38,7 @@ final readonly class RaceEndMessageHandler
 
         foreach ($races as $race) {
             if ($race->getTimer()->modify('+'.$race->getRaceDuration().' seconds') < $now) {
-                $race->setActive(false);
-                $this->entityManager->flush();
-                $this->genericHelper->createHighscores($race);
+                $race = $this->raceHelper->finishRace($race);
 
                 $update = new Update(
                     'race_state_changed',
@@ -49,6 +49,10 @@ final readonly class RaceEndMessageHandler
                 );
 
                 $this->hub->publish($update);
+
+                $this->raceHelper->removeParticipants($race);
+
+
             }
         }
     }

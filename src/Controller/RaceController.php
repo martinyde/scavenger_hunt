@@ -117,6 +117,15 @@ final class RaceController extends AbstractController
         ]);
     }
 
+  #[Route('/race/finish/{id}/{uuid}', name: 'app_race_finish', methods: ['GET'])]
+  public function finish(Request $request, Race $race, string $uuid): Response
+  {
+      $this->genericHelper->validateEntityUuid($race, $uuid);
+      $this->raceHelper->finishRace($race);
+
+      return $this->redirectToRoute('app_race_progress', ['id' => $race->getId()], Response::HTTP_SEE_OTHER);
+  }
+
     #[Route('/race/{id}/edit', name: 'app_race_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Race $race, EntityManagerInterface $entityManager): Response
     {

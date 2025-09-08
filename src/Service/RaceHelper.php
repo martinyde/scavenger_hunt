@@ -30,6 +30,7 @@ class RaceHelper
         protected HubInterface $hub,
         protected FormFactoryInterface $formFactory,
         protected Environment $twig,
+        protected GenericHelper $genericHelper,
     ) {
     }
 
@@ -80,6 +81,30 @@ class RaceHelper
         } catch (\Exception) {
             // @todo what do we want here?
         }
+    }
+
+    public function removeParticipants(Race $race): Race {
+      $race->getParticipants()->clear();
+      $this->entityManager->flush();
+
+      return $race;
+    }
+
+    public function finishRace(Race $race): Race {
+        $race->setActive(false);
+        $race->setTimeStart(null);
+        $this->entityManager->flush();
+        $this->genericHelper->createHighscores($race);
+
+        return $race;
+    }
+
+    public function restartRace(Race $race): Race {
+      $this->finishRace($race);
+      $this->removeParticipants($race);
+      $this->startRace($race);
+
+      return $race;
     }
 
   /**
