@@ -28,3 +28,7 @@ yarn-error.log
 ###> phpstan/phpstan ###
 phpstan.neon
 ###< phpstan/phpstan ###
+
+###> Docker ###
+docker-compose.override.yml
+###< Docker ###
