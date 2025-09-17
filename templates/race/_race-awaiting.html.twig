@@ -17,3 +17,4 @@
   {% endfor %}
   </tbody>
 </table>
+<a href="{{ path('app_participant_add', {race: race.id, raceUuid: race.uuid}) }}">{{ 'Add new team'|trans }}</a>

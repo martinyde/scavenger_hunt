@@ -9,6 +9,7 @@ use App\Entity\Task;
 use App\Repository\HighscoreRepository;
 use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -60,7 +61,10 @@ class GenericHelper
     public function getCurrentParticipant(?string $participantUuid = null): ?Participant
     {
         if (empty($participantUuid)) {
-            $participantUuid = $this->request->getCurrentRequest()->cookies->get('participant');
+          $request = $this->request->getCurrentRequest();
+          if ($request) {
+            $participantUuid = $request->cookies->get('participant');
+          }
         }
         $participant = $this->participantRepository->findOneBy(['uuid' => $participantUuid]);
 
@@ -78,19 +82,26 @@ class GenericHelper
             }
             $this->createHighscore($participant);
         }
+
         $this->entityManager->flush();
     }
 
-    public function createHighscore(Participant $participant): Highscore
+  /**
+   * Create a high score from a participant.
+   */
+    public function createHighscore(Participant $participant): ?Highscore
     {
+        if (empty($participant->getStartTime())) {
+          return null;
+        }
         $highScore = new Highscore();
-        $highScore->setParticipant($participant);
+        $highScore->setParticipant($participant->getId());
         $highScore->setParticipantName($participant->getName());
-        $highScore->setRace($participant->getRace());
-        $highScore->setScavengerHunt($participant->getRace()->getScavengerHunt());
+        $highScore->setRace($participant->getRace()->getId());
+        $highScore->setScavengerHunt($participant->getRace()->getScavengerHunt()->getId());
         $highScore->setProgressTaskEntry($participant->getProgressEntryCount() ?? 0);
         $highScore->setProgressTaskSolution($participant->getProgressSolutionCount() ?? 0);
-        $highScore->setTime(123);
+        $highScore->setTime($participant->getStartTime()->diff(new \DateTime())->s);
         $highScore->setCreated(new \DateTime());
         $this->entityManager->persist($highScore);
 

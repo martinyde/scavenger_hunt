@@ -38,7 +38,7 @@ final readonly class RaceEndMessageHandler
 
         foreach ($races as $race) {
             if ($race->getTimer()->modify('+'.$race->getRaceDuration().' seconds') < $now) {
-                $race = $this->raceHelper->finishRace($race);
+                  $race = $this->raceHelper->finishRace($race);
 
                 $update = new Update(
                     'race_state_changed',
@@ -52,7 +52,9 @@ final readonly class RaceEndMessageHandler
 
                 $this->raceHelper->removeParticipants($race);
 
-
+                if ('repeating' === $race->getType()) {
+                  $this->raceHelper->startRace($race);
+                }
             }
         }
     }

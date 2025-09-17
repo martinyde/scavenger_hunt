@@ -34,17 +34,10 @@ class ScavengerHunt
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    /**
-     * @var Collection<int, Highscore>
-     */
-    #[ORM\OneToMany(targetEntity: Highscore::class, mappedBy: 'scavenger_hunt')]
-    private Collection $highscores;
-
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
         $this->races = new ArrayCollection();
-        $this->highscores = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -132,36 +125,6 @@ class ScavengerHunt
     public function setUser(?User $user): static
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Highscore>
-     */
-    public function getHighscores(): Collection
-    {
-        return $this->highscores;
-    }
-
-    public function addHighscore(Highscore $highscore): static
-    {
-        if (!$this->highscores->contains($highscore)) {
-            $this->highscores->add($highscore);
-            $highscore->setScavengerHunt($this);
-        }
-
-        return $this;
-    }
-
-    public function removeHighscore(Highscore $highscore): static
-    {
-        if ($this->highscores->removeElement($highscore)) {
-            // set the owning side to null (unless already changed)
-            if ($highscore->getScavengerHunt() === $this) {
-                $highscore->setScavengerHunt(null);
-            }
-        }
 
         return $this;
     }

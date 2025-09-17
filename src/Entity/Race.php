@@ -50,20 +50,20 @@ class Race
     #[ORM\Column]
     private ?bool $active = null;
 
-    /**
-     * @var Collection<int, Highscore>
-     */
-    #[ORM\OneToMany(targetEntity: Highscore::class, mappedBy: 'race')]
-    private Collection $highscores;
-
     #[ORM\Column(length: 255)]
     private ?string $type = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $scheduled_start = null;
+
+    #[ORM\Column]
+    private ?bool $finished = null;
 
     public function __construct()
     {
         $this->participants = new ArrayCollection();
         $this->uuid = new UuidV7();
-        $this->highscores = new ArrayCollection();
+        $this->setFinished(false);
     }
 
     public function getId(): ?int
@@ -191,36 +191,6 @@ class Race
         return $this;
     }
 
-    /**
-     * @return Collection<int, Highscore>
-     */
-    public function getHighscores(): Collection
-    {
-        return $this->highscores;
-    }
-
-    public function addHighscore(Highscore $highscore): static
-    {
-        if (!$this->highscores->contains($highscore)) {
-            $this->highscores->add($highscore);
-            $highscore->setRace($this);
-        }
-
-        return $this;
-    }
-
-    public function removeHighscore(Highscore $highscore): static
-    {
-        if ($this->highscores->removeElement($highscore)) {
-            // set the owning side to null (unless already changed)
-            if ($highscore->getRace() === $this) {
-                $highscore->setRace(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getType(): ?string
     {
         return $this->type;
@@ -229,6 +199,30 @@ class Race
     public function setType(string $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getScheduledStart(): ?\DateTime
+    {
+        return $this->scheduled_start;
+    }
+
+    public function setScheduledStart(?\DateTime $scheduled_start): static
+    {
+        $this->scheduled_start = $scheduled_start;
+
+        return $this;
+    }
+
+    public function isFinished(): ?bool
+    {
+        return $this->finished;
+    }
+
+    public function setFinished(bool $finished): static
+    {
+        $this->finished = $finished;
 
         return $this;
     }

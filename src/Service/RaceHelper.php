@@ -63,7 +63,12 @@ class RaceHelper
 
     public function startRace(Race $race): void
     {
-        $race->setTimeStart(new DatePoint());
+        $now = new DatePoint();
+        $race->setTimeStart($now);
+        foreach ($race->getParticipants() as $participant) {
+          $participant->setStartTime($now);
+        }
+
         $race->setActive(true);
         $this->entityManager->flush();
 
@@ -92,7 +97,7 @@ class RaceHelper
 
     public function finishRace(Race $race): Race {
         $race->setActive(false);
-        $race->setTimeStart(null);
+        $race->setFinished(true);
         $this->entityManager->flush();
         $this->genericHelper->createHighscores($race);
 
@@ -148,18 +153,6 @@ class RaceHelper
         return $repo->findFinishedRaces();
     }
 
-  /**
-   *  Whether a race is finished.
-   *
-   * @param \App\Entity\Race $race
-   *
-   * @return bool
-   */
-    public function isFinished(Race $race): bool
-    {
-        return !$race->isActive() && !empty($race->getTimer());
-    }
-
     /**
      * Remove finished races.
      */
@@ -169,6 +162,9 @@ class RaceHelper
         foreach ($finishedRaces as $race) {
             foreach ($race->getParticipants() as $participant) {
                 $this->entityManager->remove($participant);
+            }
+            foreach ($race->getHighscores() as $highscore) {
+              $this->entityManager->remove($highscore);
             }
             $this->entityManager->remove($race);
         }

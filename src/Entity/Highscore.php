@@ -13,17 +13,15 @@ class Highscore
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(inversedBy: 'highscore', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Participant $participant = null;
+    #[ORM\Column(nullable: true)]
+    private ?int $participant = null;
 
-    #[ORM\ManyToOne(inversedBy: 'highscores')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Race $race = null;
+    #[ORM\Column(nullable: true)]
+    private ?int $race = null;
 
-    #[ORM\ManyToOne(inversedBy: 'highscores')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?ScavengerHunt $scavenger_hunt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $scavenger_hunt = null;
 
     #[ORM\Column]
     private ?int $progress_task_entry = null;
@@ -45,36 +43,36 @@ class Highscore
         return $this->id;
     }
 
-    public function getParticipant(): ?Participant
+    public function getParticipant(): ?int
     {
         return $this->participant;
     }
 
-    public function setParticipant(?Participant $participant): static
+    public function setParticipant(?int $participant): static
     {
         $this->participant = $participant;
 
         return $this;
     }
 
-    public function getRace(): ?Race
+    public function getRace(): ?int
     {
         return $this->race;
     }
 
-    public function setRace(?Race $race): static
+    public function setRace(?int $race): static
     {
         $this->race = $race;
 
         return $this;
     }
 
-    public function getScavengerHunt(): ?ScavengerHunt
+    public function getScavengerHunt(): ?int
     {
         return $this->scavenger_hunt;
     }
 
-    public function setScavengerHunt(?ScavengerHunt $scavenger_hunt): static
+    public function setScavengerHunt(?int $scavenger_hunt): static
     {
         $this->scavenger_hunt = $scavenger_hunt;
 

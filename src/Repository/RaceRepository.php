@@ -22,7 +22,7 @@ class RaceRepository extends ServiceEntityRepository
 
         return $this->createQueryBuilder('r')
             ->andWhere('r.active = false')
-            ->andWhere($qb->expr()->isNotNull('r.timer'))
+            ->andWhere('r.finished = true')
             ->getQuery()->getResult();
     }
 

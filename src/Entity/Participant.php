@@ -6,6 +6,7 @@ use App\Repository\ParticipantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\Uid\UuidV7;
 use Symfony\UX\Turbo\Attribute\Broadcast;
 
@@ -48,14 +49,14 @@ class Participant implements \Stringable
     #[ORM\Column(type: 'uuid')]
     private UuidV7 $uuid;
 
-    #[ORM\OneToOne(mappedBy: 'participant', cascade: ['persist', 'remove'])]
-    private ?Highscore $highscore = null;
-
     #[ORM\Column(nullable: true)]
     private ?bool $finished = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $finished_time = null;
+
+    #[ORM\Column(type: 'date_point', nullable: true)]
+    private ?DatePoint $start_time = null;
 
     public function __construct()
     {
@@ -182,23 +183,6 @@ class Participant implements \Stringable
         return $this;
     }
 
-    public function getHighscore(): ?Highscore
-    {
-        return $this->highscore;
-    }
-
-    public function setHighscore(Highscore $highscore): static
-    {
-        // set the owning side of the relation if necessary
-        if ($highscore->getParticipant() !== $this) {
-            $highscore->setParticipant($this);
-        }
-
-        $this->highscore = $highscore;
-
-        return $this;
-    }
-
     public function isFinished(): ?bool
     {
         return $this->finished;
@@ -219,6 +203,18 @@ class Participant implements \Stringable
     public function setFinishedTime(?int $finished_time): static
     {
         $this->finished_time = $finished_time;
+
+        return $this;
+    }
+
+    public function getStartTime(): ?DatePoint
+    {
+        return $this->start_time;
+    }
+
+    public function setStartTime(?DatePoint $start_time): static
+    {
+        $this->start_time = $start_time;
 
         return $this;
     }

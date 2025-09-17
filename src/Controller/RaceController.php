@@ -173,8 +173,7 @@ final class RaceController extends AbstractController
     public function participantFinish(Participant $participant, string $participantUuid, Race $race, EntityManagerInterface $entityManager): Response
     {
         $this->genericHelper->validateEntityUuid($participant, $participantUuid);
-        $highScore = $this->genericHelper->createHighscore($participant);
-        $highScore->setParticipant(null);
+        $this->genericHelper->createHighscore($participant);
         $entityManager->remove($participant);
         $entityManager->flush();
 

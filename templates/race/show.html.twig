@@ -19,21 +19,17 @@
       {# Replaced by RaceParticipant.stream.form.stream.html.twig #}
       <div id="race-main-{{ race.id }}">
         {% if race.isActive %}
-          {% if participant in race.getParticipants.toArray() %}
+          {% if extra_data.participant in race.getParticipants.toArray() %}
             {% include 'race/_race-participant-main.html.twig' with {'race': race, 'tryform': tryform, 'participant': participant, 'extra_data': extra_data} %}
           {% else %}
             {{ include('race/_race-access-when-active.html.twig') }}
+            {% if participant not in race.participants and not race.isActive %}
+            {% endif %}
           {% endif %}
+        {% elseif race.isFinished %}
+          {% include 'race/_race-finished.html.twig' with {'race': race} %}
         {% else %}
-          {% if not raceHelper.isFinished(race) %}
-            {% include 'race/_race-awaiting.html.twig' with {'participant': participant} %}
-          {% else %}
-            {% include 'race/_race-finished.html.twig' with {'race': race} %}
-          {% endif %}
-        {% endif %}
-
-        {% if participant not in race.participants and not race.isActive %}
-          <a href="{{ path('app_participant_add', {race: race.id, raceUuid: race.uuid}) }}">{{ 'Add new team'|trans }}</a>
+          {% include 'race/_race-awaiting.html.twig' with {'participant': participant} %}
         {% endif %}
       </div>
     {% endblock %}

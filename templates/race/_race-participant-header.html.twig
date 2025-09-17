@@ -1,4 +1,4 @@
-{% if race is defined  %}
+{% if race is defined %}
   {% set extra_data = global_data(race) %}
   {% set participant = extra_data['participant'] %}
 {% endif %}
@@ -51,5 +51,4 @@
     </div>
   </header>
 {% else %}
-  {{ dump() }}
 {% endif %}
