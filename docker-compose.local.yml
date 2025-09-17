@@ -1,0 +1,139 @@
+# itk-version: 3.2.3
+networks:
+  frontend:
+    external: true
+  app:
+    driver: bridge
+    internal: false
+
+services:
+  mariadb:
+    image: itkdev/mariadb:latest
+    networks:
+      - app
+    ports:
+      - '3306'
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_USER=db
+      - MYSQL_PASSWORD=db
+      - MYSQL_DATABASE=db
+      #- ENCRYPT=1 # Uncomment to enable database encryption.
+
+  phpfpm:
+    image: itkdev/php8.4-fpm:latest
+    user: ${COMPOSE_USER:-deploy}
+    networks:
+      - app
+      - frontend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - PHP_XDEBUG_MODE=${PHP_XDEBUG_MODE:-off}
+      - PHP_MAX_EXECUTION_TIME=30
+      - PHP_MEMORY_LIMIT=256M
+      # Depending on the setup, you may have to remove --read-envelope-from from msmtp (cf. https://marlam.de/msmtp/msmtp.html) or use SMTP to send mail
+      - PHP_SENDMAIL_PATH=/usr/bin/msmtp --host=mail --port=1025 --read-recipients --read-envelope-from
+      - DOCKER_HOST_DOMAIN=${COMPOSE_DOMAIN}
+      - PHP_IDE_CONFIG=serverName=localhost
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    volumes:
+      - .:/app
+
+  nginx:
+    image: nginxinc/nginx-unprivileged:alpine
+    networks:
+      - app
+      - frontend
+    depends_on:
+      - phpfpm
+      - mercure
+    ports:
+      - '8080'
+    volumes:
+      - ./.docker/templates:/etc/nginx/templates:ro
+      - .:/app
+    environment:
+      NGINX_FPM_SERVICE: ${COMPOSE_PROJECT_NAME}-phpfpm-1:9000
+      NGINX_WEB_ROOT: /app/public
+      NGINX_PORT: 8080
+      NGINX_MAX_BODY_SIZE: 5M
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=frontend"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_DOMAIN}`)"
+      #      HTTPS config - uncomment to enable redirect from :80 to :443
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+
+  mail:
+    image: axllent/mailpit
+    networks:
+      - app
+      - frontend
+    ports:
+      - "1025"
+      - "8025"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=frontend"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}mail.rule=Host(`mail-${COMPOSE_DOMAIN}`)"
+      - "traefik.http.services.${COMPOSE_PROJECT_NAME}mail.loadbalancer.server.port=8025"
+
+  ###> symfony/mercure-bundle ###
+  mercure:
+    image: dunglas/mercure
+    restart: unless-stopped
+    networks:
+      - app
+      - frontend
+    environment:
+      # Uncomment the following line to disable HTTPS,
+      #SERVER_NAME: ':80'
+      SERVER_NAME: ':3000'
+      MERCURE_PUBLISHER_JWT_KEY: "${MERCURE_JWT_SECRET}"
+      MERCURE_SUBSCRIBER_JWT_KEY: "${MERCURE_JWT_SECRET}"
+      # Set the URL of your Symfony project (without trailing slash!) as value of the cors_origins directive
+      MERCURE_EXTRA_DIRECTIVES: |
+        cors_origins https://scavenger.local.itkdev.dk
+    # Comment the following line to disable the development mode
+    command: /usr/bin/caddy run --config /etc/caddy/dev.Caddyfile
+    volumes:
+      - mercure_data:/data
+      - mercure_config:/config
+    #healthcheck:
+    #  test: ["CMD", "curl", "-I", "https://mercure-scavenger.local.itkdev.dk/healthz"]
+    #  timeout: 5s
+    #  retries: 5
+    #  start_period: 60s
+    ports:
+      - "3000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=frontend"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}mercure.rule=Host(`mercure-${COMPOSE_DOMAIN}`)"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}mercure.middlewares=redirect-to-https"
+      - "traefik.http.services.${COMPOSE_PROJECT_NAME}mercure.loadbalancer.server.port=3000"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+  ###< symfony/mercure-bundle ###
+
+  node:
+    image: node:20
+    profiles:
+      # Used only to build assets
+      - dev
+    working_dir: /app
+    volumes:
+      - .:/app
+
+volumes:
+  mercure_data:
+  mercure_config:
