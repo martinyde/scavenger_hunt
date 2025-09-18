@@ -11,7 +11,7 @@ services:
     image: "traefik:v3.4"
     container_name: "traefik"
     command:
-      - "--log.level=DEBUG"
+      #- "--log.level=DEBUG"
       - "--api.insecure=true"
       - "--api.dashboard=true"
       - "--providers.docker=true"
@@ -32,54 +32,10 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.log.level=DEBUG"
-      # - "traefik.http.routers.traefik.rule=Host(`traefik.${HOSTNAME}`)"
-      # - "traefik.http.routers.whoami.entrypoints=websecure"
-      # - "traefik.http.routers.whoami.tls.certresolver=myresolver"
+      #- "traefik.log.level=DEBUG"
     networks:
       - app
       - frontend
-      # whoami:
-      #   image: "traefik/whoami"
-      #   restart: unless-stopped
-      #    networks:
-      #     - proxy
-      #   labels:
-      #     - "traefik.enable=true"
-      #     - "traefik.http.routers.whoami.rule=Host(`knaekker.dk`)"
-      #     - "traefik.http.routers.whoami.entrypoints=web"
-
-      #  whoami-api:
-      #   image: "traefik/whoami"
-      #   networks:
-      #     - proxy
-      #   container_name: "whoami-api"
-      #   environment:
-      #     - WHOAMI_NAME=API Service
-      #   labels:
-      #     - "traefik.enable=true"
-      # Path-based routing
-      #     - "traefik.http.routers.whoami-api.rule=Host(`whoami.docker.localhost`) && PathPrefix(`/api`)"
-      #     - "traefik.http.routers.whoami-api.entrypoints=web"
-
-      #  mariadb:
-      #   image: itkdev/mariadb:latest
-      #   networks:
-      #     - app
-      #   ports:
-      #     - '3306'
-      #   healthcheck:
-      #     test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
-      #     start_period: 10s
-      #     interval: 10s
-      #     timeout: 5s
-      #     retries: 3
-      #   environment:
-      #     - MYSQL_ROOT_PASSWORD=password
-      #     - MYSQL_USER=db
-      #     - MYSQL_PASSWORD=db
-      #     - MYSQL_DATABASE=db
-      #- ENCRYPT=1 # Uncomment to enable database encryption.
 
   phpfpm:
     image: itkdev/php8.4-fpm:alpine
