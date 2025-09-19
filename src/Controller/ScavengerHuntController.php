@@ -15,11 +15,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class ScavengerHuntController extends AbstractController
 {
-    public function __construct(
-        protected User $user,
-    ) {
-    }
-
     #[Route('/scavenger/hunt', name: 'app_scavenger_hunt_index', methods: ['GET'])]
     #[IsGranted('view')]
     public function index(ScavengerHuntRepository $scavengerHuntRepository): Response
