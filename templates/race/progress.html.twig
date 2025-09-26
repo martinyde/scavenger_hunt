@@ -6,29 +6,35 @@
   <div {{ turbo_stream_listen('App\\Entity\\Participant') }}></div>
   <div {{ turbo_stream_listen('race_state_changed') }}></div>
   <h1>Race - {{ race.getScavengerHunt.getName }}</h1>
-  <table class="table">
-    <tbody>
+  {% if not race.finished %}
+    <table class="table">
+      <tbody>
+        <tr>
+          <th>Timer</th>
+          <td id="participants-progress-timer">{% include 'race/timer.html.twig' with {'timer': timer} %}</td>
+          <td>{{ form(startRaceForm) }}</td>
+          <td><a href="{{ path('app_race_finish', {'id': race.id, 'uuid': race.uuid}) }}" class="btn btn-sm btn-danger">{{ 'Finish race' }}</a></td>
+        </tr>
+      </tbody>
+    </table>
+  {% endif %}
+  {% if not race.finished %}
+    <table class="table">
+      <thead>
       <tr>
-        <th>Timer</th>
-        <td id="participants-progress-timer">{% include 'race/timer.html.twig' with {'timer': timer} %}</td>
-        <td>{{ form(startRaceForm) }}</td>
-        <td><a href="{{ path('app_race_finish', {'id': race.id, 'uuid': race.uuid}) }}" class="btn btn-sm btn-danger">{{ 'Finish race' }}</a></td>
+        <td>Name</td>
+        <td>Progress</td>
       </tr>
-    </tbody>
-  </table>
-  <table class="table">
-    <thead>
-    <tr>
-      <td>Name</td>
-      <td>Progress</td>
-    </tr>
-    </thead>
-    <tbody class="participants" id="participants-progress-list">
-    {% for participant in race.participants %}
-      <tr id="participant-progress-{{ participant.id }}">
-        {% include 'participant/_participant-progress.html.twig' with {'participant': participant, 'scavengerHunt': race.getScavengerHunt} %}
-      </tr>
-    {% endfor %}
-    </tbody>
-  </table>
+      </thead>
+      <tbody class="participants" id="participants-progress-list">
+      {% for participant in race.participants %}
+        <tr id="participant-progress-{{ participant.id }}">
+          {% include 'participant/_participant-progress.html.twig' with {'participant': participant, 'scavengerHunt': race.getScavengerHunt} %}
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    {% include 'race/_race-finished.html.twig' %}
+  {% endif %}
 {% endblock %}
