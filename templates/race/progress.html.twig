@@ -1,6 +1,6 @@
 {% extends 'base-fluid.html.twig' %}
 
-{% block title %}Race{% endblock %}
+{% block title %}{{ 'Race'|trans }}{% endblock %}
 
 {% block body %}
   <div {{ turbo_stream_listen('App\\Entity\\Participant') }}></div>
@@ -10,7 +10,7 @@
     <table class="table">
       <tbody>
         <tr>
-          <th>Timer</th>
+          <th>{{ 'Timer'|trans }}</th>
           <td id="participants-progress-timer">{% include 'race/timer.html.twig' with {'timer': timer} %}</td>
           <td>{{ form(startRaceForm) }}</td>
           <td><a href="{{ path('app_race_finish', {'id': race.id, 'uuid': race.uuid}) }}" class="btn btn-sm btn-danger">{{ 'Finish race' }}</a></td>
@@ -19,21 +19,42 @@
     </table>
   {% endif %}
   {% if not race.finished %}
-    <table class="table">
-      <thead>
-      <tr>
-        <td>Name</td>
-        <td>Progress</td>
-      </tr>
-      </thead>
-      <tbody class="participants" id="participants-progress-list">
-      {% for participant in race.participants %}
-        <tr id="participant-progress-{{ participant.id }}">
-          {% include 'participant/_participant-progress.html.twig' with {'participant': participant, 'scavengerHunt': race.getScavengerHunt} %}
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
+    <div class="container-fluid g-0">
+      <div class="row">
+        <div class="col-8">
+          <table class="table">
+            <thead>
+            <tr>
+              <td>{{ 'Name'|trans }}</td>
+              <td>{{ 'Progress'|trans }}</td>
+            </tr>
+            </thead>
+            <tbody class="participants" id="participants-progress-list">
+            {% for participant in race.participants %}
+              <tr id="participant-progress-{{ participant.id }}">
+                {% include 'participant/_participant-progress.html.twig' with {'participant': participant, 'scavengerHunt': race.getScavengerHunt} %}
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="col bg-white">
+          {% if participant not in race.getParticipants.toArray() %}
+            <h3>{{ 'Create a team'|trans }}:</h3>
+            <div>
+              <div>
+                <img height="150" src="{{ qr_code_url(absolute_url(path('app_participant_add', {'race': race.id, 'raceUuid': race.uuid}) )) }}" />
+              </div>
+              <div>
+                <a href="{{ path('app_participant_add', {'race': race.id, 'raceUuid': race.uuid}) }}">
+                  Create short link here
+                </a>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
   {% else %}
     {% include 'race/_race-finished.html.twig' %}
   {% endif %}
