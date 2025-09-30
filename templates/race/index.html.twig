@@ -11,6 +11,7 @@
                 <th>Id</th>
                 <th>Scavenger hunt name</th>
                 <th>Race duration</th>
+                <th>Type</th>
                 <th>State</th>
                 <th>actions</th>
             </tr>
@@ -21,7 +22,14 @@
                 <td>{{ race.id }}</td>
                 <td>{{ race.scavengerHunt.getName }}</td>
                 <td>{{ race.raceDuration }}</td>
-                <td>{{ race.isActive ? 'Active' : 'Inactive' }}</td>
+                <td>{{ race.getType }}</td>
+                <td>
+                  {% if race.isActive %}
+                    {{ 'Active' }}
+                  {% else %}
+                    {{ race.isFinished ? 'Finished' : 'Inactive' }}
+                  {% endif %}
+                </td>
                 <td>
                     <a href="{{ path('app_race_show', {'id': race.id, 'uuid': race.uuid}) }}">show</a>
                     <a href="{{ path('app_race_edit', {'id': race.id}) }}">edit</a>

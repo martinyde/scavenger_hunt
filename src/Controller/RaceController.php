@@ -8,6 +8,7 @@ use App\Entity\ScavengerHunt;
 use App\Form\RaceStartType;
 use App\Form\RaceType;
 use App\Form\TryType;
+use App\Repository\HighscoreRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\RaceRepository;
 use App\Repository\ScavengerHuntRepository;
@@ -30,6 +31,7 @@ final class RaceController extends AbstractController
         protected RaceHelper $raceHelper,
         protected GenericHelper $genericHelper,
         protected ScavengerHuntRepository $scavengerHuntRepository,
+        protected HighscoreRepository $highscoreRepository
     ) {
     }
 
@@ -114,6 +116,7 @@ final class RaceController extends AbstractController
                 'duration' => $race->getRaceDuration(),
                 'raceState' => $race->isActive(),
             ],
+            'highScores' => $this->highscoreRepository->getRaceHighScores($race),
         ]);
     }
 

@@ -6,16 +6,18 @@
   <header class="bg-white p-3">
     <h1 class="h3">{{ race.getScavengerHunt.getName ?? '' }} </h1>
     <div class="row align-items-center">
-      {% if participant %}
-        <div id="participant-info" class="col">
-          <div id="participant-name">
-            <h2 class="small">{{ participant ? participant.getName : '' }} </h2>
-          </div>
-          <div id="participant-image">
-            <img src="https://placecats.com/80/80" alt="Participant image">
-          </div>
+      <div id="participant-info" class="col">
+        {% if participant %}
+        <div id="participant-name">
+          <h2 class="small">{{ participant ? participant.getName : '' }} </h2>
         </div>
-      {% endif %}
+        <div id="participant-image">
+          <img src="https://placecats.com/80/80" alt="Participant image">
+        </div>
+        {% else %}
+          <a href="{{ path('app_participant_add', {race: race.id, raceUuid: race.uuid}) }}">{{ 'Add new team'|trans }}</a>
+        {% endif %}
+      </div>
       <div id="participant-score" class="col">
         <div class="card">
           <ul class="list-group list-group-flush">

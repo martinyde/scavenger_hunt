@@ -39,19 +39,17 @@
           </table>
         </div>
         <div class="col bg-white">
-          {% if participant not in race.getParticipants.toArray() %}
-            <h3>{{ 'Create a team'|trans }}:</h3>
+          <h3>{{ 'Create a team'|trans }}:</h3>
+          <div>
             <div>
-              <div>
-                <img height="150" src="{{ qr_code_url(absolute_url(path('app_participant_add', {'race': race.id, 'raceUuid': race.uuid}) )) }}" />
-              </div>
-              <div>
-                <a href="{{ path('app_participant_add', {'race': race.id, 'raceUuid': race.uuid}) }}">
-                  Create short link here
-                </a>
-              </div>
+              <img height="150" src="{{ qr_code_url(absolute_url(path('app_participant_add', {'race': race.id, 'raceUuid': race.uuid}) )) }}" />
             </div>
-          {% endif %}
+            <div>
+              <a href="{{ path('app_participant_add', {'race': race.id, 'raceUuid': race.uuid}) }}">
+                Create short link here
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
