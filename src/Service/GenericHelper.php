@@ -9,7 +9,6 @@ use App\Entity\Task;
 use App\Repository\HighscoreRepository;
 use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -41,7 +40,7 @@ class GenericHelper
      */
     public function setParticpantCookie(Participant $participant): Cookie
     {
-        $this->request->getCurrentRequest()->cookies->remove('participant');
+        $this->removeParticipantCookie();
         $cookie = new Cookie(
             'participant',
             $participant->getUuid(),
@@ -52,21 +51,37 @@ class GenericHelper
     }
 
   /**
+   * Remove participant cookie.
+   *
+   * @return void
+   */
+    public function removeParticipantCookie(): void
+    {
+      $this->request->getCurrentRequest()->cookies->remove('participant');
+    }
+
+  /**
    * Get the current participant from uuid or from cookie.
    *
    * @param string|null $participantUuid
    *
    * @return \App\Entity\Participant|null
    */
-    public function getCurrentParticipant(?string $participantUuid = null): ?Participant
+    public function getCurrentParticipant(?string $participantUuid = null, ?Race $race = null): ?Participant
     {
+        $raceParticipants = $race ? $race->getParticipants() : [];
         if (empty($participantUuid)) {
           $request = $this->request->getCurrentRequest();
           if ($request) {
             $participantUuid = $request->cookies->get('participant');
           }
         }
+
         $participant = $this->participantRepository->findOneBy(['uuid' => $participantUuid]);
+
+        if ($race && !in_array($participant, $race->getParticipants()->toArray())) {
+          return null;
+        }
 
         return $participant ?? null;
     }

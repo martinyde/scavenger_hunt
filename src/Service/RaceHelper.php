@@ -7,6 +7,7 @@ use App\Entity\Race;
 use App\Entity\ScavengerHunt;
 use App\Entity\Task;
 use App\Form\TryType;
+use App\Repository\HighscoreRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\RaceRepository;
 use App\Repository\TaskRepository;
@@ -30,6 +31,7 @@ class RaceHelper
         protected HubInterface $hub,
         protected FormFactoryInterface $formFactory,
         protected Environment $twig,
+        protected HighscoreRepository $highscoreRepository,
         protected GenericHelper $genericHelper,
     ) {
     }
@@ -163,7 +165,7 @@ class RaceHelper
             foreach ($race->getParticipants() as $participant) {
                 $this->entityManager->remove($participant);
             }
-            foreach ($race->getHighscores() as $highscore) {
+            foreach ($this->highscoreRepository->getRaceHighScores($race) as $highscore) {
               $this->entityManager->remove($highscore);
             }
             $this->entityManager->remove($race);

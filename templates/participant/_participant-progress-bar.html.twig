@@ -1,0 +1,11 @@
+{% set entry = participant.getProgressEntryCount is null ? 0 : participant.getProgressEntryCount %}
+{% set solution = participant.getProgressSolutionCount is null ? 0 : participant.getProgressSolutionCount %}
+{% set length = participant.getRace.getScavengerHunt.getTasks|length %}
+<div class="progress-stacked">
+  <div class="progress" role="progressbar" aria-label="Solution" aria-valuenow="{{ 100 / length * solution }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ 100 / length * solution }}%">
+    <div class="progress-bar"></div>
+  </div>
+  <div class="progress" role="progressbar" aria-label="Entry" aria-valuenow="{{ 100 / length * entry - 100 / length * solution }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ 100 / length * entry - 100 / length * solution }}%">
+    <div class="progress-bar bg-success"></div>
+  </div>
+</div>

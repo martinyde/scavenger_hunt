@@ -120,14 +120,14 @@ final class RaceController extends AbstractController
         ]);
     }
 
-  #[Route('/race/finish/{id}/{uuid}', name: 'app_race_finish', methods: ['GET'])]
-  public function finish(Request $request, Race $race, string $uuid): Response
-  {
-      $this->genericHelper->validateEntityUuid($race, $uuid);
-      $this->raceHelper->finishRace($race);
+    #[Route('/race/finish/{id}/{uuid}', name: 'app_race_finish', methods: ['GET'])]
+    public function finish(Request $request, Race $race, string $uuid): Response
+    {
+        $this->genericHelper->validateEntityUuid($race, $uuid);
+        $this->raceHelper->finishRace($race);
 
-      return $this->redirectToRoute('app_race_progress', ['id' => $race->getId()], Response::HTTP_SEE_OTHER);
-  }
+        return $this->redirectToRoute('app_race_progress', ['id' => $race->getId()], Response::HTTP_SEE_OTHER);
+    }
 
     #[Route('/race/{id}/edit', name: 'app_race_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Race $race, EntityManagerInterface $entityManager): Response
@@ -151,7 +151,7 @@ final class RaceController extends AbstractController
     public function show(Race $race, string $uuid, Request $request, ?string $participantUuid = null): Response
     {
         $this->genericHelper->validateEntityUuid($race, $uuid);
-        $participant = $this->genericHelper->getCurrentParticipant($participantUuid);
+        $participant = $this->genericHelper->getCurrentParticipant($participantUuid, $race);
 
         $tryForm = $this->createForm(TryType::class, ['request' => $request]);
         $tryForm->handleRequest($request);
@@ -164,7 +164,8 @@ final class RaceController extends AbstractController
             'race' => $race,
             'raceHelper' => $this->raceHelper,
             'tryform' => $tryForm,
-            'participant' => $participant,
+            'participant' => $participant ?? null,
+            'highScores' => $this->highscoreRepository->getRaceHighScores($race),
             'timer' => [
                 'secondsLeft' => $this->raceHelper->getSecondsLeft($race),
                 'duration' => $race->getRaceDuration(),

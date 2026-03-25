@@ -12,6 +12,7 @@ use App\Service\GenericHelper;
 use App\Service\ParticipantHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -77,6 +78,10 @@ final class ParticipantController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $participant->setUuid(new UuidV7());
             $participant->setRace($this->raceRepository->find($race->getId()));
+
+            if ($race->isActive()) {
+              $participant->setStartTime(new DatePoint());
+            }
 
             $entityManager->persist($participant);
             $entityManager->flush();

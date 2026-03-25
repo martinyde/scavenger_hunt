@@ -22,8 +22,8 @@
           {% if extra_data.participant in race.getParticipants.toArray() %}
             {% include 'race/_race-participant-main.html.twig' with {'race': race, 'tryform': tryform, 'participant': participant, 'extra_data': extra_data} %}
           {% else %}
-            {{ include('race/_race-access-when-active.html.twig') }}
-            {% if participant not in race.participants and not race.isActive %}
+            {% if participant not in race.participants %}
+              {{ include('race/_race-access-when-active.html.twig') }}
             {% endif %}
           {% endif %}
         {% elseif race.isFinished %}

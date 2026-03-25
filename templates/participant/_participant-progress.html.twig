@@ -1,9 +1,6 @@
 <td>{{ participant.name }}</td>
 <td>
-  <div id="participant-progress-entry-{{ participant.id }}">
-    {{ participant.getProgressEntryCount is null ? 0 : participant.getProgressEntryCount }} / {{ participant.getRace.getScavengerHunt.getTasks|length }}
-  </div>
-  <div id="participant-progress-solution-{{ participant.id }}">
-    {{ participant.getProgressSolutionCount is null ? 0 : participant.getProgressSolutionCount }} / {{ participant.getRace.getScavengerHunt.getTasks|length }}
+  <div id="participant-progress--bar-{{ participant.id }}">
+    {{ include('participant/_participant-progress-bar.html.twig', {'participant': participant}) }}
   </div>
 </td>
