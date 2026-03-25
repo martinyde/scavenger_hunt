@@ -1,4 +1,5 @@
 ###> symfony/framework-bundle ###
+/.env
 /.env.local
 /.env.local.php
 /.env.*.local
@@ -37,4 +38,4 @@ docker-compose.override.yml
 .idea
 ###< Docker ###
 
-letsencrypt
+
