@@ -1,0 +1,13 @@
+{% if race.active %}
+  {% if participant %}
+    {% include 'race/_race-active.html.twig' %}
+  {% else %}
+    <p>Race is in progress. You are not a participant.</p>
+  {% endif %}
+{% else %}
+  {% if race.finished %}
+    {% include 'race/_race-finished.html.twig' %}
+  {% else %}
+    {% include 'race/_race-awaiting.html.twig' %}
+  {% endif %}
+{% endif %}

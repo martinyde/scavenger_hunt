@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Guess - {{ task.title }}{% endblock %}
+
+{% block body %}
+  <h1>{{ task.title }}</h1>
+  {% if task.textBefore %}
+    <p>{{ task.textBefore }}</p>
+  {% endif %}
+
+  <form method="post">
+    <div class="mb-3">
+      <label for="guess" class="form-label">Your answer</label>
+      <input type="text" class="form-control" id="guess" name="guess" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+{% endblock %}

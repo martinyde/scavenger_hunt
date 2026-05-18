@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Race Progress{% endblock %}
+
+{% block body %}
+  <h1>Race Progress - {{ race.scavengerHunt.name }}</h1>
+
+  <div id="race-progress"
+       data-controller="mercure"
+       data-mercure-url-value="{{ mercure_subscribe_url(['race/' ~ race.id, 'race/' ~ race.id ~ '/participants']) }}"
+       data-mercure-race-id-value="{{ race.id }}">
+
+    <table class="table">
+      <tbody>
+        <tr>
+          <th>Timer</th>
+          <td>{% include 'race/timer.html.twig' %}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="table">
+      <thead>
+      <tr>
+        <td>Name</td>
+        <td>Progress</td>
+      </tr>
+      </thead>
+      <tbody id="participants-progress-list">
+      {% for p in participants %}
+        <tr id="participant-progress-{{ p.id }}">
+          <td>{{ p.name }}</td>
+          <td>
+            <div>Entries: {{ p.progressEntryCount ?? 0 }} / {{ scavengerHunt.tasks|length }}</div>
+            <div>Solutions: {{ p.progressSolutionCount ?? 0 }} / {{ scavengerHunt.tasks|length }}</div>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Race - {{ race.scavengerHunt.name }}{% endblock %}
+
+{% block body %}
+    <h1>Race - {{ race.scavengerHunt.name }}</h1>
+
+    <div id="race-content"
+         data-controller="mercure"
+         data-mercure-url-value="{{ mercure_subscribe_url(['race/' ~ race.id, 'race/' ~ race.id ~ '/participants']) }}"
+         data-mercure-race-id-value="{{ race.id }}">
+
+      <div id="race-{{ race.id }}">
+        {% include 'race/_race-content.html.twig' %}
+      </div>
+    </div>
+
+    {% if participant is null and not race.active %}
+      <a href="{{ path('app_participant_add', {raceId: race.id, raceUuid: race.uuid}) }}">Add new team</a>
+    {% endif %}
+{% endblock %}

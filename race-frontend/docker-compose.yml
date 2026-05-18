@@ -1,0 +1,64 @@
+# Race Frontend site
+# For local dev: joins the admin site's "app" network to reach admin-nginx and mercure.
+# For production: set ADMIN_API_URL and MERCURE_PUBLIC_URL to external URLs.
+networks:
+  frontend:
+    external: true
+  app:
+    external: true
+    name: ${ADMIN_COMPOSE_PROJECT_NAME:-scavenger-admin}_app
+
+services:
+  phpfpm:
+    image: itkdev/php8.4-fpm:latest
+    user: ${COMPOSE_USER:-deploy}
+    networks:
+      - app
+      - frontend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - PHP_XDEBUG_MODE=${PHP_XDEBUG_MODE:-off}
+      - PHP_MAX_EXECUTION_TIME=30
+      - PHP_MEMORY_LIMIT=128M
+      - DOCKER_HOST_DOMAIN=race-${COMPOSE_DOMAIN}
+      - ADMIN_API_URL=${ADMIN_API_URL:-http://scavenger-admin-nginx-1:8080}
+      - ADMIN_API_KEY=${ADMIN_API_KEY}
+      - MERCURE_PUBLIC_URL=${MERCURE_PUBLIC_URL:-https://mercure-${COMPOSE_DOMAIN}/.well-known/mercure}
+      - MERCURE_JWT_SECRET=${MERCURE_JWT_SECRET}
+    volumes:
+      - .:/app
+      - ../shared:/shared:ro
+
+  nginx:
+    image: nginxinc/nginx-unprivileged:alpine
+    networks:
+      - app
+      - frontend
+    depends_on:
+      - phpfpm
+    ports:
+      - '8081'
+    volumes:
+      - ./.docker/templates:/etc/nginx/templates:ro
+      - .:/app
+    environment:
+      NGINX_FPM_SERVICE: ${COMPOSE_PROJECT_NAME}-phpfpm-1:9000
+      NGINX_WEB_ROOT: /app/public
+      NGINX_PORT: 8081
+      NGINX_MAX_BODY_SIZE: 5M
+      NGINX_MERCURE_SERVICE: ${MERCURE_SERVICE:-scavenger-admin-mercure-1:3000}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=frontend"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`race-${COMPOSE_DOMAIN}`)"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+
+  node:
+    image: node:20
+    profiles:
+      - dev
+    working_dir: /app
+    volumes:
+      - .:/app

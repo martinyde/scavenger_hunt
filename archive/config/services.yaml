@@ -1,0 +1,16 @@
+parameters:
+    admin_api_url: '%env(ADMIN_API_URL)%'
+    admin_api_key: '%env(ADMIN_API_KEY)%'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: "../src/"
+
+    Scavenger\Shared\ApiClient\AdminApiClient:
+        arguments:
+            $adminApiUrl: '%admin_api_url%'
+            $apiKey: '%admin_api_key%'

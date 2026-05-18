@@ -1,0 +1,52 @@
+# Archive site
+# For local dev: joins the admin site's "app" network to reach admin-nginx.
+# For production: set ADMIN_API_URL to the external admin URL.
+networks:
+  frontend:
+    external: true
+  app:
+    external: true
+    name: ${ADMIN_COMPOSE_PROJECT_NAME:-scavenger-admin}_app
+
+services:
+  phpfpm:
+    image: itkdev/php8.4-fpm:latest
+    user: ${COMPOSE_USER:-deploy}
+    networks:
+      - app
+      - frontend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - PHP_XDEBUG_MODE=${PHP_XDEBUG_MODE:-off}
+      - PHP_MAX_EXECUTION_TIME=30
+      - PHP_MEMORY_LIMIT=128M
+      - ADMIN_API_URL=${ADMIN_API_URL:-http://scavenger-admin-nginx-1:8080}
+      - ADMIN_API_KEY=${ADMIN_API_KEY}
+    volumes:
+      - .:/app
+      - ../shared:/shared:ro
+
+  nginx:
+    image: nginxinc/nginx-unprivileged:alpine
+    networks:
+      - app
+      - frontend
+    depends_on:
+      - phpfpm
+    ports:
+      - '8082'
+    volumes:
+      - ./.docker/templates:/etc/nginx/templates:ro
+      - .:/app
+    environment:
+      NGINX_FPM_SERVICE: ${COMPOSE_PROJECT_NAME}-phpfpm-1:9000
+      NGINX_WEB_ROOT: /app/public
+      NGINX_PORT: 8082
+      NGINX_MAX_BODY_SIZE: 5M
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=frontend"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`archive-${COMPOSE_DOMAIN}`)"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"

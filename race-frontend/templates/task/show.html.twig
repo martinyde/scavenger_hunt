@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Task - {{ task.title }}{% endblock %}
+
+{% block body %}
+  <h1>{{ task.title }}</h1>
+  {% if task.textBefore %}
+    <p>{{ task.textBefore }}</p>
+  {% endif %}
+{% endblock %}

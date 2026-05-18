@@ -1,0 +1,14 @@
+<table class="table">
+  <thead>
+  <tr>
+    <td>Name</td>
+  </tr>
+  </thead>
+  <tbody id="participants">
+  {% for p in participants %}
+    <tr id="participant-{{ p.id }}">
+      <td>{{ p.name }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>

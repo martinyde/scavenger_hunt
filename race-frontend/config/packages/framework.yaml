@@ -1,0 +1,6 @@
+framework:
+    secret: '%env(APP_SECRET)%'
+    session:
+        enabled: true
+        cookie_lifetime: 432000
+        gc_maxlifetime: 432000

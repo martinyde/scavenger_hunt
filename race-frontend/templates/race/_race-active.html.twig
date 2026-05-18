@@ -1,0 +1,30 @@
+<div>
+  <table class="table">
+    <tbody>
+    <tr>
+      <th>Timer</th>
+      <td>{% include 'race/timer.html.twig' %}</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <form method="post" action="{{ path('app_form_try', {raceId: race.id}) }}">
+    <div class="mb-3">
+      <input type="text" name="try" class="form-control" placeholder="Enter access key" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Try</button>
+  </form>
+
+  <div>
+    <table class="table">
+      <thead>
+      <tr><td>Task</td></tr>
+      </thead>
+      <tbody id="participant-progress">
+        {% if participant and participant.progressTasks is defined %}
+          {# Tasks will be shown via API data #}
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>

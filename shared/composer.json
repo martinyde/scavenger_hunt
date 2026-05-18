@@ -1,0 +1,15 @@
+{
+    "name": "scavenger/shared",
+    "description": "Shared API client and DTOs for the Scavenger Hunt application",
+    "type": "library",
+    "license": "proprietary",
+    "autoload": {
+        "psr-4": {
+            "Scavenger\\Shared\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.2",
+        "symfony/http-client": "^7.3"
+    }
+}

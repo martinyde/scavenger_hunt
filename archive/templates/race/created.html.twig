@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Race Created{% endblock %}
+
+{% block body %}
+  <h1>Race Created</h1>
+  <div class="alert alert-success">
+    Race has been created successfully.
+  </div>
+  <table class="table">
+    <tbody>
+      <tr><th>ID</th><td>{{ race.id }}</td></tr>
+      <tr><th>UUID</th><td>{{ race.uuid }}</td></tr>
+      <tr><th>Type</th><td>{{ race.type }}</td></tr>
+      <tr><th>Duration</th><td>{{ race.raceDuration }}s</td></tr>
+    </tbody>
+  </table>
+  <a href="{{ path('app_hunt_show', {id: hunt.id}) }}" class="btn btn-primary">Back to Hunt</a>
+{% endblock %}

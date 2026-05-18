@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Race{% endblock %}
+
+{% block body %}
+    {% set extra_data = global_data(race) %}
+    <h1>Race - {{ race.getScavengerHunt.getName }}</h1>
+    <div>
+      <div id="race-{{ race.id }}">
+        {% if race.isActive %}
+          {% if participant in race.getParticipants.toArray() %}
+            {{ include('race/_race.html.twig', {race: race, tryform: tryform, participant: participant, extra_data: extra_data}) }}
+          {% else %}
+            Show denied template
+          {% endif %}
+        {% else %}
+          {% if not raceHelper.isFinished(race) %}
+            {{ include('race/_race-awaiting.html.twig', {participant: participant}) }}
+          {% else %}
+            {{ include('race/_race-finished.html.twig', {race: race}) }}
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  {% if participant not in race.participants and not race.isActive %}
+    <a href="{{ path('app_participant_add', {race: race.id, raceUuid: race.uuid}) }}">Add new team</a>
+  {% endif %}
+{% endblock %}

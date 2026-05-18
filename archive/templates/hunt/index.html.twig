@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Available Scavenger Hunts{% endblock %}
+
+{% block body %}
+  <h1>Available Scavenger Hunts</h1>
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Tasks</th>
+      <th>Races</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for hunt in hunts %}
+      <tr>
+        <td>{{ hunt.name }}</td>
+        <td>{{ hunt.tasks|length }}</td>
+        <td>{{ hunt.races|length }}</td>
+        <td>
+          <a href="{{ path('app_hunt_show', {id: hunt.id}) }}" class="btn btn-sm btn-primary">View</a>
+          <a href="{{ path('app_race_create', {huntId: hunt.id}) }}" class="btn btn-sm btn-success">Create Race</a>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="4">No scavenger hunts available.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

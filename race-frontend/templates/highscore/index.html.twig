@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Highscores{% endblock %}
+
+{% block body %}
+  <h1>Highscores</h1>
+  <table class="table">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Tasks Found</th>
+      <th>Tasks Solved</th>
+      <th>Time</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for hs in highscores %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ hs.participantName }}</td>
+        <td>{{ hs.progressTaskEntry }}</td>
+        <td>{{ hs.progressTaskSolution }}</td>
+        <td>{{ hs.time }}s</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

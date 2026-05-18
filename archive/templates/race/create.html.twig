@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Race - {{ hunt.name }}{% endblock %}
+
+{% block body %}
+  <h1>Create Race for {{ hunt.name }}</h1>
+
+  <form method="post">
+    <div class="mb-3">
+      <label for="duration" class="form-label">Duration (seconds)</label>
+      <input type="number" class="form-control" id="duration" name="duration" value="300" min="60">
+    </div>
+    <div class="mb-3">
+      <label for="type" class="form-label">Type</label>
+      <select class="form-select" id="type" name="type">
+        <option value="standard">Standard</option>
+        <option value="repeating">Repeating</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Create Race</button>
+    <a href="{{ path('app_hunt_show', {id: hunt.id}) }}" class="btn btn-secondary">Cancel</a>
+  </form>
+{% endblock %}
