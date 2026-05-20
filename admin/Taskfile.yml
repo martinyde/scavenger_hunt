@@ -31,6 +31,12 @@ tasks:
       - task compose -- exec phpfpm bin/console {{.CLI_ARGS}}
     silent: true
 
+  fixtures:load:
+    desc: "Load Doctrine fixtures"
+    cmds:
+      - task console -- doctrine:fixtures:load --no-interaction
+    silent: true
+
   coding-standards:apply:
     desc: "Apply coding standards"
     cmds:

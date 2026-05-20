@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Scavenger Hunt{% endblock %}
+
+{% block body %}
+  <h1>Scavenger Hunt</h1>
+  <p class="lead">
+    A digital scavenger hunt platform where participants solve tasks and compete for the best time.
+  </p>
+
+  <h2>How it works</h2>
+  <ol>
+    <li>An administrator creates scavenger hunts with tasks in the <strong>Admin</strong> site.</li>
+    <li>Anyone can browse available hunts and create a race from the <strong>Archive</strong> (this site).</li>
+    <li>Participants join and play the race on the <strong>Race Frontend</strong> using a shared link.</li>
+  </ol>
+
+  <a href="{{ path('app_hunts') }}" class="btn btn-primary">Browse Scavenger Hunts</a>
+{% endblock %}

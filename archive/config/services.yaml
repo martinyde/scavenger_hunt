@@ -1,6 +1,8 @@
 parameters:
     admin_api_url: '%env(ADMIN_API_URL)%'
     admin_api_key: '%env(ADMIN_API_KEY)%'
+    race_frontend_url: 'https://race-%env(COMPOSE_DOMAIN)%'
+    admin_url: 'https://admin-%env(COMPOSE_DOMAIN)%'
 
 services:
     _defaults:

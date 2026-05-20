@@ -15,5 +15,17 @@
       <tr><th>Duration</th><td>{{ race.raceDuration }}s</td></tr>
     </tbody>
   </table>
+  <div class="alert alert-info">
+    <strong>Race link:</strong>
+    {% set raceLink = raceFrontendUrl ~ '/participant/add/' ~ race.id ~ '/' ~ race.uuid %}
+    <a href="{{ raceLink }}">{{ raceLink }}</a>
+    <br>Share this link with participants to join the race.
+  </div>
+  <div class="alert alert-secondary">
+    <strong>Admin link:</strong>
+    {% set adminLink = adminUrl ~ '/race/progress/' ~ race.id %}
+    <a href="{{ adminLink }}">{{ adminLink }}</a>
+    <br>Manage the race from the admin site.
+  </div>
   <a href="{{ path('app_hunt_show', {id: hunt.id}) }}" class="btn btn-primary">Back to Hunt</a>
 {% endblock %}

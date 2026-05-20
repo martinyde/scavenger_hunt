@@ -15,6 +15,10 @@ final class RaceController extends AbstractController
 {
     public function __construct(
         private readonly AdminApiClient $adminApiClient,
+        #[\Symfony\Component\DependencyInjection\Attribute\Autowire('%race_frontend_url%')]
+        private readonly string $raceFrontendUrl,
+        #[\Symfony\Component\DependencyInjection\Attribute\Autowire('%admin_url%')]
+        private readonly string $adminUrl,
     ) {
     }
 
@@ -32,6 +36,8 @@ final class RaceController extends AbstractController
             return $this->render('race/created.html.twig', [
                 'race' => $race,
                 'hunt' => $hunt,
+                'raceFrontendUrl' => $this->raceFrontendUrl,
+                'adminUrl' => $this->adminUrl,
             ]);
         }
 
