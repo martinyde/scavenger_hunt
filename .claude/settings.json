@@ -1,0 +1,51 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker compose *)",
+      "Bash(docker-compose *)",
+      "Bash(task *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git branch*)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push -u origin *)",
+      "Bash(git push origin *)",
+      "Bash(git checkout -b *)",
+      "Bash(git switch -c *)",
+      "Bash(git switch *)",
+      "Bash(git checkout *)",
+      "Bash(git remote -v*)",
+      "Bash(gh issue *)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr view*)",
+      "Bash(gh label list*)",
+      "Bash(gh api *)"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git push * --force*)",
+      "Bash(git push origin main*)",
+      "Bash(git push -u origin main*)",
+      "Bash(git merge*)",
+      "Bash(gh pr merge*)",
+      "Bash(git reset --hard*)",
+      "Bash(git checkout -- *)",
+      "Bash(* --no-verify*)",
+      "Bash(git remote set-url*)",
+      "Bash(git remote add*)",
+      "Bash(git remote remove*)",
+      "Bash(git remote rename*)",
+      "Bash(composer install*)",
+      "Bash(composer update*)",
+      "Bash(npm install*)",
+      "Bash(npm ci*)",
+      "Bash(yarn install*)",
+      "Bash(cat .env.local*)",
+      "Bash(cat */.env.local*)",
+      "Read(**/.env.local)",
+      "Read(~/.ssh/*)"
+    ]
+  }
+}
