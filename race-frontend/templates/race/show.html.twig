@@ -8,7 +8,8 @@
     <div id="race-content"
          data-controller="mercure"
          data-mercure-url-value="{{ mercure_subscribe_url(['race/' ~ race.id, 'race/' ~ race.id ~ '/participants']) }}"
-         data-mercure-race-id-value="{{ race.id }}">
+         data-mercure-race-id-value="{{ race.id }}"
+         data-mercure-participant-uuid-value="{{ participant ? participant.uuid : '' }}">
 
       <div id="race-{{ race.id }}">
         {% include 'race/_race-content.html.twig' %}

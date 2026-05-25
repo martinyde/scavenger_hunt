@@ -18,7 +18,20 @@ final class RaceController extends AbstractController
     ) {
     }
 
-    #[Route('/race/{id}/{uuid}/{participantUuid}', name: 'app_race_show', methods: ['GET'])]
+    #[Route(
+        '/race/{id}/{uuid}/{participantUuid}',
+        name: 'app_race_show',
+        requirements: [
+            'id' => '\d+',
+            // UUIDs only — without this constraint the route greedy-matches
+            // partial endpoints like /race/{id}/partial/race-content and
+            // raises a 403 instead of letting Symfony route to
+            // app_race_partial_content.
+            'uuid' => '[0-9a-fA-F-]{36}',
+            'participantUuid' => '[0-9a-fA-F-]{36}',
+        ],
+        methods: ['GET'],
+    )]
     public function show(int $id, string $uuid, Request $request, ?string $participantUuid = null): Response
     {
         $race = $this->adminApiClient->getRace($id);
@@ -90,7 +103,13 @@ final class RaceController extends AbstractController
     public function partialRaceContent(int $raceId, Request $request): Response
     {
         $race = $this->adminApiClient->getRace($raceId);
-        $participantUuid = $request->cookies->get('participant');
+        // Prefer the explicit query param (sent by the participant view's
+        // Mercure controller) and fall back to the cookie. The cookie path
+        // covers callers that don't know the participant uuid (e.g. the
+        // admin progress page), but it isn't reliable when the cookie is
+        // missing — see `mercure_controller.js`.
+        $participantUuid = $request->query->get('participantUuid')
+            ?: $request->cookies->get('participant');
         $participant = null;
         if ($participantUuid) {
             try {
