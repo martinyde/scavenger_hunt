@@ -10,6 +10,8 @@ use App\Repository\ParticipantRepository;
 use App\Repository\RaceRepository;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -19,13 +21,17 @@ use Symfony\Component\Uid\UuidV7;
 
 class RaceHelper
 {
+    protected LoggerInterface $logger;
+
     public function __construct(
         protected EntityManagerInterface $entityManager,
         protected ParticipantRepository $participantRepository,
         protected TaskRepository $taskRepository,
         protected RequestStack $request,
         protected HubInterface $hub,
+        ?LoggerInterface $logger = null,
     ) {
+        $this->logger = $logger ?? new NullLogger();
     }
 
     public function createRace(Race $race, ScavengerHunt $scavengerHunt): Race
@@ -151,9 +157,10 @@ class RaceHelper
      */
     public function publishRaceStateChanged(Race $race): void
     {
+        $topic = 'race/'.$race->getId();
         try {
             $update = new Update(
-                'race/'.$race->getId(),
+                $topic,
                 json_encode([
                     'type' => 'race_state_changed',
                     'raceId' => $race->getId(),
@@ -162,8 +169,8 @@ class RaceHelper
                 ])
             );
             $this->hub->publish($update);
-        } catch (\Exception) {
-            // Mercure may not be available
+        } catch (\Throwable $e) {
+            $this->logger->error('Mercure publish failed', ['topic' => $topic, 'exception' => $e]);
         }
     }
 
@@ -172,9 +179,10 @@ class RaceHelper
      */
     public function publishParticipantUpdate(Participant $participant, Race $race): void
     {
+        $topic = 'race/'.$race->getId().'/participants';
         try {
             $update = new Update(
-                'race/'.$race->getId().'/participants',
+                $topic,
                 json_encode([
                     'type' => 'participant_updated',
                     'raceId' => $race->getId(),
@@ -185,8 +193,8 @@ class RaceHelper
                 ])
             );
             $this->hub->publish($update);
-        } catch (\Exception) {
-            // Mercure may not be available
+        } catch (\Throwable $e) {
+            $this->logger->error('Mercure publish failed', ['topic' => $topic, 'exception' => $e]);
         }
     }
 
@@ -195,9 +203,10 @@ class RaceHelper
      */
     public function publishParticipantAdded(Participant $participant, Race $race): void
     {
+        $topic = 'race/'.$race->getId().'/participants';
         try {
             $update = new Update(
-                'race/'.$race->getId().'/participants',
+                $topic,
                 json_encode([
                     'type' => 'participant_added',
                     'raceId' => $race->getId(),
@@ -206,8 +215,8 @@ class RaceHelper
                 ])
             );
             $this->hub->publish($update);
-        } catch (\Exception) {
-            // Mercure may not be available
+        } catch (\Throwable $e) {
+            $this->logger->error('Mercure publish failed', ['topic' => $topic, 'exception' => $e]);
         }
     }
 

@@ -39,7 +39,14 @@ class MercureExtension extends AbstractExtension
         );
         $jwt = $header . '.' . $payload . '.' . $signature;
 
-        $query = http_build_query(['topic' => $topics]);
+        // Mercure expects repeated `topic=<value>` query parameters (no `topic[0]=`,
+        // `topic[1]=` indexing). http_build_query() would produce indexed keys for
+        // an array, so build the query string manually.
+        $topicParams = array_map(
+            static fn (string $topic): string => 'topic=' . rawurlencode($topic),
+            $topics,
+        );
+        $query = implode('&', $topicParams);
 
         return $this->mercurePublicUrl . '?' . $query . '&authorization=' . $jwt;
     }

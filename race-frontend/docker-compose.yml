@@ -47,7 +47,7 @@ services:
       NGINX_WEB_ROOT: /app/public
       NGINX_PORT: 8081
       NGINX_MAX_BODY_SIZE: 5M
-      NGINX_MERCURE_SERVICE: ${MERCURE_SERVICE:-scavenger-admin-mercure-1:3000}
+      NGINX_MERCURE_SERVICE: ${MERCURE_SERVICE:-scavenger-mercure-1:3000}
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=frontend"
