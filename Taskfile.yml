@@ -18,6 +18,37 @@ tasks:
       - task: race:stop
       - task: admin:stop
 
+  sites:open:
+    desc: "Open all three sites in the default browser"
+    cmds:
+      - task: sites:open:admin
+      - task: sites:open:race
+      - task: sites:open:archive
+
+  sites:open:admin:
+    desc: "Open admin site in the default browser"
+    dir: admin
+    dotenv: ['.env']
+    cmds:
+      - open "https://admin-${COMPOSE_DOMAIN}"
+    silent: true
+
+  sites:open:race:
+    desc: "Open race-frontend site in the default browser"
+    dir: race-frontend
+    dotenv: ['.env']
+    cmds:
+      - open "https://race-${COMPOSE_DOMAIN}"
+    silent: true
+
+  sites:open:archive:
+    desc: "Open archive site in the default browser"
+    dir: archive
+    dotenv: ['.env']
+    cmds:
+      - open "https://archive-${COMPOSE_DOMAIN}"
+    silent: true
+
   # ============ ADMIN ============
   admin:compose:
     dir: admin
