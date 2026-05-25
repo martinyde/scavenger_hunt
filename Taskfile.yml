@@ -92,6 +92,21 @@ tasks:
       - '{{.DOCKER_COMPOSE}} exec phpfpm bin/console doctrine:migrations:migrate --no-interaction'
     silent: true
 
+  admin:fixtures:
+    desc: "Load admin Doctrine fixtures (DESTRUCTIVE — purges admin DB)"
+    dir: admin
+    cmds:
+      - '{{.DOCKER_COMPOSE}} exec phpfpm bin/console doctrine:fixtures:load --no-interaction'
+    silent: true
+
+  admin:fixtures:fresh:
+    desc: "Migrate then load admin fixtures (DESTRUCTIVE — purges admin DB)"
+    dir: admin
+    cmds:
+      - '{{.DOCKER_COMPOSE}} exec phpfpm bin/console doctrine:migrations:migrate --no-interaction'
+      - '{{.DOCKER_COMPOSE}} exec phpfpm bin/console doctrine:fixtures:load --no-interaction'
+    silent: true
+
   # ============ RACE FRONTEND ============
   race:compose:
     dir: race-frontend
