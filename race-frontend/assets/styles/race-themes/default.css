@@ -1,0 +1,125 @@
+/* Default race theme — clean neutral baseline.
+   Any future theme should redefine these variables under its own
+   [data-theme="<name>"] selector. The race-display markup consumes them
+   exclusively via var(--…) so adding a theme is purely a CSS swap. */
+
+[data-theme="default"] {
+    /* Surface */
+    --race-bg:            #fafaf7;
+    --race-surface:       #ffffff;
+    --race-surface-muted: #f4f3ee;
+    --race-border:        #e8e6df;
+
+    /* Text */
+    --race-text:          #1b1a17;
+    --race-text-muted:    #5b584d;
+    --race-text-inverse:  #ffffff;
+
+    /* Brand / accent */
+    --race-accent:        #3b73e6;
+    --race-accent-strong: #22459a;
+    --race-accent-soft:   #dceaff;
+
+    /* Semantic */
+    --race-success:       #16a34a;
+    --race-warn:          #d97706;
+    --race-danger:        #dc2626;
+
+    /* Typography */
+    --race-font-display:  "Fraunces", "Inter", serif;
+    --race-font-body:     "Inter", system-ui, sans-serif;
+    --race-font-mono:     "JetBrains Mono", ui-monospace, monospace;
+
+    /* Radii */
+    --race-radius-sm: 0.25rem;
+    --race-radius:    0.5rem;
+    --race-radius-lg: 0.75rem;
+    --race-radius-xl: 1rem;
+
+    /* Shadows */
+    --race-shadow-card: 0 2px 6px rgba(15, 23, 42, 0.05), 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+/* Themed primitives — used by race-display pages.
+   These class names live outside @layer so they are not purged by Tailwind. */
+.theme-frame {
+    background: var(--race-bg);
+}
+.race-shell {
+    background: var(--race-bg);
+    color: var(--race-text);
+    font-family: var(--race-font-body);
+    min-height: 100vh;
+}
+.race-card {
+    background: var(--race-surface);
+    border: 1px solid var(--race-border);
+    border-radius: var(--race-radius-lg);
+    box-shadow: var(--race-shadow-card);
+}
+.race-card-muted {
+    background: var(--race-surface-muted);
+    border: 1px solid var(--race-border);
+    border-radius: var(--race-radius);
+}
+.race-title {
+    font-family: var(--race-font-display);
+    color: var(--race-text);
+    letter-spacing: -0.01em;
+}
+.race-muted { color: var(--race-text-muted); }
+.race-accent { color: var(--race-accent); }
+.race-accent-bg { background: var(--race-accent); color: var(--race-text-inverse); }
+
+.race-countdown {
+    font-family: var(--race-font-mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--race-accent-strong);
+    letter-spacing: 0.02em;
+}
+
+.race-progress {
+    height: 0.5rem;
+    width: 100%;
+    background: var(--race-surface-muted);
+    border-radius: 9999px;
+    overflow: hidden;
+}
+.race-progress > span {
+    display: block;
+    height: 100%;
+    background: var(--race-accent);
+    transition: width 250ms ease;
+}
+
+.race-input {
+    background: var(--race-surface);
+    border: 1px solid var(--race-border);
+    border-radius: var(--race-radius);
+    padding: 0.75rem 1rem;
+    font-family: var(--race-font-body);
+    color: var(--race-text);
+    font-size: 1rem;
+    width: 100%;
+}
+.race-input:focus {
+    outline: none;
+    border-color: var(--race-accent);
+    box-shadow: 0 0 0 3px var(--race-accent-soft);
+}
+.race-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--race-accent);
+    color: var(--race-text-inverse);
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--race-radius);
+    font-weight: 600;
+    font-family: var(--race-font-body);
+    border: 0;
+    cursor: pointer;
+    transition: background-color 150ms ease;
+}
+.race-btn:hover { background: var(--race-accent-strong); }

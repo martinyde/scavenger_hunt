@@ -3,11 +3,15 @@ parameters:
     admin_api_key: '%env(ADMIN_API_KEY)%'
     mercure_public_url: '%env(MERCURE_PUBLIC_URL)%'
     mercure_jwt_secret: '%env(MERCURE_JWT_SECRET)%'
+    app.race_theme_default: '%env(RACE_THEME_DEFAULT)%'
 
 services:
     _defaults:
         autowire: true
         autoconfigure: true
+        bind:
+            $raceThemeDefault: '%app.race_theme_default%'
+            $defaultTheme: '%app.race_theme_default%'
 
     App\:
         resource: "../src/"
@@ -21,3 +25,7 @@ services:
         arguments:
             $mercureJwtSecret: '%mercure_jwt_secret%'
             $mercurePublicUrl: '%mercure_public_url%'
+
+    App\Twig\RaceThemeExtension:
+        arguments:
+            $defaultTheme: '%app.race_theme_default%'

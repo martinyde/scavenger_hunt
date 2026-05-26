@@ -1,3 +1,7 @@
-<div id="race-timeleft" data-race-state="{{ timer.raceState ? '1' : '' }}" data-duration="{{ timer.duration }}" data-timeleft="{{ timer.secondsLeft }}">
-  <span data-controller="countdown"></span>
+<div id="race-timeleft"
+     class="race-countdown"
+     data-race-state="{{ timer.raceState ? '1' : '' }}"
+     data-duration="{{ timer.duration }}"
+     data-timeleft="{{ timer.secondsLeft }}">
+    <span data-controller="countdown"></span>
 </div>

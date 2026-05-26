@@ -1,30 +1,90 @@
-<div>
-  <table class="table">
-    <tbody>
-    <tr>
-      <th>Timer</th>
-      <td>{% include 'race/timer.html.twig' %}</td>
-    </tr>
-    </tbody>
-  </table>
+<div class="grid lg:grid-cols-[1fr_320px] gap-8">
 
-  <form method="post" action="{{ path('app_form_try', {raceId: race.id}) }}">
-    <div class="mb-3">
-      <input type="text" name="try" class="form-control" placeholder="Enter access key" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Try</button>
-  </form>
+    {# ============ Task panel ============ #}
+    <section>
+        <div class="text-xs uppercase tracking-wider race-muted mb-2">
+            {{ race.scavengerHunt.name }}
+        </div>
+        <h1 class="race-title text-5xl leading-tight">Enter your next access key</h1>
 
-  <div>
-    <table class="table">
-      <thead>
-      <tr><td>Task</td></tr>
-      </thead>
-      <tbody id="participant-progress">
-        {% if participant and participant.progressTasks is defined %}
-          {# Tasks will be shown via API data #}
+        <div class="race-card mt-6 p-6">
+            <p class="text-base leading-relaxed">
+                Find the next location and read the access key off the marker.
+                Type it below to unlock the next task.
+            </p>
+        </div>
+
+        {# Access-key submission — POSTs to the existing app_form_try endpoint. #}
+        <form method="post" action="{{ path('app_form_try', {raceId: race.id}) }}" class="race-card mt-6 p-6">
+            <label class="block text-sm font-medium mb-2" for="try-input">Access key</label>
+            <div class="flex gap-2">
+                <input id="try-input"
+                       type="text"
+                       name="try"
+                       class="race-input"
+                       placeholder="Enter access key"
+                       required>
+                <button type="submit" class="race-btn">Try</button>
+            </div>
+        </form>
+    </section>
+
+    {# ============ Sidebar ============ #}
+    <aside class="space-y-5">
+
+        {# Countdown #}
+        <div class="race-card p-5 text-center">
+            <div class="text-xs uppercase tracking-wider race-muted mb-1">Time remaining</div>
+            <div class="mt-1 text-6xl">
+                {% include 'race/timer.html.twig' %}
+            </div>
+        </div>
+
+        {# Teams #}
+        <div class="race-card p-5">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="race-title text-lg">Teams</h3>
+                <span class="text-xs race-muted">{{ participants|length }} racing</span>
+            </div>
+            <ul class="space-y-3" id="participants">
+                {% for p in participants %}
+                    {% set tasksTotal = scavengerHunt.tasks|length %}
+                    {% set solved = p.progressSolutionCount ?? 0 %}
+                    {% set ratio = tasksTotal > 0 ? (solved / tasksTotal * 100)|round : 0 %}
+                    <li id="participant-{{ p.id }}">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="font-medium">{{ p.name }}</span>
+                            <span class="race-muted">{{ solved }} / {{ tasksTotal }}</span>
+                        </div>
+                        <div class="race-progress mt-1"><span style="width: {{ ratio }}%"></span></div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        {# Progress strip — current team's task completion. #}
+        {% if participant %}
+            <div class="race-card-muted p-5" id="participant-progress">
+                <h3 class="race-title text-lg mb-3">Your progress</h3>
+                {% set tasksTotal = scavengerHunt.tasks|length %}
+                {% set solved = participant.progressSolutionCount ?? 0 %}
+                {% set entries = participant.progressEntryCount ?? 0 %}
+                {% set remaining = tasksTotal - solved %}
+                <div class="grid grid-cols-6 gap-1">
+                    {% for i in 1..tasksTotal %}
+                        {% if i <= solved %}
+                            <span class="h-2 rounded" style="background: var(--race-accent)"></span>
+                        {% elseif i <= entries %}
+                            <span class="h-2 rounded" style="background: var(--race-accent); opacity: 0.6;"></span>
+                        {% else %}
+                            <span class="h-2 rounded" style="background: var(--race-border)"></span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="text-xs race-muted mt-3">
+                    {{ solved }} solved · {{ (entries - solved) > 0 ? (entries - solved) : 0 }} in progress · {{ remaining > 0 ? remaining : 0 }} remaining
+                </div>
+            </div>
         {% endif %}
-      </tbody>
-    </table>
-  </div>
+    </aside>
 </div>

@@ -1,13 +1,17 @@
 {% if race.active %}
-  {% if participant %}
-    {% include 'race/_race-active.html.twig' %}
-  {% else %}
-    <p>Race is in progress. You are not a participant.</p>
-  {% endif %}
+    {% if participant %}
+        {% include 'race/_race-active.html.twig' %}
+    {% else %}
+        <div class="race-card p-8 text-center">
+            <div class="text-xs uppercase tracking-wider race-muted mb-2">Spectator view</div>
+            <h1 class="race-title text-4xl leading-tight">Race in progress</h1>
+            <p class="mt-3 race-muted">You are not a participant in this race.</p>
+        </div>
+    {% endif %}
 {% else %}
-  {% if race.finished %}
-    {% include 'race/_race-finished.html.twig' %}
-  {% else %}
-    {% include 'race/_race-awaiting.html.twig' %}
-  {% endif %}
+    {% if race.finished %}
+        {% include 'race/_race-finished.html.twig' %}
+    {% else %}
+        {% include 'race/_race-awaiting.html.twig' %}
+    {% endif %}
 {% endif %}

@@ -1,14 +1,10 @@
-<table class="table">
-  <thead>
-  <tr>
-    <td>Name</td>
-  </tr>
-  </thead>
-  <tbody id="participants">
-  {% for p in participants %}
-    <tr id="participant-{{ p.id }}">
-      <td>{{ p.name }}</td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
+<ul class="divide-y" style="border-color: var(--race-border);" id="participants">
+    {% for p in participants %}
+        <li id="participant-{{ p.id }}" class="py-2 flex items-center justify-between text-sm">
+            <span class="font-medium">{{ p.name }}</span>
+            <span class="race-muted text-xs">Team</span>
+        </li>
+    {% else %}
+        <li class="py-2 race-muted text-sm">No teams yet — waiting for contestants to join.</li>
+    {% endfor %}
+</ul>
