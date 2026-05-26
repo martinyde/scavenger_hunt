@@ -1,0 +1,76 @@
+<section class="px-6 py-16">
+  <div class="max-w-3xl">
+    <span class="pill-info mb-4">Internal · Design only</span>
+    <h1 class="text-5xl font-display tracking-tight text-neutral-900 mt-3">
+      A shared visual language for Scavenger Hunt.
+    </h1>
+    <p class="mt-5 text-lg text-neutral-600 leading-relaxed">
+      This site is a static playground for mocking up how the three Symfony apps —
+      <span class="font-medium text-neutral-800">Archive</span>,
+      <span class="font-medium text-neutral-800">Admin</span>, and the
+      <span class="font-medium text-neutral-800">Race display</span> —
+      should look and feel. Approved designs are ported by hand into the real Twig
+      templates afterwards; nothing here ships to production directly.
+    </p>
+    <div class="mt-7 flex flex-wrap gap-3">
+      <a href="#/design-system" class="btn-primary no-underline">Open the design system</a>
+      <a href="#/archive"       class="btn-secondary no-underline">View archive mock</a>
+      <a href="#/admin"         class="btn-secondary no-underline">View admin mock</a>
+      <a href="#/race"          class="btn-secondary no-underline">View race-display mock</a>
+    </div>
+  </div>
+
+  <!-- What lives where ------------------------------------------------- -->
+  <div class="grid md:grid-cols-3 gap-5 mt-14">
+    <a href="#/archive" class="card no-underline hover:shadow-pop transition-shadow">
+      <div class="card-body">
+        <div class="w-10 h-10 rounded-md bg-brand-100 text-brand-700 flex items-center justify-center font-semibold">A</div>
+        <h3 class="mt-3 text-lg">Archive</h3>
+        <p class="text-sm text-neutral-600 mt-1">
+          Public-facing catalogue of hunts. Browse, search, preview before running a race.
+          Shop-like feel.
+        </p>
+      </div>
+    </a>
+    <a href="#/admin" class="card no-underline hover:shadow-pop transition-shadow">
+      <div class="card-body">
+        <div class="w-10 h-10 rounded-md bg-brand-100 text-brand-700 flex items-center justify-center font-semibold">B</div>
+        <h3 class="mt-3 text-lg">Admin</h3>
+        <p class="text-sm text-neutral-600 mt-1">
+          Internal tooling for editing hunts and managing races. Dense, structured,
+          keyboard-friendly.
+        </p>
+      </div>
+    </a>
+    <a href="#/race" class="card no-underline hover:shadow-pop transition-shadow">
+      <div class="card-body">
+        <div class="w-10 h-10 rounded-md bg-brand-100 text-brand-700 flex items-center justify-center font-semibold">C</div>
+        <h3 class="mt-3 text-lg">Race display</h3>
+        <p class="text-sm text-neutral-600 mt-1">
+          Participant view at the venue. Themeable — variables under <code class="kbd">[data-theme]</code>
+          drive colors, fonts, and radii.
+        </p>
+      </div>
+    </a>
+  </div>
+
+  <!-- How this site is wired ----------------------------------------- -->
+  <div class="mt-16 grid md:grid-cols-2 gap-8">
+    <div>
+      <h3 class="text-xl">How navigation works</h3>
+      <p class="text-sm text-neutral-600 mt-2">
+        The top tabs use a hash router (<code class="kbd">#/archive</code>, <code class="kbd">#/admin</code>, …).
+        Each mock site can also be opened directly as a standalone HTML file — handy
+        when reviewing one screen at a time in isolation.
+      </p>
+    </div>
+    <div>
+      <h3 class="text-xl">How theming works</h3>
+      <p class="text-sm text-neutral-600 mt-2">
+        The race display reads its colors and typography from CSS custom properties
+        scoped under <code class="kbd">[data-theme="…"]</code>. Adding a theme is one
+        CSS file plus one picker entry — see <a href="#/race">the race-display mock</a>.
+      </p>
+    </div>
+  </div>
+</section>

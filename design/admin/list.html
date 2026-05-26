@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en" data-theme="default">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin · Hunts — Scavenger Hunt</title>
+  <link rel="stylesheet" href="../dist/css/app.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" />
+</head>
+<body class="bg-neutral-100">
+
+<div class="min-h-screen grid grid-cols-[240px_1fr]">
+
+  <!-- Sidebar -->
+  <aside class="bg-neutral-900 text-neutral-100 flex flex-col">
+    <div class="h-14 px-4 flex items-center gap-2 border-b border-neutral-800">
+      <span class="inline-block w-7 h-7 rounded-md bg-brand-500"></span>
+      <span class="font-display text-lg">Admin</span>
+    </div>
+    <nav class="flex-1 px-2 py-3 space-y-0.5 text-sm">
+      <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md text-neutral-300 hover:bg-neutral-800 hover:text-white no-underline">Dashboard</a>
+      <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md bg-neutral-800 text-white no-underline">Hunts</a>
+      <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md text-neutral-300 hover:bg-neutral-800 hover:text-white no-underline">Races</a>
+      <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md text-neutral-300 hover:bg-neutral-800 hover:text-white no-underline">Tasks</a>
+      <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md text-neutral-300 hover:bg-neutral-800 hover:text-white no-underline">Users</a>
+      <div class="mt-4 mb-2 px-3 text-[10px] uppercase tracking-wider text-neutral-500">System</div>
+      <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md text-neutral-300 hover:bg-neutral-800 hover:text-white no-underline">Settings</a>
+      <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md text-neutral-300 hover:bg-neutral-800 hover:text-white no-underline">Audit log</a>
+    </nav>
+    <div class="px-3 py-3 border-t border-neutral-800 text-xs text-neutral-500">v0.1.0 · staging</div>
+  </aside>
+
+  <!-- Main pane -->
+  <div class="flex flex-col min-w-0">
+
+    <header class="h-14 bg-white border-b border-neutral-200 flex items-center justify-between px-6">
+      <div class="flex items-center gap-3 text-sm text-neutral-500">
+        <a href="#" class="hover:text-neutral-800 no-underline">Dashboard</a>
+        <span>/</span>
+        <span class="text-neutral-800 font-medium">Hunts</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <input class="input w-72" placeholder="Search hunts, races, users…" />
+        <button class="btn-ghost btn-sm" aria-label="Notifications">🔔</button>
+        <div class="w-8 h-8 rounded-full bg-brand-600 text-white flex items-center justify-center text-sm font-medium">MY</div>
+      </div>
+    </header>
+
+    <main class="flex-1 p-6 space-y-5">
+
+      <!-- Page heading -->
+      <div class="flex items-end justify-between">
+        <div>
+          <h1 class="text-3xl">Hunts</h1>
+          <p class="text-sm text-neutral-500 mt-1">All hunts owned by your organization.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="btn-secondary">Import</button>
+          <button class="btn-primary">+ New hunt</button>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="card">
+        <div class="card-body py-3 flex flex-wrap items-center gap-2">
+          <input class="input max-w-xs" placeholder="Filter by name…" />
+          <select class="select w-auto">
+            <option>Status: All</option>
+            <option>Active</option>
+            <option>Draft</option>
+            <option>Archived</option>
+          </select>
+          <select class="select w-auto">
+            <option>Owner: Anyone</option>
+            <option>Me</option>
+            <option>Team</option>
+          </select>
+          <div class="ml-auto flex items-center gap-2 text-sm text-neutral-500">
+            <span>24 results</span>
+            <span class="text-neutral-300">·</span>
+            <button class="btn-ghost btn-sm">Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="card overflow-hidden">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="w-10"><input type="checkbox" class="rounded border-neutral-300" /></th>
+              <th>
+                <button class="inline-flex items-center gap-1 hover:text-neutral-900">
+                  Name <span class="text-neutral-400">↑</span>
+                </button>
+              </th>
+              <th>Status</th>
+              <th>Tasks</th>
+              <th>Owner</th>
+              <th>
+                <button class="inline-flex items-center gap-1 hover:text-neutral-900">
+                  Updated <span class="text-neutral-300">↕</span>
+                </button>
+              </th>
+              <th class="text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox" class="rounded border-neutral-300" /></td>
+              <td>
+                <a href="#" class="font-medium text-neutral-900 no-underline hover:underline">Aarhus Old Town Mystery</a>
+                <div class="text-xs text-neutral-500">aarhus-old-town</div>
+              </td>
+              <td><span class="pill-success">Active</span></td>
+              <td>12</td>
+              <td>Maria Y.</td>
+              <td class="text-neutral-500">2 days ago</td>
+              <td class="text-right">
+                <div class="inline-flex gap-1">
+                  <button class="btn-ghost btn-sm">View</button>
+                  <button class="btn-ghost btn-sm">Edit</button>
+                  <button class="btn-ghost btn-sm text-danger-600 hover:bg-danger-50">Delete</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="rounded border-neutral-300" /></td>
+              <td>
+                <a href="#" class="font-medium text-neutral-900 no-underline hover:underline">Harbor Hunt for Kids</a>
+                <div class="text-xs text-neutral-500">harbor-kids</div>
+              </td>
+              <td><span class="pill-success">Active</span></td>
+              <td>8</td>
+              <td>Lars P.</td>
+              <td class="text-neutral-500">4 days ago</td>
+              <td class="text-right">
+                <div class="inline-flex gap-1">
+                  <button class="btn-ghost btn-sm">View</button>
+                  <button class="btn-ghost btn-sm">Edit</button>
+                  <button class="btn-ghost btn-sm text-danger-600 hover:bg-danger-50">Delete</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="rounded border-neutral-300" /></td>
+              <td>
+                <a href="#" class="font-medium text-neutral-900 no-underline hover:underline">The Lighthouse Riddle</a>
+                <div class="text-xs text-neutral-500">lighthouse</div>
+              </td>
+              <td><span class="pill-warn">Draft</span></td>
+              <td>15</td>
+              <td>Anders B.</td>
+              <td class="text-neutral-500">1 week ago</td>
+              <td class="text-right">
+                <div class="inline-flex gap-1">
+                  <button class="btn-ghost btn-sm">View</button>
+                  <button class="btn-ghost btn-sm">Edit</button>
+                  <button class="btn-ghost btn-sm text-danger-600 hover:bg-danger-50">Delete</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="rounded border-neutral-300" /></td>
+              <td>
+                <a href="#" class="font-medium text-neutral-900 no-underline hover:underline">Vikings of Moesgaard</a>
+                <div class="text-xs text-neutral-500">moesgaard-vikings</div>
+              </td>
+              <td><span class="pill-info">In review</span></td>
+              <td>10</td>
+              <td>Maria Y.</td>
+              <td class="text-neutral-500">2 weeks ago</td>
+              <td class="text-right">
+                <div class="inline-flex gap-1">
+                  <button class="btn-ghost btn-sm">View</button>
+                  <button class="btn-ghost btn-sm">Edit</button>
+                  <button class="btn-ghost btn-sm text-danger-600 hover:bg-danger-50">Delete</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="rounded border-neutral-300" /></td>
+              <td>
+                <a href="#" class="font-medium text-neutral-900 no-underline hover:underline">Office Onboarding Hunt</a>
+                <div class="text-xs text-neutral-500">office-onboarding</div>
+              </td>
+              <td><span class="pill-danger">Archived</span></td>
+              <td>6</td>
+              <td>Sara K.</td>
+              <td class="text-neutral-500">2 months ago</td>
+              <td class="text-right">
+                <div class="inline-flex gap-1">
+                  <button class="btn-ghost btn-sm">View</button>
+                  <button class="btn-ghost btn-sm">Edit</button>
+                  <button class="btn-ghost btn-sm text-danger-600 hover:bg-danger-50">Delete</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="flex items-center justify-between text-sm text-neutral-600">
+        <span>Showing 1–5 of 24</span>
+        <div class="flex items-center gap-1">
+          <button class="btn-ghost btn-sm" disabled>← Prev</button>
+          <button class="btn-secondary btn-sm">1</button>
+          <button class="btn-ghost btn-sm">2</button>
+          <button class="btn-ghost btn-sm">3</button>
+          <button class="btn-ghost btn-sm">Next →</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

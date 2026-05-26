@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en" data-theme="default">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Race — Active task</title>
+  <link rel="stylesheet" href="../dist/css/app.css" />
+  <link rel="stylesheet" href="themes/default.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" />
+  <style>
+    /* Page-local helpers — these consume theme variables only, no Tailwind colors. */
+    .theme-frame {
+      background: var(--race-bg);
+    }
+  </style>
+</head>
+<body class="theme-frame">
+
+<div class="race-shell">
+
+  <!-- Race-display navbar (kept minimal — this is meant for venue screens) -->
+  <header class="border-b" style="border-color: var(--race-border); background: var(--race-surface);">
+    <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-6 h-6 rounded-md race-accent-bg"></span>
+        <span class="race-title text-lg">Aarhus Old Town Mystery</span>
+        <span class="pill ring-1 ring-inset" style="background: var(--race-accent-soft); color: var(--race-accent-strong); border-color: transparent;">Live</span>
+      </div>
+
+      <!-- Theme picker — single source of truth lives in src/js/themes.js -->
+      <div data-theme-picker class="flex items-center"></div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 py-10 grid lg:grid-cols-[1fr_320px] gap-8">
+
+    <!-- Task panel ------------------------------------------- -->
+    <section>
+      <div class="text-xs uppercase tracking-wider race-muted mb-2">Task 4 of 12</div>
+      <h1 class="race-title text-5xl leading-tight">Find the bronze plaque on the cathedral wall.</h1>
+
+      <div class="race-card mt-6 p-6">
+        <p class="text-base leading-relaxed">
+          Approach the south-facing wall of the cathedral. Look for the small bronze
+          plaque mounted at roughly shoulder height — it commemorates a 19th-century
+          restoration. Read the year stamped on it.
+        </p>
+        <p class="mt-4 race-muted text-sm">
+          Hint: it is closer to the door than to the corner.
+        </p>
+      </div>
+
+      <!-- Solution input -->
+      <div class="race-card mt-6 p-6">
+        <label class="block text-sm font-medium mb-2" for="solution">Your answer</label>
+        <div class="flex gap-2">
+          <input id="solution" class="race-input" placeholder="Type the year you found…" />
+          <button class="race-btn">Submit</button>
+        </div>
+        <div class="mt-3 flex items-center gap-2 text-xs race-muted">
+          <span>2 guesses used</span>
+          <span>·</span>
+          <span>Each wrong guess costs 30 seconds.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sidebar -------------------------------------------- -->
+    <aside class="space-y-5">
+
+      <!-- Countdown -->
+      <div class="race-card p-5 text-center">
+        <div class="text-xs uppercase tracking-wider race-muted mb-1">Time remaining</div>
+        <div class="race-countdown text-6xl mt-1">12:43</div>
+        <div class="race-progress mt-4"><span style="width: 64%"></span></div>
+      </div>
+
+      <!-- Participants -->
+      <div class="race-card p-5">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="race-title text-lg">Teams</h3>
+          <span class="text-xs race-muted">4 racing</span>
+        </div>
+        <ul class="space-y-3">
+          <li>
+            <div class="flex items-center justify-between text-sm">
+              <span class="font-medium">Team Red</span>
+              <span class="race-muted">8 / 12</span>
+            </div>
+            <div class="race-progress mt-1"><span style="width: 66%"></span></div>
+          </li>
+          <li>
+            <div class="flex items-center justify-between text-sm">
+              <span class="font-medium">Team Blue</span>
+              <span class="race-muted">7 / 12</span>
+            </div>
+            <div class="race-progress mt-1"><span style="width: 58%"></span></div>
+          </li>
+          <li>
+            <div class="flex items-center justify-between text-sm">
+              <span class="font-medium">Team Green</span>
+              <span class="race-muted">5 / 12</span>
+            </div>
+            <div class="race-progress mt-1"><span style="width: 42%"></span></div>
+          </li>
+          <li>
+            <div class="flex items-center justify-between text-sm">
+              <span class="font-medium">Team Yellow</span>
+              <span class="race-muted">4 / 12</span>
+            </div>
+            <div class="race-progress mt-1"><span style="width: 33%"></span></div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Task strip -->
+      <div class="race-card-muted p-5">
+        <h3 class="race-title text-lg mb-3">Progress</h3>
+        <div class="grid grid-cols-6 gap-1">
+          <span class="h-2 rounded" style="background: var(--race-accent)"></span>
+          <span class="h-2 rounded" style="background: var(--race-accent)"></span>
+          <span class="h-2 rounded" style="background: var(--race-accent)"></span>
+          <span class="h-2 rounded" style="background: var(--race-accent); opacity: 0.6;"></span>
+          <span class="h-2 rounded" style="background: var(--race-border)"></span>
+          <span class="h-2 rounded" style="background: var(--race-border)"></span>
+          <span class="h-2 rounded" style="background: var(--race-border)"></span>
+          <span class="h-2 rounded" style="background: var(--race-border)"></span>
+          <span class="h-2 rounded" style="background: var(--race-border)"></span>
+          <span class="h-2 rounded" style="background: var(--race-border)"></span>
+          <span class="h-2 rounded" style="background: var(--race-border)"></span>
+          <span class="h-2 rounded" style="background: var(--race-border)"></span>
+        </div>
+        <div class="text-xs race-muted mt-3">3 solved · 1 in progress · 8 remaining</div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="border-t" style="border-color: var(--race-border);">
+    <div class="max-w-5xl mx-auto px-6 py-4 text-xs race-muted flex justify-between">
+      <span>Race #248 · Started 19:04</span>
+      <span>Live updates via Mercure</span>
+    </div>
+  </footer>
+</div>
+
+<script type="module" src="../src/js/themes.js"></script>
+</body>
+</html>

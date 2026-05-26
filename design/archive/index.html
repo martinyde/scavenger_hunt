@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en" data-theme="default">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Archive — Scavenger Hunt</title>
+  <link rel="stylesheet" href="../dist/css/app.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" />
+</head>
+<body class="bg-neutral-50">
+
+  <!-- Site-internal navbar (mocks the eventual Twig nav) -------------- -->
+  <header class="bg-white border-b border-neutral-200">
+    <div class="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="inline-block w-7 h-7 rounded-md bg-brand-600"></span>
+        <span class="font-display text-lg text-neutral-900">Hunt Archive</span>
+      </div>
+      <nav class="flex items-center gap-1">
+        <a class="nav-link-active" href="#">Browse</a>
+        <a class="nav-link" href="#">My races</a>
+        <a class="nav-link" href="#">About</a>
+      </nav>
+      <div class="flex items-center gap-2">
+        <button class="btn-secondary btn-sm">Sign in</button>
+        <button class="btn-primary btn-sm">Create a race</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero / search ----------------------------------------------- -->
+  <section class="border-b border-neutral-200 bg-gradient-to-b from-brand-50/60 to-neutral-50">
+    <div class="max-w-7xl mx-auto px-6 py-12">
+      <h1 class="text-4xl font-display tracking-tight">Find your next hunt.</h1>
+      <p class="text-neutral-600 mt-2 max-w-xl">Browse community-built scavenger hunts. Start a free race in two clicks.</p>
+      <div class="mt-6 flex gap-2 max-w-xl">
+        <input class="input" placeholder="Search by name, city, theme…" />
+        <button class="btn-primary">Search</button>
+      </div>
+
+      <!-- Filters -->
+      <div class="mt-6 flex flex-wrap items-center gap-2">
+        <span class="text-xs uppercase tracking-wider text-neutral-500 mr-2">Filter</span>
+        <button class="pill bg-brand-100 text-brand-800 ring-brand-300">All</button>
+        <button class="pill-neutral hover:bg-neutral-200">Outdoor</button>
+        <button class="pill-neutral hover:bg-neutral-200">Indoor</button>
+        <button class="pill-neutral hover:bg-neutral-200">Family</button>
+        <button class="pill-neutral hover:bg-neutral-200">Team building</button>
+        <button class="pill-neutral hover:bg-neutral-200">History</button>
+        <button class="pill-neutral hover:bg-neutral-200">Mystery</button>
+        <span class="mx-2 text-neutral-300">·</span>
+        <select class="select w-auto text-xs py-1">
+          <option>Sort: Newest</option>
+          <option>Sort: Most popular</option>
+          <option>Sort: Shortest</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- Grid -------------------------------------------------------- -->
+  <section class="max-w-7xl mx-auto px-6 py-10">
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-2xl">Recently published</h2>
+      <span class="text-sm text-neutral-500">24 hunts</span>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+
+      <!-- Card template ----------------------------------------- -->
+      <article class="card hover:shadow-pop transition-shadow">
+        <div class="h-40 bg-gradient-to-br from-brand-300 to-brand-600 relative">
+          <span class="absolute top-2 left-2 pill-success">Free</span>
+          <span class="absolute top-2 right-2 pill-neutral bg-white/90">Outdoor</span>
+        </div>
+        <div class="card-body">
+          <h3 class="text-base font-semibold leading-snug">Aarhus Old Town Mystery</h3>
+          <p class="text-sm text-neutral-600 mt-1 line-clamp-2">A walking hunt through Latinerkvarteret. Twelve tasks, around 90 minutes.</p>
+          <div class="mt-3 flex items-center justify-between text-xs text-neutral-500">
+            <span>12 tasks · 90 min</span>
+            <span>★ 4.8</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card hover:shadow-pop transition-shadow">
+        <div class="h-40 bg-gradient-to-br from-success-500 to-success-700 relative">
+          <span class="absolute top-2 left-2 pill-success">Free</span>
+          <span class="absolute top-2 right-2 pill-neutral bg-white/90">Family</span>
+        </div>
+        <div class="card-body">
+          <h3 class="text-base font-semibold leading-snug">Harbor Hunt for Kids</h3>
+          <p class="text-sm text-neutral-600 mt-1 line-clamp-2">Family-friendly route along the harbor. Picture clues, no reading required.</p>
+          <div class="mt-3 flex items-center justify-between text-xs text-neutral-500">
+            <span>8 tasks · 45 min</span>
+            <span>★ 4.6</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card hover:shadow-pop transition-shadow">
+        <div class="h-40 bg-gradient-to-br from-warn-500 to-warn-700 relative">
+          <span class="absolute top-2 left-2 pill-neutral bg-white/90">Premium</span>
+          <span class="absolute top-2 right-2 pill-neutral bg-white/90">Mystery</span>
+        </div>
+        <div class="card-body">
+          <h3 class="text-base font-semibold leading-snug">The Lighthouse Riddle</h3>
+          <p class="text-sm text-neutral-600 mt-1 line-clamp-2">An evening mystery hunt with a narrative arc. Best for groups of 4–8.</p>
+          <div class="mt-3 flex items-center justify-between text-xs text-neutral-500">
+            <span>15 tasks · 2 h</span>
+            <span>★ 4.9</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card hover:shadow-pop transition-shadow">
+        <div class="h-40 bg-gradient-to-br from-info-500 to-brand-700 relative">
+          <span class="absolute top-2 left-2 pill-success">Free</span>
+          <span class="absolute top-2 right-2 pill-neutral bg-white/90">History</span>
+        </div>
+        <div class="card-body">
+          <h3 class="text-base font-semibold leading-snug">Vikings of Moesgaard</h3>
+          <p class="text-sm text-neutral-600 mt-1 line-clamp-2">Tied to the Moesgaard museum exhibits. Mix of in-museum and outdoor stops.</p>
+          <div class="mt-3 flex items-center justify-between text-xs text-neutral-500">
+            <span>10 tasks · 75 min</span>
+            <span>★ 4.5</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card hover:shadow-pop transition-shadow">
+        <div class="h-40 bg-gradient-to-br from-neutral-400 to-neutral-700 relative">
+          <span class="absolute top-2 left-2 pill-success">Free</span>
+          <span class="absolute top-2 right-2 pill-neutral bg-white/90">Indoor</span>
+        </div>
+        <div class="card-body">
+          <h3 class="text-base font-semibold leading-snug">Office Onboarding Hunt</h3>
+          <p class="text-sm text-neutral-600 mt-1 line-clamp-2">Template you can customize: shows new hires the office while breaking the ice.</p>
+          <div class="mt-3 flex items-center justify-between text-xs text-neutral-500">
+            <span>6 tasks · 30 min</span>
+            <span>★ 4.2</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card hover:shadow-pop transition-shadow">
+        <div class="h-40 bg-gradient-to-br from-danger-500 to-warn-700 relative">
+          <span class="absolute top-2 left-2 pill-neutral bg-white/90">Premium</span>
+          <span class="absolute top-2 right-2 pill-neutral bg-white/90">Team building</span>
+        </div>
+        <div class="card-body">
+          <h3 class="text-base font-semibold leading-snug">Department vs Department</h3>
+          <p class="text-sm text-neutral-600 mt-1 line-clamp-2">Competitive multi-team format with a leaderboard and bonus rounds.</p>
+          <div class="mt-3 flex items-center justify-between text-xs text-neutral-500">
+            <span>20 tasks · 2.5 h</span>
+            <span>★ 4.7</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card hover:shadow-pop transition-shadow">
+        <div class="h-40 bg-gradient-to-br from-brand-500 to-info-700 relative">
+          <span class="absolute top-2 left-2 pill-success">Free</span>
+          <span class="absolute top-2 right-2 pill-neutral bg-white/90">Outdoor</span>
+        </div>
+        <div class="card-body">
+          <h3 class="text-base font-semibold leading-snug">Riverside Botanical Walk</h3>
+          <p class="text-sm text-neutral-600 mt-1 line-clamp-2">Spot trees, plants, and birdsong cues along the Aarhus river.</p>
+          <div class="mt-3 flex items-center justify-between text-xs text-neutral-500">
+            <span>9 tasks · 60 min</span>
+            <span>★ 4.4</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card hover:shadow-pop transition-shadow">
+        <div class="h-40 bg-gradient-to-br from-info-400 to-info-700 relative">
+          <span class="absolute top-2 left-2 pill-success">Free</span>
+          <span class="absolute top-2 right-2 pill-neutral bg-white/90">History</span>
+        </div>
+        <div class="card-body">
+          <h3 class="text-base font-semibold leading-snug">Cathedral & Old Streets</h3>
+          <p class="text-sm text-neutral-600 mt-1 line-clamp-2">A short hunt around the cathedral with architectural detail clues.</p>
+          <div class="mt-3 flex items-center justify-between text-xs text-neutral-500">
+            <span>7 tasks · 50 min</span>
+            <span>★ 4.3</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-10 flex items-center justify-center gap-1">
+      <button class="btn-ghost btn-sm" disabled>← Prev</button>
+      <button class="btn-secondary btn-sm">1</button>
+      <button class="btn-ghost btn-sm">2</button>
+      <button class="btn-ghost btn-sm">3</button>
+      <span class="px-2 text-neutral-400">…</span>
+      <button class="btn-ghost btn-sm">7</button>
+      <button class="btn-ghost btn-sm">Next →</button>
+    </div>
+  </section>
+
+</body>
+</html>
