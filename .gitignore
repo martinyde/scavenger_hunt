@@ -10,3 +10,6 @@ design/dist/
 # Internal working docs
 _source/
 REFACTORING_PLAN.md
+
+# Local git worktrees (per-agent feature branches)
+/worktrees/

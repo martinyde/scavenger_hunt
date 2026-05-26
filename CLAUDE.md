@@ -33,7 +33,7 @@ When in doubt, ask which mode the user wants before starting.
 ## Branch and worktree conventions
 
 - Never commit to `main`.
-- Worktrees live under `.claude/worktrees/<name>/`.
+- Worktrees live under `worktrees/<name>/` (gitignored). They are intentionally *outside* `.claude/` because sub-agents do not have write access to `.claude/**` even in `acceptEdits` mode.
 - Branch names: `issue-<number>-<short-kebab-slug>` when an issue exists; otherwise `<type>/<slug>` (e.g. `feat/sites-open-task`).
 
 ## Commit and PR style

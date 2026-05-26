@@ -1,4 +1,7 @@
 {
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
   "permissions": {
     "allow": [
       "Bash(docker compose *)",
@@ -21,7 +24,13 @@
       "Bash(gh pr create *)",
       "Bash(gh pr view*)",
       "Bash(gh label list*)",
-      "Bash(gh api *)"
+      "Bash(gh api *)",
+      "Write(worktrees/**)",
+      "Edit(worktrees/**)",
+      "Write(./worktrees/**)",
+      "Edit(./worktrees/**)",
+      "Write(/Users/martinydegranath/projects/scavenger_hunt_refactor/worktrees/**)",
+      "Edit(/Users/martinydegranath/projects/scavenger_hunt_refactor/worktrees/**)"
     ],
     "deny": [
       "Bash(git push --force*)",
