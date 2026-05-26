@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en" data-theme="default">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Design System — Scavenger Hunt</title>
+  <link rel="stylesheet" href="dist/css/app.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" />
+</head>
+<body class="bg-neutral-50">
+<section class="px-6 py-12 max-w-7xl mx-auto">
+
+  <header class="mb-10">
+    <span class="pill-neutral">v0.1 · Living document</span>
+    <h1 class="text-4xl mt-3">Design system</h1>
+    <p class="mt-3 text-neutral-600 max-w-2xl">
+      The shared visual language behind Scavenger Hunt. Every mock in this site
+      pulls from these tokens — if something looks ad-hoc, it is a bug.
+    </p>
+  </header>
+
+  <!-- Colors --------------------------------------------------------- -->
+  <section class="mb-14">
+    <h2 class="text-2xl mb-1">Color</h2>
+    <p class="text-sm text-neutral-600 mb-5">Brand, neutral, and semantic scales. Reference tokens via Tailwind classes like <code class="kbd">bg-brand-600</code>.</p>
+
+    <h3 class="text-base font-semibold mb-2">Brand</h3>
+    <div class="grid grid-cols-6 md:grid-cols-11 gap-2 mb-6">
+      <div class="space-y-1"><div class="h-12 rounded bg-brand-50    ring-1 ring-inset ring-neutral-200"></div><div class="text-[10px] text-neutral-500">50</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-brand-100"></div><div class="text-[10px] text-neutral-500">100</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-brand-200"></div><div class="text-[10px] text-neutral-500">200</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-brand-300"></div><div class="text-[10px] text-neutral-500">300</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-brand-400"></div><div class="text-[10px] text-neutral-500">400</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-brand-500"></div><div class="text-[10px] text-neutral-500">500</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-brand-600"></div><div class="text-[10px] text-neutral-500">600</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-brand-700"></div><div class="text-[10px] text-neutral-500">700</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-brand-800"></div><div class="text-[10px] text-neutral-500">800</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-brand-900"></div><div class="text-[10px] text-neutral-500">900</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-brand-950"></div><div class="text-[10px] text-neutral-500">950</div></div>
+    </div>
+
+    <h3 class="text-base font-semibold mb-2">Neutral</h3>
+    <div class="grid grid-cols-6 md:grid-cols-11 gap-2 mb-6">
+      <div class="space-y-1"><div class="h-12 rounded bg-neutral-50  ring-1 ring-inset ring-neutral-200"></div><div class="text-[10px] text-neutral-500">50</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-neutral-100"></div><div class="text-[10px] text-neutral-500">100</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-neutral-200"></div><div class="text-[10px] text-neutral-500">200</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-neutral-300"></div><div class="text-[10px] text-neutral-500">300</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-neutral-400"></div><div class="text-[10px] text-neutral-500">400</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-neutral-500"></div><div class="text-[10px] text-neutral-500">500</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-neutral-600"></div><div class="text-[10px] text-neutral-500">600</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-neutral-700"></div><div class="text-[10px] text-neutral-500">700</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-neutral-800"></div><div class="text-[10px] text-neutral-500">800</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-neutral-900"></div><div class="text-[10px] text-neutral-500">900</div></div>
+      <div class="space-y-1"><div class="h-12 rounded bg-neutral-950"></div><div class="text-[10px] text-neutral-500">950</div></div>
+    </div>
+
+    <h3 class="text-base font-semibold mb-2">Semantic</h3>
+    <div class="grid grid-cols-4 gap-4">
+      <div><div class="h-14 rounded bg-success-500"></div><div class="text-xs mt-1 text-neutral-600">success</div></div>
+      <div><div class="h-14 rounded bg-warn-500"></div><div class="text-xs mt-1 text-neutral-600">warn</div></div>
+      <div><div class="h-14 rounded bg-danger-500"></div><div class="text-xs mt-1 text-neutral-600">danger</div></div>
+      <div><div class="h-14 rounded bg-info-500"></div><div class="text-xs mt-1 text-neutral-600">info</div></div>
+    </div>
+  </section>
+
+  <!-- Typography --------------------------------------------------- -->
+  <section class="mb-14">
+    <h2 class="text-2xl mb-1">Typography</h2>
+    <p class="text-sm text-neutral-600 mb-5">Display = Fraunces, body = Inter, mono = JetBrains Mono.</p>
+    <div class="space-y-3">
+      <p class="text-6xl font-display">The quick brown fox</p>
+      <p class="text-4xl font-display">The quick brown fox</p>
+      <p class="text-2xl font-display">The quick brown fox</p>
+      <p class="text-xl">The quick brown fox jumps over the lazy dog</p>
+      <p class="text-base">The quick brown fox jumps over the lazy dog</p>
+      <p class="text-sm text-neutral-600">The quick brown fox jumps over the lazy dog</p>
+      <p class="text-xs text-neutral-500">The quick brown fox jumps over the lazy dog</p>
+      <p class="font-mono text-sm">const hunt = await api.fetchHunt(id);</p>
+    </div>
+  </section>
+
+  <!-- Buttons ------------------------------------------------------ -->
+  <section class="mb-14">
+    <h2 class="text-2xl mb-1">Buttons</h2>
+    <p class="text-sm text-neutral-600 mb-5">All variants share the same focus-ring style.</p>
+    <div class="flex flex-wrap items-center gap-3">
+      <button class="btn-primary">Primary</button>
+      <button class="btn-primary" disabled>Disabled</button>
+      <button class="btn-secondary">Secondary</button>
+      <button class="btn-ghost">Ghost</button>
+      <button class="btn-danger">Danger</button>
+      <button class="btn-primary btn-sm">Small</button>
+      <button class="btn-primary btn-lg">Large</button>
+    </div>
+  </section>
+
+  <!-- Inputs ------------------------------------------------------- -->
+  <section class="mb-14">
+    <h2 class="text-2xl mb-1">Form inputs</h2>
+    <div class="grid md:grid-cols-2 gap-6 max-w-3xl">
+      <div>
+        <label class="label" for="ds-input">Hunt name</label>
+        <input id="ds-input" class="input" placeholder="e.g. Aarhus Old Town" />
+        <p class="helper">Shown to participants in the lobby.</p>
+      </div>
+      <div>
+        <label class="label" for="ds-input-err">Invalid input</label>
+        <input id="ds-input-err" class="input border-danger-500 focus:border-danger-500 focus:ring-danger-500" value="bad value" />
+        <p class="helper-error">This field is required.</p>
+      </div>
+      <div>
+        <label class="label" for="ds-select">Visibility</label>
+        <select id="ds-select" class="select">
+          <option>Public</option>
+          <option>Unlisted</option>
+          <option>Private</option>
+        </select>
+      </div>
+      <div>
+        <label class="label" for="ds-textarea">Description</label>
+        <textarea id="ds-textarea" class="textarea" rows="3" placeholder="Describe the hunt…"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pills -------------------------------------------------------- -->
+  <section class="mb-14">
+    <h2 class="text-2xl mb-1">Status pills</h2>
+    <div class="flex flex-wrap gap-2 mt-4">
+      <span class="pill-success">Active</span>
+      <span class="pill-warn">Draft</span>
+      <span class="pill-danger">Archived</span>
+      <span class="pill-info">In review</span>
+      <span class="pill-neutral">Idle</span>
+    </div>
+  </section>
+
+  <!-- Cards -------------------------------------------------------- -->
+  <section class="mb-14">
+    <h2 class="text-2xl mb-1">Cards</h2>
+    <div class="grid md:grid-cols-3 gap-4 mt-4">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="text-lg">Plain card</h4>
+          <p class="text-sm text-neutral-600 mt-1">Soft border, soft shadow, white surface.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><strong class="text-sm">With header</strong></div>
+        <div class="card-body text-sm text-neutral-700">A header rail separates context from content.</div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h4 class="text-lg">With footer</h4>
+          <p class="text-sm text-neutral-600 mt-1">For actions or metadata.</p>
+        </div>
+        <div class="card-footer flex justify-end gap-2">
+          <button class="btn-ghost btn-sm">Cancel</button>
+          <button class="btn-primary btn-sm">Save</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Table -------------------------------------------------------- -->
+  <section class="mb-14">
+    <h2 class="text-2xl mb-1">Table</h2>
+    <div class="card overflow-hidden">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Tasks</th>
+            <th class="text-right">Updated</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Aarhus Old Town</td><td><span class="pill-success">Active</span></td><td>12</td><td class="text-right text-neutral-500">2 days ago</td></tr>
+          <tr><td>Harbor Mystery</td><td><span class="pill-warn">Draft</span></td><td>8</td><td class="text-right text-neutral-500">1 week ago</td></tr>
+          <tr><td>Riverside Walk</td><td><span class="pill-info">In review</span></td><td>5</td><td class="text-right text-neutral-500">3 weeks ago</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Nav samples -------------------------------------------------- -->
+  <section class="mb-14">
+    <h2 class="text-2xl mb-1">Navigation</h2>
+    <p class="text-sm text-neutral-600 mb-4">Sidebar + topbar pattern, used in the Admin mock.</p>
+    <div class="card overflow-hidden">
+      <div class="grid grid-cols-[200px_1fr]">
+        <aside class="bg-neutral-50 border-r border-neutral-200 p-3 space-y-1">
+          <a class="nav-link-active" href="#">Dashboard</a>
+          <a class="nav-link" href="#">Hunts</a>
+          <a class="nav-link" href="#">Races</a>
+          <a class="nav-link" href="#">Users</a>
+          <a class="nav-link" href="#">Settings</a>
+        </aside>
+        <div class="p-4">
+          <div class="flex items-center justify-between border-b border-neutral-200 pb-2 mb-3">
+            <strong class="text-sm">Hunts</strong>
+            <div class="flex gap-2">
+              <button class="btn-ghost btn-sm">Filter</button>
+              <button class="btn-primary btn-sm">New hunt</button>
+            </div>
+          </div>
+          <p class="text-sm text-neutral-600">Main content area.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Progress ----------------------------------------------------- -->
+  <section class="mb-14">
+    <h2 class="text-2xl mb-1">Progress</h2>
+    <div class="max-w-md space-y-3 mt-4">
+      <div class="progress"><div class="progress-bar" style="width:18%"></div></div>
+      <div class="progress"><div class="progress-bar" style="width:62%"></div></div>
+      <div class="progress"><div class="progress-bar" style="width:95%"></div></div>
+    </div>
+  </section>
+
+  <!-- Focus ------------------------------------------------------- -->
+  <section class="mb-14">
+    <h2 class="text-2xl mb-1">Focus state</h2>
+    <p class="text-sm text-neutral-600 mb-3">Tab through these to see the global focus-ring.</p>
+    <div class="flex flex-wrap gap-3">
+      <a class="btn-secondary" href="#">Link</a>
+      <button class="btn-secondary">Button</button>
+      <input class="input max-w-xs" placeholder="Focus me" />
+    </div>
+  </section>
+
+</section>
+</body>
+</html>
