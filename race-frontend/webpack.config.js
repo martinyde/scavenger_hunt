@@ -8,12 +8,12 @@ Encore
     .setOutputPath('public/build/')
     .setPublicPath('/build')
     .addEntry('app', './assets/app.js')
-    .enableStimulusBridge('./assets/controllers.json')
     .splitEntryChunks()
 
     // enables the Symfony UX Stimulus bridge (used in assets/stimulus_bootstrap.js)
     .enableStimulusBridge('./assets/controllers.json')
     .enableSingleRuntimeChunk()
+    .enablePostCssLoader()
     .enableVersioning(Encore.isProduction())
 ;
 

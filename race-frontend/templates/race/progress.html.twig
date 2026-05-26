@@ -3,40 +3,50 @@
 {% block title %}Race Progress{% endblock %}
 
 {% block body %}
-  <h1>Race Progress - {{ race.scavengerHunt.name }}</h1>
+    <div class="race-shell">
+        <header class="border-b" style="border-color: var(--race-border); background: var(--race-surface);">
+            <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="inline-block w-6 h-6 rounded-md race-accent-bg"></span>
+                    <span class="race-title text-lg">{{ race.scavengerHunt.name }} — progress</span>
+                </div>
+                <div data-controller="theme-picker" class="flex items-center"></div>
+            </div>
+        </header>
 
-  <div id="race-progress"
-       data-controller="mercure"
-       data-mercure-url-value="{{ mercure_subscribe_url(['race/' ~ race.id, 'race/' ~ race.id ~ '/participants']) }}"
-       data-mercure-race-id-value="{{ race.id }}">
+        <main class="max-w-5xl mx-auto px-6 py-10">
+            <div id="race-progress"
+                 data-controller="mercure"
+                 data-mercure-url-value="{{ mercure_subscribe_url(['race/' ~ race.id, 'race/' ~ race.id ~ '/participants']) }}"
+                 data-mercure-race-id-value="{{ race.id }}">
 
-    <table class="table">
-      <tbody>
-        <tr>
-          <th>Timer</th>
-          <td>{% include 'race/timer.html.twig' %}</td>
-        </tr>
-      </tbody>
-    </table>
+                <div class="race-card p-5 text-center">
+                    <div class="text-xs uppercase tracking-wider race-muted mb-1">Time remaining</div>
+                    <div class="text-6xl mt-1">{% include 'race/timer.html.twig' %}</div>
+                </div>
 
-    <table class="table">
-      <thead>
-      <tr>
-        <td>Name</td>
-        <td>Progress</td>
-      </tr>
-      </thead>
-      <tbody id="participants-progress-list">
-      {% for p in participants %}
-        <tr id="participant-progress-{{ p.id }}">
-          <td>{{ p.name }}</td>
-          <td>
-            <div>Entries: {{ p.progressEntryCount ?? 0 }} / {{ scavengerHunt.tasks|length }}</div>
-            <div>Solutions: {{ p.progressSolutionCount ?? 0 }} / {{ scavengerHunt.tasks|length }}</div>
-          </td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
-  </div>
+                <div class="race-card mt-6">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Progress</th>
+                            </tr>
+                        </thead>
+                        <tbody id="participants-progress-list">
+                            {% for p in participants %}
+                                <tr id="participant-progress-{{ p.id }}">
+                                    <td>{{ p.name }}</td>
+                                    <td>
+                                        <div>Entries: {{ p.progressEntryCount ?? 0 }} / {{ scavengerHunt.tasks|length }}</div>
+                                        <div>Solutions: {{ p.progressSolutionCount ?? 0 }} / {{ scavengerHunt.tasks|length }}</div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
 {% endblock %}

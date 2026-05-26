@@ -1,4 +1,10 @@
-<div>
-  <h3>Race Finished</h3>
-  <p><a href="{{ path('app_highscore_race', {raceId: race.id}) }}">View Highscores</a></p>
+<div class="race-card p-8 text-center">
+    <div class="text-xs uppercase tracking-wider race-muted mb-2">Race complete</div>
+    <h1 class="race-title text-5xl leading-tight">Race finished</h1>
+    <p class="mt-4 race-muted">Thanks for racing. The full results are ready.</p>
+    <p class="mt-6">
+        <a class="race-btn" href="{{ path('app_highscore_race', {raceId: race.id}) }}">
+            View highscores
+        </a>
+    </p>
 </div>

@@ -3,16 +3,22 @@
 {% block title %}Guess - {{ task.title }}{% endblock %}
 
 {% block body %}
-  <h1>{{ task.title }}</h1>
-  {% if task.textBefore %}
-    <p>{{ task.textBefore }}</p>
-  {% endif %}
+    <div class="race-shell">
+        <main class="max-w-5xl mx-auto px-6 py-10">
+            <h1 class="race-title text-5xl leading-tight">{{ task.title }}</h1>
+            {% if task.textBefore %}
+                <div class="race-card mt-6 p-6">
+                    <p class="text-base leading-relaxed">{{ task.textBefore }}</p>
+                </div>
+            {% endif %}
 
-  <form method="post">
-    <div class="mb-3">
-      <label for="guess" class="form-label">Your answer</label>
-      <input type="text" class="form-control" id="guess" name="guess" required>
+            <form method="post" class="race-card mt-6 p-6">
+                <label class="block text-sm font-medium mb-2" for="guess">Your answer</label>
+                <div class="flex gap-2">
+                    <input id="guess" name="guess" type="text" class="race-input" required>
+                    <button type="submit" class="race-btn">Submit</button>
+                </div>
+            </form>
+        </main>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
 {% endblock %}

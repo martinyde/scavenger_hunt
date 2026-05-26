@@ -3,12 +3,16 @@
 {% block title %}Join Race{% endblock %}
 
 {% block body %}
-  <h1>Join Race</h1>
-  <form method="post">
-    <div class="mb-3">
-      <label for="name" class="form-label">Team Name</label>
-      <input type="text" class="form-control" id="name" name="name" required>
+    <div class="race-shell">
+        <main class="max-w-5xl mx-auto px-6 py-10">
+            <h1 class="race-title text-5xl leading-tight">Join the race</h1>
+            <form method="post" class="race-card mt-6 p-6">
+                <label class="block text-sm font-medium mb-2" for="name">Team name</label>
+                <div class="flex gap-2">
+                    <input id="name" name="name" type="text" class="race-input" required>
+                    <button type="submit" class="race-btn">Join</button>
+                </div>
+            </form>
+        </main>
     </div>
-    <button type="submit" class="btn btn-primary">Join</button>
-  </form>
 {% endblock %}

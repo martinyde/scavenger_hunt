@@ -3,20 +3,51 @@
 {% block title %}Race - {{ race.scavengerHunt.name }}{% endblock %}
 
 {% block body %}
-    <h1>Race - {{ race.scavengerHunt.name }}</h1>
+    <div class="race-shell">
+        <header class="border-b" style="border-color: var(--race-border); background: var(--race-surface);">
+            <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="inline-block w-6 h-6 rounded-md race-accent-bg"></span>
+                    <span class="race-title text-lg">{{ race.scavengerHunt.name }}</span>
+                    {% if race.active %}
+                        <span class="pill ring-1 ring-inset"
+                              style="background: var(--race-accent-soft); color: var(--race-accent-strong); border-color: transparent;">
+                            Live
+                        </span>
+                    {% endif %}
+                </div>
 
-    <div id="race-content"
-         data-controller="mercure"
-         data-mercure-url-value="{{ mercure_subscribe_url(['race/' ~ race.id, 'race/' ~ race.id ~ '/participants']) }}"
-         data-mercure-race-id-value="{{ race.id }}"
-         data-mercure-participant-uuid-value="{{ participant ? participant.uuid : '' }}">
+                {# Theme picker — slot rendered by the theme_picker Stimulus controller. #}
+                <div data-controller="theme-picker" class="flex items-center"></div>
+            </div>
+        </header>
 
-      <div id="race-{{ race.id }}">
-        {% include 'race/_race-content.html.twig' %}
-      </div>
+        <main class="max-w-5xl mx-auto px-6 py-10">
+            <div id="race-content"
+                 data-controller="mercure"
+                 data-mercure-url-value="{{ mercure_subscribe_url(['race/' ~ race.id, 'race/' ~ race.id ~ '/participants']) }}"
+                 data-mercure-race-id-value="{{ race.id }}"
+                 data-mercure-participant-uuid-value="{{ participant ? participant.uuid : '' }}">
+
+                <div id="race-{{ race.id }}">
+                    {% include 'race/_race-content.html.twig' %}
+                </div>
+            </div>
+
+            {% if participant is null and not race.active %}
+                <div class="mt-8">
+                    <a class="race-btn" href="{{ path('app_participant_add', {raceId: race.id, raceUuid: race.uuid}) }}">
+                        Add new team
+                    </a>
+                </div>
+            {% endif %}
+        </main>
+
+        <footer class="border-t" style="border-color: var(--race-border);">
+            <div class="max-w-5xl mx-auto px-6 py-4 text-xs race-muted flex justify-between">
+                <span>Race #{{ race.id }}</span>
+                <span>Live updates via Mercure</span>
+            </div>
+        </footer>
     </div>
-
-    {% if participant is null and not race.active %}
-      <a href="{{ path('app_participant_add', {raceId: race.id, raceUuid: race.uuid}) }}">Add new team</a>
-    {% endif %}
 {% endblock %}

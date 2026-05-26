@@ -3,27 +3,34 @@
 {% block title %}Highscores{% endblock %}
 
 {% block body %}
-  <h1>Highscores</h1>
-  <table class="table">
-    <thead>
-    <tr>
-      <th>#</th>
-      <th>Name</th>
-      <th>Tasks Found</th>
-      <th>Tasks Solved</th>
-      <th>Time</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for hs in highscores %}
-      <tr>
-        <td>{{ loop.index }}</td>
-        <td>{{ hs.participantName }}</td>
-        <td>{{ hs.progressTaskEntry }}</td>
-        <td>{{ hs.progressTaskSolution }}</td>
-        <td>{{ hs.time }}s</td>
-      </tr>
-    {% endfor %}
-    </tbody>
-  </table>
+    <div class="race-shell">
+        <main class="max-w-5xl mx-auto px-6 py-10">
+            <h1 class="race-title text-5xl leading-tight">Highscores</h1>
+
+            <div class="race-card mt-6 overflow-hidden">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Tasks found</th>
+                            <th>Tasks solved</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for hs in highscores %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ hs.participantName }}</td>
+                                <td>{{ hs.progressTaskEntry }}</td>
+                                <td>{{ hs.progressTaskSolution }}</td>
+                                <td>{{ hs.time }}s</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
 {% endblock %}

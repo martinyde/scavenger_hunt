@@ -1,13 +1,29 @@
-<div>
-  <table class="table">
-    <tbody>
-    <tr>
-      <th>Timer</th>
-      <td>{% include 'race/timer.html.twig' %}</td>
-    </tr>
-    </tbody>
-  </table>
-  <div class="spinner-border text-primary"></div>
-  <div>Awaiting contestants</div>
+<div class="grid lg:grid-cols-[1fr_320px] gap-8">
+    <section>
+        <div class="text-xs uppercase tracking-wider race-muted mb-2">
+            {{ race.scavengerHunt.name }}
+        </div>
+        <h1 class="race-title text-5xl leading-tight">Awaiting contestants</h1>
+
+        <div class="race-card mt-6 p-6">
+            <p class="text-base leading-relaxed">
+                The race has not started yet. Teams can still join — once everyone
+                is ready the timer will begin.
+            </p>
+        </div>
+
+        <div class="race-card mt-6 p-6">
+            <h3 class="race-title text-lg mb-3">Teams</h3>
+            {% include 'race/_participants-list.html.twig' %}
+        </div>
+    </section>
+
+    <aside class="space-y-5">
+        <div class="race-card p-5 text-center">
+            <div class="text-xs uppercase tracking-wider race-muted mb-1">Planned duration</div>
+            <div class="mt-1 text-6xl">
+                {% include 'race/timer.html.twig' %}
+            </div>
+        </div>
+    </aside>
 </div>
-{% include 'race/_participants-list.html.twig' %}
