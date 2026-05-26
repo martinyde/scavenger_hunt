@@ -6,7 +6,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22https://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        {# Bootstrap kept so legacy pages (forms, etc.) still render until they are ported. #}
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap">
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
@@ -15,11 +17,68 @@
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
-    <body>
+    <body class="bg-neutral-100">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
-        {% block navbar %}{{ include(('topbar.html.twig')) }}{% endblock %}
-        <div class="container-md">
-          {% block body %}{% endblock %}
+
+        {% set _route = app.request.attributes.get('_route') %}
+        {% set _hunts_routes = ['app_scavenger_hunt_index', 'app_scavenger_hunt_new', 'app_scavenger_hunt_show', 'app_scavenger_hunt_edit'] %}
+        {% set _races_routes = ['app_race_index', 'app_race_new', 'app_race_show', 'app_race_edit', 'app_race_progress', 'app_race_participant_finish', 'app_form_try'] %}
+        {% set _tasks_routes = ['app_task_index', 'app_task_new', 'app_task_show', 'app_task_edit', 'app_task_guess'] %}
+
+        {% set _initials = '?' %}
+        {% if app.user %}
+            {% set _email = app.user.userIdentifier|default(app.user.email|default('')) %}
+            {% if _email %}
+                {% set _initials = _email|slice(0, 2)|upper %}
+            {% endif %}
+        {% endif %}
+
+        <div class="min-h-screen grid grid-cols-[240px_1fr]">
+
+            {# Sidebar #}
+            <aside class="bg-neutral-900 text-neutral-100 flex flex-col">
+                <div class="h-14 px-4 flex items-center gap-2 border-b border-neutral-800">
+                    <span class="inline-block w-7 h-7 rounded-md bg-brand-500"></span>
+                    <span class="font-display text-lg">Admin</span>
+                </div>
+                <nav class="flex-1 px-2 py-3 space-y-0.5 text-sm">
+                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md {{ _route == 'app_dashboard' ? 'bg-neutral-800 text-white' : 'text-neutral-300 hover:bg-neutral-800 hover:text-white' }} no-underline">Dashboard</a>
+                    <a href="{{ path('app_scavenger_hunt_index') }}" class="flex items-center gap-2 px-3 py-2 rounded-md {{ _route in _hunts_routes ? 'bg-neutral-800 text-white' : 'text-neutral-300 hover:bg-neutral-800 hover:text-white' }} no-underline">Hunts</a>
+                    <a href="{{ path('app_race_index') }}" class="flex items-center gap-2 px-3 py-2 rounded-md {{ _route in _races_routes ? 'bg-neutral-800 text-white' : 'text-neutral-300 hover:bg-neutral-800 hover:text-white' }} no-underline">Races</a>
+                    <a href="{{ path('app_task_index') }}" class="flex items-center gap-2 px-3 py-2 rounded-md {{ _route in _tasks_routes ? 'bg-neutral-800 text-white' : 'text-neutral-300 hover:bg-neutral-800 hover:text-white' }} no-underline">Tasks</a>
+                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md text-neutral-300 hover:bg-neutral-800 hover:text-white no-underline">Users</a>
+                    <div class="mt-4 mb-2 px-3 text-[10px] uppercase tracking-wider text-neutral-500">System</div>
+                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md text-neutral-300 hover:bg-neutral-800 hover:text-white no-underline">Settings</a>
+                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md text-neutral-300 hover:bg-neutral-800 hover:text-white no-underline">Audit log</a>
+                </nav>
+                <div class="px-3 py-3 border-t border-neutral-800 text-xs text-neutral-500">v0.1.0 · staging</div>
+            </aside>
+
+            {# Main pane #}
+            <div class="flex flex-col min-w-0">
+
+                <header class="h-14 bg-white border-b border-neutral-200 flex items-center justify-between px-6">
+                    <div class="flex items-center gap-3 text-sm text-neutral-500">
+                        {% block breadcrumbs %}
+                            <a href="#" class="hover:text-neutral-800 no-underline">Dashboard</a>
+                            <span>/</span>
+                            <span class="text-neutral-800 font-medium">{{ block('title') }}</span>
+                        {% endblock %}
+                    </div>
+                    <div class="flex items-center gap-3">
+                        {# Visual only — search not yet wired up. #}
+                        <input class="input w-72" placeholder="Search hunts, races, users…">
+                        {# Visual only — notifications placeholder. #}
+                        <button type="button" class="btn-ghost btn-sm" aria-label="Notifications">🔔</button>
+                        <div class="w-8 h-8 rounded-full bg-brand-600 text-white flex items-center justify-center text-sm font-medium">{{ _initials }}</div>
+                    </div>
+                </header>
+
+                <main class="flex-1 p-6 space-y-5">
+                    {% block page_actions %}{% endblock %}
+                    {% block body %}{% endblock %}
+                </main>
+            </div>
         </div>
     </body>
 </html>

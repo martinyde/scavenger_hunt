@@ -38,6 +38,9 @@ Encore
   // enables hashed filenames (e.g. app.abc123.css)
   .enableVersioning(Encore.isProduction())
 
+  // enables PostCSS so Tailwind directives in app.css are processed
+  .enablePostCssLoader()
+
   /*
    * FEATURE CONFIG
    *

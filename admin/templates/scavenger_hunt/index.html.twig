@@ -1,36 +1,107 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}ScavengerHunt index{% endblock %}
+{% block title %}Hunts{% endblock %}
 
 {% block body %}
-    <h1>ScavengerHunt index</h1>
+    {# Page heading #}
+    <div class="flex items-end justify-between">
+        <div>
+            <h1 class="text-3xl">Hunts</h1>
+            <p class="text-sm text-neutral-500 mt-1">All hunts owned by your organization.</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="{{ path('app_scavenger_hunt_new') }}" class="btn-primary">+ New hunt</a>
+        </div>
+    </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for scavenger_hunt in scavenger_hunts %}
-            <tr>
-                <td>{{ scavenger_hunt.id }}</td>
-                <td>{{ scavenger_hunt.name }}</td>
-                <td>
-                    <a href="{{ path('app_scavenger_hunt_show', {id: scavenger_hunt.id}) }}">show</a>
-                    <a href="{{ path('app_scavenger_hunt_edit', {id: scavenger_hunt.id}) }}">edit</a>
-                    <a href="{{ path('app_race_new', {id: scavenger_hunt.id}) }}">Create race</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    {# Toolbar — filters are visual only, not yet wired up to the controller. #}
+    <div class="card">
+        <div class="card-body py-3 flex flex-wrap items-center gap-2">
+            {# Visual only — name filter input is inert. #}
+            <input class="input max-w-xs" placeholder="Filter by name…">
+            {# Visual only — status filter is inert. #}
+            <select class="select w-auto">
+                <option>Status: All</option>
+                <option>Active</option>
+                <option>Draft</option>
+                <option>Archived</option>
+            </select>
+            {# Visual only — owner filter is inert. #}
+            <select class="select w-auto">
+                <option>Owner: Anyone</option>
+                <option>Me</option>
+                <option>Team</option>
+            </select>
+            <div class="ml-auto flex items-center gap-2 text-sm text-neutral-500">
+                <span>{{ scavenger_hunts|length }} results</span>
+                <span class="text-neutral-300">·</span>
+                {# Visual only — reset is inert until filters are wired up. #}
+                <button type="button" class="btn-ghost btn-sm">Reset</button>
+            </div>
+        </div>
+    </div>
 
-    <a href="{{ path('app_scavenger_hunt_new') }}">Create new</a>
+    {# Table #}
+    <div class="card overflow-hidden">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="w-10"><input type="checkbox" class="rounded border-neutral-300"></th>
+                    <th>
+                        <button type="button" class="inline-flex items-center gap-1 hover:text-neutral-900">
+                            Name <span class="text-neutral-400">↑</span>
+                        </button>
+                    </th>
+                    <th>Status</th>
+                    <th>Tasks</th>
+                    <th>Owner</th>
+                    <th>
+                        <button type="button" class="inline-flex items-center gap-1 hover:text-neutral-900">
+                            Updated <span class="text-neutral-300">↕</span>
+                        </button>
+                    </th>
+                    <th class="text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for scavenger_hunt in scavenger_hunts %}
+                    <tr>
+                        <td><input type="checkbox" class="rounded border-neutral-300"></td>
+                        <td>
+                            <a href="{{ path('app_scavenger_hunt_show', {id: scavenger_hunt.id}) }}" class="font-medium text-neutral-900 no-underline hover:underline">{{ scavenger_hunt.name }}</a>
+                        </td>
+                        <td>
+                            {# Placeholder — status is not yet modelled on ScavengerHunt. #}
+                            <span class="pill-success">Active</span>
+                        </td>
+                        <td>{{ scavenger_hunt.tasks|length }}</td>
+                        <td>{{ scavenger_hunt.user.email|default('—') }}</td>
+                        {# Placeholder — updated-at is not yet tracked on ScavengerHunt. #}
+                        <td class="text-neutral-500">—</td>
+                        <td class="text-right">
+                            <div class="inline-flex gap-1">
+                                <a href="{{ path('app_scavenger_hunt_show', {id: scavenger_hunt.id}) }}" class="btn-ghost btn-sm">View</a>
+                                <a href="{{ path('app_scavenger_hunt_edit', {id: scavenger_hunt.id}) }}" class="btn-ghost btn-sm">Edit</a>
+                                <a href="{{ path('app_race_new', {id: scavenger_hunt.id}) }}" class="btn-ghost btn-sm">Create race</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-neutral-500">No hunts yet.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {# Pagination — visual only, not yet paginated server-side. #}
+    <div class="flex items-center justify-between text-sm text-neutral-600">
+        <span>Showing {{ scavenger_hunts|length }} of {{ scavenger_hunts|length }}</span>
+        <div class="flex items-center gap-1">
+            <button type="button" class="btn-ghost btn-sm" disabled>← Prev</button>
+            <button type="button" class="btn-secondary btn-sm">1</button>
+            <button type="button" class="btn-ghost btn-sm">Next →</button>
+        </div>
+    </div>
 {% endblock %}
