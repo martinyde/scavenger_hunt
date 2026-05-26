@@ -1,31 +1,54 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Race Created{% endblock %}
+{% block title %}Race created{% endblock %}
 
 {% block body %}
-  <h1>Race Created</h1>
-  <div class="alert alert-success">
-    Race has been created successfully.
-  </div>
-  <table class="table">
-    <tbody>
-      <tr><th>ID</th><td>{{ race.id }}</td></tr>
-      <tr><th>UUID</th><td>{{ race.uuid }}</td></tr>
-      <tr><th>Type</th><td>{{ race.type }}</td></tr>
-      <tr><th>Duration</th><td>{{ race.raceDuration }}s</td></tr>
-    </tbody>
-  </table>
-  <div class="alert alert-info">
-    <strong>Race link:</strong>
-    {% set raceLink = raceFrontendUrl ~ '/participant/add/' ~ race.id ~ '/' ~ race.uuid %}
-    <a href="{{ raceLink }}">{{ raceLink }}</a>
-    <br>Share this link with participants to join the race.
-  </div>
-  <div class="alert alert-secondary">
-    <strong>Admin link:</strong>
-    {% set adminLink = adminUrl ~ '/race/progress/' ~ race.id %}
-    <a href="{{ adminLink }}">{{ adminLink }}</a>
-    <br>Manage the race from the admin site.
-  </div>
-  <a href="{{ path('app_hunt_show', {id: hunt.id}) }}" class="btn btn-primary">Back to Hunt</a>
+    <section class="max-w-3xl mx-auto px-6 py-10 space-y-5">
+        <div class="flex items-center justify-between">
+            <h1 class="text-3xl">Race created</h1>
+            <span class="pill-success">Success</span>
+        </div>
+
+        <p class="text-neutral-600">Your race is ready. Share the participant link below.</p>
+
+        <div class="card">
+            <table class="table">
+                <tbody>
+                    <tr><th>ID</th><td>{{ race.id }}</td></tr>
+                    <tr><th>UUID</th><td class="font-mono text-xs">{{ race.uuid }}</td></tr>
+                    <tr><th>Type</th><td>{{ race.type }}</td></tr>
+                    <tr><th>Duration</th><td>{{ race.raceDuration }}s</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="card-header flex items-center gap-2">
+                <span class="pill-info">Participants</span>
+                <h3 class="text-base font-semibold">Race link</h3>
+            </div>
+            <div class="card-body">
+                {% set raceLink = raceFrontendUrl ~ '/participant/add/' ~ race.id ~ '/' ~ race.uuid %}
+                <a href="{{ raceLink }}" class="break-all">{{ raceLink }}</a>
+                <p class="helper mt-2">Share this link with participants to join the race.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header flex items-center gap-2">
+                <span class="pill-neutral">Admin</span>
+                <h3 class="text-base font-semibold">Admin link</h3>
+            </div>
+            <div class="card-body">
+                {% set adminLink = adminUrl ~ '/race/progress/' ~ race.id %}
+                <a href="{{ adminLink }}" class="break-all">{{ adminLink }}</a>
+                <p class="helper mt-2">Manage the race from the admin site.</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <a href="{{ path('app_hunt_show', {id: hunt.id}) }}" class="btn-primary">Back to hunt</a>
+            <a href="{{ path('app_hunts') }}" class="btn-secondary">All hunts</a>
+        </div>
+    </section>
 {% endblock %}

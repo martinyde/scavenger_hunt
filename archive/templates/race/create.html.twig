@@ -1,23 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Create Race - {{ hunt.name }}{% endblock %}
+{% block title %}Create race — {{ hunt.name }}{% endblock %}
 
 {% block body %}
-  <h1>Create Race for {{ hunt.name }}</h1>
+    <section class="max-w-2xl mx-auto px-6 py-10">
+        <h1 class="text-3xl mb-1">Create a race</h1>
+        <p class="text-neutral-600 mb-6">For hunt <span class="font-medium">{{ hunt.name }}</span>.</p>
 
-  <form method="post">
-    <div class="mb-3">
-      <label for="duration" class="form-label">Duration (seconds)</label>
-      <input type="number" class="form-control" id="duration" name="duration" value="300" min="60">
-    </div>
-    <div class="mb-3">
-      <label for="type" class="form-label">Type</label>
-      <select class="form-select" id="type" name="type">
-        <option value="standard">Standard</option>
-        <option value="repeating">Repeating</option>
-      </select>
-    </div>
-    <button type="submit" class="btn btn-primary">Create Race</button>
-    <a href="{{ path('app_hunt_show', {id: hunt.id}) }}" class="btn btn-secondary">Cancel</a>
-  </form>
+        <div class="card">
+            <form method="post" class="card-body space-y-4">
+                <div>
+                    <label for="duration" class="label">Duration (seconds)</label>
+                    <input type="number" class="input" id="duration" name="duration" value="300" min="60">
+                    <p class="helper">Minimum 60 seconds.</p>
+                </div>
+                <div>
+                    <label for="type" class="label">Type</label>
+                    <select class="select" id="type" name="type">
+                        <option value="standard">Standard</option>
+                        <option value="repeating">Repeating</option>
+                    </select>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                    <button type="submit" class="btn-primary">Create race</button>
+                    <a href="{{ path('app_hunt_show', {id: hunt.id}) }}" class="btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </section>
 {% endblock %}
