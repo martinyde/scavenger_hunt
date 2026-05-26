@@ -1,31 +1,42 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ title|default('Highscores') }}{% endblock %}
+{% block title %}{{ title|default('Highscores') }} — Hunt Archive{% endblock %}
 
 {% block body %}
-  <h1>{{ title|default('Highscores') }}</h1>
-  <table class="table">
-    <thead>
-    <tr>
-      <th>#</th>
-      <th>Name</th>
-      <th>Tasks Found</th>
-      <th>Tasks Solved</th>
-      <th>Time</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for hs in highscores %}
-      <tr>
-        <td>{{ loop.index }}</td>
-        <td>{{ hs.participantName }}</td>
-        <td>{{ hs.progressTaskEntry }}</td>
-        <td>{{ hs.progressTaskSolution }}</td>
-        <td>{{ hs.time }}s</td>
-      </tr>
-    {% else %}
-      <tr><td colspan="5">No highscores yet.</td></tr>
-    {% endfor %}
-    </tbody>
-  </table>
+    <section class="max-w-5xl mx-auto px-6 py-10">
+        <h1 class="text-3xl mb-5">{{ title|default('Highscores') }}</h1>
+
+        <div class="card">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Tasks found</th>
+                        <th>Tasks solved</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for hs in highscores %}
+                        <tr>
+                            <td>
+                                {% if loop.index == 1 %}
+                                    <span class="pill-warn">{{ loop.index }}</span>
+                                {% else %}
+                                    {{ loop.index }}
+                                {% endif %}
+                            </td>
+                            <td class="font-medium">{{ hs.participantName }}</td>
+                            <td>{{ hs.progressTaskEntry }}</td>
+                            <td>{{ hs.progressTaskSolution }}</td>
+                            <td>{{ hs.time }}s</td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="5" class="text-center text-neutral-500">No highscores yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
 {% endblock %}

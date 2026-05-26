@@ -19,6 +19,7 @@
         "symfony/serializer": "~7.3.0",
         "symfony/string": "~7.3.0",
         "symfony/twig-bundle": "~7.3.0",
+        "symfony/webpack-encore-bundle": "^2.2",
         "symfony/yaml": "~7.3.0",
         "twig/extra-bundle": "^2.12 || ^3.21",
         "twig/twig": "^2.12 || ^3.21.1"
