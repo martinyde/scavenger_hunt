@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Participant;
 use App\Entity\Race;
 use App\Entity\ScavengerHunt;
-use App\Form\RaceStartType;
 use App\Form\RaceType;
 use App\Form\TryType;
 use App\Repository\ParticipantRepository;
@@ -91,29 +90,6 @@ final class RaceController extends AbstractController
         return $this->render('race/try.html.twig', [
             'participant' => $participant,
             'tryform' => $form,
-        ]);
-    }
-
-    #[Route('/race/progress/{id}', name: 'app_race_progress', methods: ['GET', 'POST'])]
-    public function progress(Request $request, Race $race): Response
-    {
-        $startRaceForm = $this->createForm(RaceStartType::class);
-        $startRaceForm->handleRequest($request);
-
-        if ($startRaceForm->isSubmitted() && $startRaceForm->isValid()) {
-            $this->raceHelper->startRace($race);
-
-            return $this->redirectToRoute('app_race_progress', ['id' => $race->getId()], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('race/progress.html.twig', [
-            'race' => $race,
-            'startRaceForm' => $startRaceForm,
-            'timer' => [
-                'secondsLeft' => $this->raceHelper->getSecondsLeft($race),
-                'duration' => $race->getRaceDuration(),
-                'raceState' => $race->isActive(),
-            ],
         ]);
     }
 
