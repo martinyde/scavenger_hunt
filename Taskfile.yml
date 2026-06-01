@@ -193,6 +193,246 @@ tasks:
     cmds:
       - '{{.DOCKER_COMPOSE}} run --rm node sh -c "npm install && npm run watch"'
 
+  # ============ PREVIEW STACK ============
+  # Run a worktree end-to-end alongside the main stack for manual PR review.
+  # See preview/README.md for the full workflow.
+  #
+  # Internal helpers:
+  #   _preview:guard         errors out if any scavenger_preview container is running
+  #
+  # Public targets:
+  #   preview-issue:up       bring up the preview stack pointed at issue #N
+  #   preview-issue:down     tear down whatever preview is currently running
+  #   preview-issue:fixtures force-reload Doctrine fixtures into the preview DB
+  #   preview-issue:logs     follow logs from the preview stack
+  #   preview-issue:status   show the resolved worktree and running containers
+  #
+  # Notes:
+  #   - The compose file lives at preview/docker-compose.yml and is invoked
+  #     by setting COMPOSE_PROJECT_NAME=scavenger_preview plus several
+  #     PREVIEW_* env vars (see preview/docker-compose.yml for the contract).
+  #   - We share the main stack's `scavenger_app` network so the preview
+  #     reuses mercure, rabbit, and mail — do NOT spin up duplicates.
+
+  _preview:guard:
+    internal: true
+    silent: true
+    desc: "Error if a preview stack is already running (any issue)"
+    cmds:
+      - |
+        running=$(docker ps --filter "label=com.docker.compose.project=scavenger_preview" --format '{{`{{.Names}}`}}')
+        if [ -n "$running" ]; then
+          echo "error: a preview stack is already running:" >&2
+          echo "$running" | sed 's/^/       - /' >&2
+          echo "" >&2
+          echo "Run 'task preview-issue:down' first." >&2
+          exit 1
+        fi
+
+  preview-issue:up:
+    desc: "Bring up the preview stack for issue #N (usage: task preview-issue:up -- 17)"
+    silent: true
+    vars:
+      ISSUE: '{{.CLI_ARGS}}'
+    cmds:
+      - task: _preview:guard
+      - |
+        if [ -z "{{.ISSUE}}" ]; then
+          echo "usage: task preview-issue:up -- <issue-number>" >&2
+          exit 1
+        fi
+      - |
+        # Force the compose project name for this stack; do NOT inherit
+        # admin/.env's COMPOSE_PROJECT_NAME=scavenger (that would clobber
+        # the main stack's containers). All docker compose invocations
+        # below pass --project-name explicitly via the -p flag.
+        export COMPOSE_PROJECT_NAME=scavenger_preview
+
+        # Pull COMPOSE_DOMAIN from admin/.env without sourcing the whole file
+        # (which would otherwise re-set COMPOSE_PROJECT_NAME).
+        if [ -z "${COMPOSE_DOMAIN:-}" ]; then
+          if [ -f admin/.env ]; then
+            COMPOSE_DOMAIN=$(grep -E '^COMPOSE_DOMAIN=' admin/.env | head -1 | cut -d= -f2-)
+          fi
+        fi
+        export COMPOSE_DOMAIN="${COMPOSE_DOMAIN:-scavenger.local.itkdev.dk}"
+
+        worktree=$(./bin/preview-resolve.sh {{.ISSUE}})
+        echo "Preview worktree: $worktree"
+
+        # Decide vendor / node_modules strategy per site based on composer.lock /
+        # package-lock.json diff vs. main. If locks match, bind-mount the main
+        # checkout's vendor (read-only-ish — we mount it RW so composer can
+        # still update if asked, but normal workflow won't write to it). If the
+        # locks differ or no main vendor exists, fall back to a named volume
+        # and run `composer install` inside the container.
+        main_repo="$(git rev-parse --show-toplevel)"
+        # If we're inside a worktree, find the actual main checkout instead.
+        main_repo=$(git worktree list --porcelain | awk '/^worktree / {p=$2} /^branch refs\/heads\/main$/ {print p; exit}')
+
+        decide_mount() {
+          local site="$1" lockfile="$2" subdir="$3"
+          local worktree_lock="$worktree/$site/$lockfile"
+          local main_lock="$main_repo/$site/$lockfile"
+          local main_dir="$main_repo/$site/$subdir"
+          if [ -f "$worktree_lock" ] && [ -f "$main_lock" ] && cmp -s "$worktree_lock" "$main_lock" && [ -d "$main_dir" ]; then
+            echo "$main_dir"
+          else
+            # Use a docker named volume; compose will create it lazily.
+            # Prefix with scavenger_preview_ so teardown sweeps them.
+            echo "scavenger_preview_${site}_${subdir}"
+          fi
+        }
+
+        export PREVIEW_WORKTREE="$worktree"
+        export PREVIEW_ISSUE="{{.ISSUE}}"
+        export PREVIEW_DOMAIN="${COMPOSE_DOMAIN:-scavenger.local.itkdev.dk}"
+        export PREVIEW_MAIN_PROJECT="${PREVIEW_MAIN_PROJECT:-scavenger}"
+        export PREVIEW_SHARED="$worktree/shared"
+        export PREVIEW_ADMIN_VENDOR="$(decide_mount admin composer.lock vendor)"
+        export PREVIEW_RACE_VENDOR="$(decide_mount race-frontend composer.lock vendor)"
+        export PREVIEW_ARCHIVE_VENDOR="$(decide_mount archive composer.lock vendor)"
+        export PREVIEW_ADMIN_NODE_MODULES="$(decide_mount admin package-lock.json node_modules)"
+        export PREVIEW_RACE_NODE_MODULES="$(decide_mount race-frontend package-lock.json node_modules)"
+        export PREVIEW_ARCHIVE_NODE_MODULES="$(decide_mount archive package-lock.json node_modules)"
+
+        echo "Mounts:"
+        echo "  admin   vendor       -> $PREVIEW_ADMIN_VENDOR"
+        echo "  race    vendor       -> $PREVIEW_RACE_VENDOR"
+        echo "  archive vendor       -> $PREVIEW_ARCHIVE_VENDOR"
+        echo "  admin   node_modules -> $PREVIEW_ADMIN_NODE_MODULES"
+        echo "  race    node_modules -> $PREVIEW_RACE_NODE_MODULES"
+        echo "  archive node_modules -> $PREVIEW_ARCHIVE_NODE_MODULES"
+
+        echo "Bringing up preview stack…"
+        {{.DOCKER_COMPOSE}} -f preview/docker-compose.yml -p scavenger_preview up --detach --wait
+
+        # Install deps inside any container where we used a named volume
+        # (i.e. the lockfiles differ between main and the worktree).
+        install_if_volume() {
+          local mountvar="$1" service="$2" install_cmd="$3"
+          local val
+          eval "val=\${$mountvar}"
+          case "$val" in
+            /*) echo "  [skip] $service: bind-mounted from main" ;;
+            *)  echo "  [run]  $service: $install_cmd" ; {{.DOCKER_COMPOSE}} -f preview/docker-compose.yml -p scavenger_preview exec -T "$service" sh -c "$install_cmd" ;;
+          esac
+        }
+
+        echo "Resolving vendor per service…"
+        install_if_volume PREVIEW_ADMIN_VENDOR   admin-phpfpm   "composer install --no-interaction --no-progress"
+        install_if_volume PREVIEW_RACE_VENDOR    race-phpfpm    "composer install --no-interaction --no-progress"
+        install_if_volume PREVIEW_ARCHIVE_VENDOR archive-phpfpm "composer install --no-interaction --no-progress"
+
+        # Assets: public/build/ is gitignored, so worktrees never have it.
+        # Always rebuild into each worktree, regardless of whether
+        # node_modules is bind-mounted from main or a fresh named volume.
+        # When the lockfile matches main we still get the speedup of not
+        # having to reinstall node_modules.
+        build_assets() {
+          local site="$1" mountvar="$2"
+          local val
+          eval "val=\${$mountvar}"
+          local install_step
+          case "$val" in
+            /*) install_step="echo '  [skip] $site: node_modules bind-mounted from main'" ;;
+            *)  install_step="echo '  [run]  $site: npm ci' && npm ci" ;;
+          esac
+          echo "  [run]  $site: npm run build"
+          {{.DOCKER_COMPOSE}} -f preview/docker-compose.yml -p scavenger_preview run --rm --workdir "/app/$site" node sh -c "$install_step && npm run build"
+        }
+
+        echo "Building assets per site…"
+        build_assets admin         PREVIEW_ADMIN_NODE_MODULES
+        build_assets race-frontend PREVIEW_RACE_NODE_MODULES
+        build_assets archive       PREVIEW_ARCHIVE_NODE_MODULES
+
+        # Always run migrations against the preview DB.
+        echo "Running migrations on preview DB…"
+        {{.DOCKER_COMPOSE}} -f preview/docker-compose.yml -p scavenger_preview exec -T admin-phpfpm bin/console doctrine:migrations:migrate --no-interaction
+
+        # Idempotent fixtures probe — only load if user table is empty.
+        echo "Checking whether to load fixtures…"
+        user_count_raw=$({{.DOCKER_COMPOSE}} -f preview/docker-compose.yml -p scavenger_preview exec -T admin-phpfpm bin/console dbal:run-sql "SELECT COUNT(*) AS c FROM user" 2>/dev/null || true)
+        # Extract the digit from the table output (e.g. "  20  " between separators).
+        user_count=$(echo "$user_count_raw" | grep -E '^[[:space:]]+[0-9]+[[:space:]]*$' | head -1 | tr -d '[:space:]')
+        if [ -z "$user_count" ] || [ "$user_count" = "0" ]; then
+          echo "  user table empty — loading fixtures"
+          {{.DOCKER_COMPOSE}} -f preview/docker-compose.yml -p scavenger_preview exec -T admin-phpfpm bin/console doctrine:fixtures:load --no-interaction
+        else
+          echo "  user table has $user_count rows — skipping fixtures (use 'task preview-issue:fixtures' to force)"
+        fi
+
+        echo ""
+        echo "Preview is up. Issue #{{.ISSUE}} reachable at:"
+        echo "  https://admin-preview-{{.ISSUE}}.${PREVIEW_DOMAIN}"
+        echo "  https://race-preview-{{.ISSUE}}.${PREVIEW_DOMAIN}"
+        echo "  https://archive-preview-{{.ISSUE}}.${PREVIEW_DOMAIN}"
+
+  preview-issue:down:
+    desc: "Tear down the preview stack (containers, network, volumes)"
+    silent: true
+    cmds:
+      - |
+        echo "Tearing down preview stack…"
+        # Compose interpolates the volume sources even on `down`. We never
+        # mount these for teardown, but the parser still needs values.
+        export PREVIEW_WORKTREE=/tmp
+        export PREVIEW_ISSUE=0
+        export PREVIEW_DOMAIN=scavenger.local.itkdev.dk
+        export PREVIEW_MAIN_PROJECT=scavenger
+        export PREVIEW_SHARED=/tmp
+        export PREVIEW_ADMIN_VENDOR=/tmp
+        export PREVIEW_RACE_VENDOR=/tmp
+        export PREVIEW_ARCHIVE_VENDOR=/tmp
+        export PREVIEW_ADMIN_NODE_MODULES=/tmp
+        export PREVIEW_RACE_NODE_MODULES=/tmp
+        export PREVIEW_ARCHIVE_NODE_MODULES=/tmp
+        {{.DOCKER_COMPOSE}} -f preview/docker-compose.yml -p scavenger_preview down --volumes --remove-orphans
+        echo "Preview stack down."
+
+  preview-issue:fixtures:
+    desc: "Force-reload Doctrine fixtures into the preview DB (DESTRUCTIVE)"
+    silent: true
+    cmds:
+      - |
+        running=$(docker ps --filter "label=com.docker.compose.project=scavenger_preview" --filter "label=com.docker.compose.service=admin-phpfpm" --format '{{`{{.Names}}`}}')
+        if [ -z "$running" ]; then
+          echo "error: preview stack is not running — start it with 'task preview-issue:up -- <N>'" >&2
+          exit 1
+        fi
+        # exec doesn't actually need any bind sources, but compose still
+        # parses the file — stub the PREVIEW_* vars so interpolation works.
+        export PREVIEW_WORKTREE=/tmp PREVIEW_ISSUE=0 PREVIEW_DOMAIN=scavenger.local.itkdev.dk PREVIEW_MAIN_PROJECT=scavenger
+        export PREVIEW_SHARED=/tmp PREVIEW_ADMIN_VENDOR=/tmp PREVIEW_RACE_VENDOR=/tmp PREVIEW_ARCHIVE_VENDOR=/tmp
+        export PREVIEW_ADMIN_NODE_MODULES=/tmp PREVIEW_RACE_NODE_MODULES=/tmp PREVIEW_ARCHIVE_NODE_MODULES=/tmp
+        echo "Reloading fixtures into preview DB…"
+        {{.DOCKER_COMPOSE}} -f preview/docker-compose.yml -p scavenger_preview exec -T admin-phpfpm bin/console doctrine:fixtures:load --no-interaction
+        echo "Fixtures reloaded."
+
+  preview-issue:logs:
+    desc: "Follow logs from the preview stack (Ctrl+C to stop)"
+    silent: true
+    cmds:
+      - |
+        export PREVIEW_WORKTREE=/tmp PREVIEW_ISSUE=0 PREVIEW_DOMAIN=scavenger.local.itkdev.dk PREVIEW_MAIN_PROJECT=scavenger
+        export PREVIEW_SHARED=/tmp PREVIEW_ADMIN_VENDOR=/tmp PREVIEW_RACE_VENDOR=/tmp PREVIEW_ARCHIVE_VENDOR=/tmp
+        export PREVIEW_ADMIN_NODE_MODULES=/tmp PREVIEW_RACE_NODE_MODULES=/tmp PREVIEW_ARCHIVE_NODE_MODULES=/tmp
+        {{.DOCKER_COMPOSE}} -f preview/docker-compose.yml -p scavenger_preview logs --follow --tail=100
+
+  preview-issue:status:
+    desc: "Show the running preview stack (containers, volumes, network)"
+    silent: true
+    cmds:
+      - |
+        running=$(docker ps --filter "label=com.docker.compose.project=scavenger_preview" --format 'table {{`{{.Names}}\t{{.Status}}\t{{.Image}}`}}')
+        if [ -z "$running" ] || [ "$(echo "$running" | wc -l)" -le 1 ]; then
+          echo "No preview stack running."
+          exit 0
+        fi
+        echo "Preview stack containers:"
+        echo "$running"
+
   default:
     cmds:
       - task --list-all

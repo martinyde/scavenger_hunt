@@ -1,0 +1,248 @@
+# Preview stack — runs one worktree alongside the main scavenger stack.
+#
+# This file is invoked indirectly via `task preview-issue:up <N>`, which
+# resolves the issue number to a worktree path and exports the required
+# environment variables before calling `docker compose up`.
+#
+# Required environment (set by the Taskfile, not by hand):
+#   PREVIEW_WORKTREE          absolute path to the worktree (e.g. /…/worktrees/issue-17-…)
+#   PREVIEW_ISSUE             GitHub issue number — embedded in hostnames as *-preview-<N>.<domain>
+#   PREVIEW_DOMAIN            base preview domain, e.g. scavenger.local.itkdev.dk
+#   PREVIEW_ADMIN_VENDOR      bind-source for admin's vendor dir (main's vendor RO if locks match, else a named volume mount point)
+#   PREVIEW_RACE_VENDOR       same, for race-frontend
+#   PREVIEW_ARCHIVE_VENDOR    same, for archive
+#   PREVIEW_ADMIN_NODE_MODULES   bind-source or volume mount for admin's node_modules
+#   PREVIEW_RACE_NODE_MODULES    same, for race-frontend
+#   PREVIEW_ARCHIVE_NODE_MODULES same, for archive
+#   PREVIEW_SHARED            absolute path to the worktree's shared/ dir
+#   PREVIEW_MAIN_PROJECT      docker-compose project name of the main stack (default: scavenger)
+#
+# COMPOSE_PROJECT_NAME is set on the command line to 'scavenger_preview'
+# so the one-preview-at-a-time guard can find these containers by label.
+
+name: scavenger_preview
+
+networks:
+  frontend:
+    external: true
+  # Share the main stack's app network so we reuse mercure, rabbit, mail,
+  # and the admin DB host names (mariadb, scavenger-nginx-1, etc.) without
+  # spinning up duplicates.
+  main_app:
+    external: true
+    name: ${PREVIEW_MAIN_PROJECT:-scavenger}_app
+  # Preview-only DB lives on its own bridge so it doesn't collide with
+  # the main mariadb. The preview admin container joins both networks.
+  preview_app:
+    driver: bridge
+
+services:
+  # ----- Preview DB (isolated from main) -----
+  # Service name is intentionally 'preview-mariadb' rather than 'mariadb' to
+  # avoid DNS collisions on the shared 'scavenger_app' network — the main
+  # stack's mariadb is reachable as 'mariadb' on that network, so a service
+  # named the same here would race for resolution from the admin container.
+  preview-mariadb:
+    image: itkdev/mariadb:latest
+    networks:
+      - preview_app
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_USER=db
+      - MYSQL_PASSWORD=db
+      - MYSQL_DATABASE=db
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+  # ----- Admin (preview) -----
+  admin-phpfpm:
+    image: itkdev/php8.4-fpm:latest
+    user: ${COMPOSE_USER:-deploy}
+    networks:
+      - preview_app
+      - main_app
+      - frontend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - PHP_XDEBUG_MODE=off
+      - PHP_MAX_EXECUTION_TIME=30
+      - PHP_MEMORY_LIMIT=256M
+      - PHP_SENDMAIL_PATH=/usr/bin/msmtp --host=mail --port=1025 --read-recipients --read-envelope-from
+      - DOCKER_HOST_DOMAIN=admin-preview-${PREVIEW_ISSUE}.${PREVIEW_DOMAIN}
+      - PHP_IDE_CONFIG=serverName=localhost
+      # Point the preview admin at its own DB on the preview network
+      - DATABASE_URL=mysql://db:db@preview-mariadb:3306/db?serverVersion=mariadb-10.4.11&charset=utf8
+      # Reach shared infra by main's compose-generated container names
+      - MESSENGER_TRANSPORT_DSN=amqp://user:password@${PREVIEW_MAIN_PROJECT:-scavenger}-rabbit-1:5672/%2f/messages
+      - MAILER_DSN=smtp://${PREVIEW_MAIN_PROJECT:-scavenger}-mail-1:1025
+      - MERCURE_URL=http://${PREVIEW_MAIN_PROJECT:-scavenger}-mercure-1:3000/.well-known/mercure
+      - MERCURE_PUBLIC_URL=https://mercure-${PREVIEW_DOMAIN}/.well-known/mercure
+      # Cross-site env vars: point the preview admin at issue-numbered
+      # preview hostnames, so links don't collide in browser history when
+      # the user previews multiple issues over time.
+      - RACE_FRONTEND_BASE_URL=https://race-preview-${PREVIEW_ISSUE}.${PREVIEW_DOMAIN}
+      - ARCHIVE_BASE_URL=https://archive-preview-${PREVIEW_ISSUE}.${PREVIEW_DOMAIN}
+    depends_on:
+      preview-mariadb:
+        condition: service_healthy
+    volumes:
+      - ${PREVIEW_WORKTREE}/admin:/app
+      - ${PREVIEW_ADMIN_VENDOR}:/app/vendor
+      - ${PREVIEW_ADMIN_NODE_MODULES}:/app/node_modules
+
+  admin-nginx:
+    image: nginxinc/nginx-unprivileged:alpine
+    networks:
+      - preview_app
+      - main_app
+      - frontend
+    depends_on:
+      - admin-phpfpm
+    volumes:
+      - ${PREVIEW_WORKTREE}/admin/.docker/templates:/etc/nginx/templates:ro
+      - ${PREVIEW_WORKTREE}/admin:/app
+      - ${PREVIEW_ADMIN_VENDOR}:/app/vendor
+    environment:
+      NGINX_FPM_SERVICE: scavenger_preview-admin-phpfpm-1:9000
+      NGINX_WEB_ROOT: /app/public
+      NGINX_PORT: 8080
+      NGINX_MAX_BODY_SIZE: 5M
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=frontend"
+      - "traefik.http.routers.scavenger_preview_admin.rule=Host(`admin-preview-${PREVIEW_ISSUE}.${PREVIEW_DOMAIN}`)"
+      - "traefik.http.routers.scavenger_preview_admin.middlewares=preview-redirect-to-https"
+      - "traefik.http.services.scavenger_preview_admin.loadbalancer.server.port=8080"
+      - "traefik.http.middlewares.preview-redirect-to-https.redirectscheme.scheme=https"
+
+  # ----- Race frontend (preview) -----
+  race-phpfpm:
+    image: itkdev/php8.4-fpm:latest
+    user: ${COMPOSE_USER:-deploy}
+    networks:
+      - preview_app
+      - main_app
+      - frontend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - PHP_XDEBUG_MODE=off
+      - PHP_MAX_EXECUTION_TIME=30
+      - PHP_MEMORY_LIMIT=128M
+      - DOCKER_HOST_DOMAIN=race-preview-${PREVIEW_ISSUE}.${PREVIEW_DOMAIN}
+      # Talk to the *preview* admin, not the main one
+      - ADMIN_API_URL=http://scavenger_preview-admin-nginx-1:8080
+      - ADMIN_API_KEY=change-me-to-a-secure-random-string
+      - MERCURE_PUBLIC_URL=https://mercure-${PREVIEW_DOMAIN}/.well-known/mercure
+      - MERCURE_JWT_SECRET=change-me-to-a-secure-random-string
+    volumes:
+      - ${PREVIEW_WORKTREE}/race-frontend:/app
+      - ${PREVIEW_SHARED}:/shared:ro
+      - ${PREVIEW_RACE_VENDOR}:/app/vendor
+      - ${PREVIEW_RACE_NODE_MODULES}:/app/node_modules
+
+  race-nginx:
+    image: nginxinc/nginx-unprivileged:alpine
+    networks:
+      - preview_app
+      - main_app
+      - frontend
+    depends_on:
+      - race-phpfpm
+    volumes:
+      - ${PREVIEW_WORKTREE}/race-frontend/.docker/templates:/etc/nginx/templates:ro
+      - ${PREVIEW_WORKTREE}/race-frontend:/app
+      - ${PREVIEW_RACE_VENDOR}:/app/vendor
+    environment:
+      NGINX_FPM_SERVICE: scavenger_preview-race-phpfpm-1:9000
+      NGINX_WEB_ROOT: /app/public
+      NGINX_PORT: 8081
+      NGINX_MAX_BODY_SIZE: 5M
+      NGINX_MERCURE_SERVICE: ${PREVIEW_MAIN_PROJECT:-scavenger}-mercure-1:3000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=frontend"
+      - "traefik.http.routers.scavenger_preview_race.rule=Host(`race-preview-${PREVIEW_ISSUE}.${PREVIEW_DOMAIN}`)"
+      - "traefik.http.routers.scavenger_preview_race.middlewares=preview-redirect-to-https"
+      - "traefik.http.services.scavenger_preview_race.loadbalancer.server.port=8081"
+
+  # ----- Archive (preview) -----
+  archive-phpfpm:
+    image: itkdev/php8.4-fpm:latest
+    user: ${COMPOSE_USER:-deploy}
+    networks:
+      - preview_app
+      - main_app
+      - frontend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - PHP_XDEBUG_MODE=off
+      - PHP_MAX_EXECUTION_TIME=30
+      - PHP_MEMORY_LIMIT=128M
+      - ADMIN_API_URL=http://scavenger_preview-admin-nginx-1:8080
+      - ADMIN_API_KEY=change-me-to-a-secure-random-string
+    volumes:
+      - ${PREVIEW_WORKTREE}/archive:/app
+      - ${PREVIEW_SHARED}:/shared:ro
+      - ${PREVIEW_ARCHIVE_VENDOR}:/app/vendor
+      - ${PREVIEW_ARCHIVE_NODE_MODULES}:/app/node_modules
+
+  archive-nginx:
+    image: nginxinc/nginx-unprivileged:alpine
+    networks:
+      - preview_app
+      - main_app
+      - frontend
+    depends_on:
+      - archive-phpfpm
+    volumes:
+      - ${PREVIEW_WORKTREE}/archive/.docker/templates:/etc/nginx/templates:ro
+      - ${PREVIEW_WORKTREE}/archive:/app
+      - ${PREVIEW_ARCHIVE_VENDOR}:/app/vendor
+    environment:
+      NGINX_FPM_SERVICE: scavenger_preview-archive-phpfpm-1:9000
+      NGINX_WEB_ROOT: /app/public
+      NGINX_PORT: 8082
+      NGINX_MAX_BODY_SIZE: 5M
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=frontend"
+      - "traefik.http.routers.scavenger_preview_archive.rule=Host(`archive-preview-${PREVIEW_ISSUE}.${PREVIEW_DOMAIN}`)"
+      - "traefik.http.routers.scavenger_preview_archive.middlewares=preview-redirect-to-https"
+      - "traefik.http.services.scavenger_preview_archive.loadbalancer.server.port=8082"
+
+  # Node helper for ad-hoc asset builds across the worktree.
+  # The whole worktree is mounted at /app, with per-site node_modules AND
+  # vendor layered on top so npm operations pick up the bind-mounted main
+  # checkout. The vendor mounts are critical because Symfony UX packages
+  # ship as relative symlinks from node_modules into vendor (see
+  # node_modules/@symfony/ux-turbo).
+  node:
+    image: node:20
+    profiles:
+      - tools
+    working_dir: /app
+    # Attach explicitly to preview_app so docker doesn't create a
+    # 'scavenger_preview_default' network behind our back (which would leak
+    # on every teardown).
+    networks:
+      - preview_app
+    volumes:
+      - ${PREVIEW_WORKTREE}:/app
+      - ${PREVIEW_ADMIN_VENDOR}:/app/admin/vendor
+      - ${PREVIEW_RACE_VENDOR}:/app/race-frontend/vendor
+      - ${PREVIEW_ARCHIVE_VENDOR}:/app/archive/vendor
+      - ${PREVIEW_ADMIN_NODE_MODULES}:/app/admin/node_modules
+      - ${PREVIEW_RACE_NODE_MODULES}:/app/race-frontend/node_modules
+      - ${PREVIEW_ARCHIVE_NODE_MODULES}:/app/archive/node_modules
+
+volumes:
+  mariadb_data:
