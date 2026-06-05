@@ -13,3 +13,5 @@ REFACTORING_PLAN.md
 
 # Local git worktrees (per-agent feature branches)
 /worktrees/
+
+.claude/issue-body.md
