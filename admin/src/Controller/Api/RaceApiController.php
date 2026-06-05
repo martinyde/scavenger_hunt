@@ -1,10 +1,11 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Controller\Api;
 
 use App\Entity\Participant;
 use App\Entity\Race;
-use App\Entity\ScavengerHunt;
 use App\Repository\RaceRepository;
 use App\Repository\ScavengerHuntRepository;
 use App\Service\RaceHelper;
@@ -17,7 +18,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[OA\Tag(name: 'Races')]
-#[Route('/api/v1/races', name: 'api_race_')]
 final class RaceApiController extends AbstractController
 {
     public function __construct(
@@ -26,7 +26,7 @@ final class RaceApiController extends AbstractController
     ) {
     }
 
-    #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/api/v1/races/{id}', name: 'api_race_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     #[OA\Get(summary: 'Get race details by ID')]
     #[OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))]
     #[OA\Response(
@@ -69,7 +69,7 @@ final class RaceApiController extends AbstractController
         ]);
     }
 
-    #[Route('/by-uuid/{uuid}', name: 'by_uuid', methods: ['GET'])]
+    #[Route('/api/v1/races/by-uuid/{uuid}', name: 'api_race_by_uuid', methods: ['GET'])]
     #[OA\Get(summary: 'Get race details by UUID')]
     #[OA\Parameter(name: 'uuid', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid'))]
     #[OA\Response(response: 200, description: 'Race details')]
@@ -101,7 +101,7 @@ final class RaceApiController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/participants', name: 'participants', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/api/v1/races/{id}/participants', name: 'api_race_participants', methods: ['GET'], requirements: ['id' => '\d+'])]
     #[OA\Get(summary: 'List participants in a race')]
     #[OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))]
     #[OA\Response(
@@ -125,7 +125,7 @@ final class RaceApiController extends AbstractController
     {
         $participants = $race->getParticipants();
 
-        return $this->json(array_map(fn(Participant $p) => [
+        return $this->json(array_map(fn (Participant $p) => [
             'id' => $p->getId(),
             'uuid' => $p->getUuid()->toString(),
             'name' => $p->getName(),
@@ -137,7 +137,7 @@ final class RaceApiController extends AbstractController
         ], $participants->toArray()));
     }
 
-    #[Route('/{id}/highscores', name: 'highscores', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/api/v1/races/{id}/highscores', name: 'api_race_highscores', methods: ['GET'], requirements: ['id' => '\d+'])]
     #[OA\Get(summary: 'Get highscores for a race')]
     #[OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))]
     #[OA\Response(
@@ -161,7 +161,7 @@ final class RaceApiController extends AbstractController
     {
         $highscores = $highscoreRepository->getRaceHighScores($race);
 
-        return $this->json(array_map(fn(\App\Entity\Highscore $h) => [
+        return $this->json(array_map(fn (\App\Entity\Highscore $h) => [
             'id' => $h->getId(),
             'participantName' => $h->getParticipantName(),
             'progressTaskEntry' => $h->getProgressTaskEntry(),
@@ -173,7 +173,7 @@ final class RaceApiController extends AbstractController
         ], $highscores));
     }
 
-    #[Route('/{id}/timer', name: 'timer', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/api/v1/races/{id}/timer', name: 'api_race_timer', methods: ['GET'], requirements: ['id' => '\d+'])]
     #[OA\Get(summary: 'Get race timer information')]
     #[OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))]
     #[OA\Response(
@@ -194,7 +194,7 @@ final class RaceApiController extends AbstractController
         ]);
     }
 
-    #[Route('', name: 'create', methods: ['POST'])]
+    #[Route('/api/v1/races', name: 'api_race_create', methods: ['POST'])]
     #[OA\Post(summary: 'Create a new race')]
     #[OA\RequestBody(
         required: true,
@@ -248,7 +248,7 @@ final class RaceApiController extends AbstractController
         ], Response::HTTP_CREATED);
     }
 
-    #[Route('/{id}/start', name: 'start', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/api/v1/races/{id}/start', name: 'api_race_start', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[OA\Post(summary: 'Start a race')]
     #[OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))]
     #[OA\Response(
@@ -271,7 +271,7 @@ final class RaceApiController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/finish', name: 'finish', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/api/v1/races/{id}/finish', name: 'api_race_finish', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[OA\Post(summary: 'Finish a race')]
     #[OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))]
     #[OA\Response(
@@ -294,7 +294,7 @@ final class RaceApiController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/participants', name: 'add_participant', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/api/v1/races/{id}/participants', name: 'api_race_add_participant', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[OA\Post(summary: 'Add a participant to a race')]
     #[OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))]
     #[OA\RequestBody(

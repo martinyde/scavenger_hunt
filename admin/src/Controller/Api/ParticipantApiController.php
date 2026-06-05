@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Controller\Api;
 
 use App\Entity\Highscore;
 use App\Entity\Participant;
 use App\Repository\ParticipantRepository;
-use App\Repository\RaceRepository;
 use App\Repository\TaskRepository;
 use App\Service\RaceHelper;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,7 +18,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[OA\Tag(name: 'Participants')]
-#[Route('/api/v1/participants', name: 'api_participant_')]
 final class ParticipantApiController extends AbstractController
 {
     public function __construct(
@@ -26,7 +26,7 @@ final class ParticipantApiController extends AbstractController
     ) {
     }
 
-    #[Route('/by-uuid/{uuid}', name: 'by_uuid', methods: ['GET'])]
+    #[Route('/api/v1/participants/by-uuid/{uuid}', name: 'api_participant_by_uuid', methods: ['GET'])]
     #[OA\Get(summary: 'Get participant by UUID')]
     #[OA\Parameter(name: 'uuid', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid'))]
     #[OA\Response(
@@ -64,7 +64,7 @@ final class ParticipantApiController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/guess-access-key', name: 'guess_access_key', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/api/v1/participants/{id}/guess-access-key', name: 'api_participant_guess_access_key', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[OA\Post(summary: 'Submit an access key guess')]
     #[OA\Parameter(name: 'id', in: 'path', required: true, description: 'Participant ID', schema: new OA\Schema(type: 'integer'))]
     #[OA\RequestBody(
@@ -116,7 +116,7 @@ final class ParticipantApiController extends AbstractController
             if (strtolower((string) $guess) === strtolower((string) $task->getPassKey())) {
                 $participant->setProgressEntryCount(($participant->getProgressEntryCount() ?? 0) + 1);
                 $participant->addProgressTaskEntry($task);
-                $matchedCount++;
+                ++$matchedCount;
             }
         }
 
@@ -130,7 +130,7 @@ final class ParticipantApiController extends AbstractController
         return $this->json(['matched' => $matchedCount]);
     }
 
-    #[Route('/{id}/finish', name: 'finish', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/api/v1/participants/{id}/finish', name: 'api_participant_finish', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[OA\Post(summary: 'Mark participant as finished and create highscore')]
     #[OA\Parameter(name: 'id', in: 'path', required: true, description: 'Participant ID', schema: new OA\Schema(type: 'integer'))]
     #[OA\Response(

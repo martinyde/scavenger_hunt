@@ -10,9 +10,15 @@ When the user asks for a feature, change, or bug fix, the main agent must orches
 4. **Commit, push, PR.** Delegate to `git-agent`. The PR body must include `Closes #<issue-number>`.
 5. **Stop at the PR.** Never merge. Report the PR URL to the user and wait.
 
-### Design work vs. development work
+### Design work vs. development work vs. infrastructure work
 
-Issues that are purely visual — new mockups, design-system changes, race-display themes, anything under `design/` — delegate to `design-agent` instead of `development-agent`. `design-agent` is scoped strictly to the `design/` playground and produces Tailwind/HTML mockups; it never touches `admin/`, `archive/`, `race-frontend/`, or `shared/`. When an approved design needs to land in a Symfony app, that becomes a separate follow-up issue handled by `development-agent`. Do not ask `design-agent` to port and do not ask `development-agent` to redesign.
+Three specialist agents cover three distinct surfaces. Pick the one that matches the issue's primary scope:
+
+- **`design-agent`** — purely visual work: new mockups, design-system changes, race-display themes, anything under `design/`. Scoped strictly to the `design/` playground; produces Tailwind/HTML mockups. Never touches `admin/`, `archive/`, `race-frontend/`, `shared/`, or project infra. When an approved design needs to land in a Symfony app, that's a follow-up issue for `development-agent`.
+- **`development-agent`** — application code in `admin/`, `race-frontend/`, `archive/`, and `shared/`. PHP, Twig, JS/CSS, composer/package manifests, migrations, fixtures. Does not edit project-level tooling.
+- **`infra-agent`** — project infrastructure: `Taskfile.yml`, `docker-compose*.yml`, `bin/` helper scripts, `.github/` workflows, root-level repo config (root `README.md`, `.editorconfig`, `.gitignore`, etc.). Does not edit application source code.
+
+Do not ask one agent to do another's work. If a single issue would genuinely span scopes (rare), split it into two issues — one per agent.
 
 ### When to skip the flow
 

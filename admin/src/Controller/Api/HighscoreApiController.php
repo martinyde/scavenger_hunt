@@ -1,10 +1,10 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Controller\Api;
 
 use App\Entity\Highscore;
-use App\Entity\Race;
-use App\Entity\ScavengerHunt;
 use App\Repository\HighscoreRepository;
 use App\Repository\RaceRepository;
 use App\Repository\ScavengerHuntRepository;
@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[OA\Tag(name: 'Highscores')]
-#[Route('/api/v1/highscores', name: 'api_highscore_')]
 final class HighscoreApiController extends AbstractController
 {
     public function __construct(
@@ -23,7 +22,7 @@ final class HighscoreApiController extends AbstractController
     ) {
     }
 
-    #[Route('/race/{raceId}', name: 'race', methods: ['GET'], requirements: ['raceId' => '\d+'])]
+    #[Route('/api/v1/highscores/race/{raceId}', name: 'api_highscore_race', methods: ['GET'], requirements: ['raceId' => '\d+'])]
     #[OA\Get(summary: 'Get highscores for a race')]
     #[OA\Parameter(name: 'raceId', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))]
     #[OA\Response(
@@ -53,7 +52,7 @@ final class HighscoreApiController extends AbstractController
 
         $highscores = $this->highscoreRepository->getRaceHighScores($race);
 
-        return $this->json(array_map(fn(Highscore $h) => [
+        return $this->json(array_map(fn (Highscore $h) => [
             'id' => $h->getId(),
             'participantName' => $h->getParticipantName(),
             'progressTaskEntry' => $h->getProgressTaskEntry(),
@@ -65,7 +64,7 @@ final class HighscoreApiController extends AbstractController
         ], $highscores));
     }
 
-    #[Route('/scavenger-hunt/{scavengerHuntId}', name: 'scavenger_hunt', methods: ['GET'], requirements: ['scavengerHuntId' => '\d+'])]
+    #[Route('/api/v1/highscores/scavenger-hunt/{scavengerHuntId}', name: 'api_highscore_scavenger_hunt', methods: ['GET'], requirements: ['scavengerHuntId' => '\d+'])]
     #[OA\Get(summary: 'Get highscores for a scavenger hunt')]
     #[OA\Parameter(name: 'scavengerHuntId', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))]
     #[OA\Response(
@@ -95,7 +94,7 @@ final class HighscoreApiController extends AbstractController
 
         $highscores = $this->highscoreRepository->getScavengerHuntHighScores($scavengerHunt);
 
-        return $this->json(array_map(fn(Highscore $h) => [
+        return $this->json(array_map(fn (Highscore $h) => [
             'id' => $h->getId(),
             'participantName' => $h->getParticipantName(),
             'progressTaskEntry' => $h->getProgressTaskEntry(),

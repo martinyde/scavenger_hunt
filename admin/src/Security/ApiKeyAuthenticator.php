@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Security;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,7 +17,9 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 
 class ApiKeyAuthenticator extends AbstractAuthenticator
 {
-    public function __construct(private readonly string $apiKey) {}
+    public function __construct(private readonly string $apiKey)
+    {
+    }
 
     public function supports(Request $request): ?bool
     {
@@ -28,6 +32,7 @@ class ApiKeyAuthenticator extends AbstractAuthenticator
         if ($token !== $this->apiKey) {
             throw new CustomUserMessageAuthenticationException('Invalid API key');
         }
+
         // Use a fixed identifier for API clients
         return new SelfValidatingPassport(new UserBadge('api-client'));
     }

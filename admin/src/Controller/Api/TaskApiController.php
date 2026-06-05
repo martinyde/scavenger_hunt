@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Controller\Api;
 
 use App\Entity\Task;
@@ -14,7 +16,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[OA\Tag(name: 'Tasks')]
-#[Route('/api/v1/tasks', name: 'api_task_')]
 final class TaskApiController extends AbstractController
 {
     public function __construct(
@@ -22,7 +23,7 @@ final class TaskApiController extends AbstractController
     ) {
     }
 
-    #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/api/v1/tasks/{id}', name: 'api_task_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     #[OA\Get(summary: 'Get task by ID')]
     #[OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))]
     #[OA\Response(
@@ -49,7 +50,7 @@ final class TaskApiController extends AbstractController
         ]);
     }
 
-    #[Route('/by-uuid/{uuid}', name: 'by_uuid', methods: ['GET'])]
+    #[Route('/api/v1/tasks/by-uuid/{uuid}', name: 'api_task_by_uuid', methods: ['GET'])]
     #[OA\Get(summary: 'Get task by UUID')]
     #[OA\Parameter(name: 'uuid', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid'))]
     #[OA\Response(response: 200, description: 'Task details')]
@@ -72,7 +73,7 @@ final class TaskApiController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/guess', name: 'guess', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/api/v1/tasks/{id}/guess', name: 'api_task_guess', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[OA\Post(summary: 'Submit a solution guess for a task')]
     #[OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))]
     #[OA\RequestBody(

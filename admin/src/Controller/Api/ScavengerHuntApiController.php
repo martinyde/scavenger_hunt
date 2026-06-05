@@ -1,19 +1,20 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Controller\Api;
 
-use App\Repository\ScavengerHuntRepository;
 use App\Entity\ScavengerHunt;
+use App\Repository\ScavengerHuntRepository;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[OA\Tag(name: 'Scavenger Hunts')]
-#[Route('/api/v1/scavenger-hunts', name: 'api_scavenger_hunt_')]
 final class ScavengerHuntApiController extends AbstractController
 {
-    #[Route('', name: 'list', methods: ['GET'])]
+    #[Route('/api/v1/scavenger-hunts', name: 'api_scavenger_hunt_list', methods: ['GET'])]
     #[OA\Get(summary: 'List all scavenger hunts')]
     #[OA\Response(
         response: 200,
@@ -31,7 +32,8 @@ final class ScavengerHuntApiController extends AbstractController
     public function list(ScavengerHuntRepository $repository): JsonResponse
     {
         $hunts = $repository->findAll();
-        return $this->json(array_map(fn(ScavengerHunt $h) => [
+
+        return $this->json(array_map(fn (ScavengerHunt $h) => [
             'id' => $h->getId(),
             'name' => $h->getName(),
             'task_count' => $h->getTasks()->count(),
@@ -39,7 +41,7 @@ final class ScavengerHuntApiController extends AbstractController
         ], $hunts));
     }
 
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    #[Route('/api/v1/scavenger-hunts/{id}', name: 'api_scavenger_hunt_show', methods: ['GET'])]
     #[OA\Get(summary: 'Get hunt details with tasks and races')]
     #[OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))]
     #[OA\Response(
@@ -78,7 +80,7 @@ final class ScavengerHuntApiController extends AbstractController
         return $this->json([
             'id' => $scavengerHunt->getId(),
             'name' => $scavengerHunt->getName(),
-            'tasks' => array_map(fn($t) => [
+            'tasks' => array_map(fn ($t) => [
                 'id' => $t->getId(),
                 'uuid' => $t->getUuid()->toString(),
                 'title' => $t->getTitle(),
@@ -87,7 +89,7 @@ final class ScavengerHuntApiController extends AbstractController
                 'textAfter' => $t->getTextAfter(),
                 'solutions' => $t->getSolutions(),
             ], $scavengerHunt->getTasks()->toArray()),
-            'races' => array_map(fn($r) => [
+            'races' => array_map(fn ($r) => [
                 'id' => $r->getId(),
                 'uuid' => $r->getUuid()->toString(),
                 'active' => $r->isActive(),

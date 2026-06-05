@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\Uid\UuidV7;
+
 #[ORM\Entity(repositoryClass: RaceRepository::class)]
 class Race
 {
