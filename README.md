@@ -88,6 +88,24 @@ For production deployment on separate servers, each site runs its own compose fi
 | `task admin:console -- ...` | Run Symfony console in admin |
 | `task admin:migrate` | Run database migrations |
 | `task assets:build` | Build frontend assets for admin and race-frontend |
+| `task preview-issue:up -- <N>` | Bring up a preview stack pointed at the worktree for issue #N (see [preview/README.md](preview/README.md)) |
+| `task preview-issue:down` | Tear down the preview stack |
+
+## Preview Stack (manual PR review)
+
+To exercise an in-flight feature branch end-to-end without merging it,
+spin up a second compose stack that mounts the branch's git worktree:
+
+```bash
+task preview-issue:up -- 17    # finds worktrees/issue-17-*/, brings up the preview
+task preview-issue:down        # tears it down
+```
+
+Reachable at `https://{admin,race,archive}-preview-<N>.scavenger.local.itkdev.dk`
+(the issue number is embedded in the hostname so browser history,
+autocomplete, and saved logins separate previews of different issues).
+See [`preview/README.md`](preview/README.md) for the full workflow,
+including DNS setup, fixture handling, and shared-infra trade-offs.
 
 ## Development Agents
 
