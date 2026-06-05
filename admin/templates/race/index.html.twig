@@ -25,7 +25,7 @@
                 <td>
                     <a href="{{ path('app_race_show', {id: race.id, uuid: race.uuid}) }}">show</a>
                     <a href="{{ path('app_race_edit', {id: race.id}) }}">edit</a>
-                    <a href="{{ path('app_race_progress', {id: race.id}) }}">progress</a>
+                    <a href="{{ race_frontend_base_url }}/race/{{ race.id }}/progress" target="_blank" rel="noopener">progress</a>
                 </td>
             </tr>
         {% else %}

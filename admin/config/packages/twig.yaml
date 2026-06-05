@@ -1,5 +1,8 @@
 twig:
     file_name_pattern: "*.twig"
+    globals:
+        race_frontend_base_url: "%env(RACE_FRONTEND_BASE_URL)%"
+        archive_base_url: "%env(ARCHIVE_BASE_URL)%"
 
 when@test:
     twig:
