@@ -120,3 +120,106 @@
   transition: background-color 150ms ease;
 }
 .race-btn:hover { background: var(--race-accent-strong); }
+
+.race-btn-lg {
+  padding: 1rem 1.75rem;
+  font-size: 1.125rem;
+}
+
+.race-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--race-surface);
+  color: var(--race-text);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--race-radius);
+  font-weight: 600;
+  font-family: var(--race-font-body);
+  border: 1px solid var(--race-border);
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+.race-btn-secondary:hover {
+  background: var(--race-surface-muted);
+  border-color: var(--race-text-muted);
+}
+
+/* Avatar dot — initial in inverse-on-accent. */
+.race-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  background: var(--race-accent);
+  color: var(--race-text-inverse);
+  font-family: var(--race-font-body);
+  font-weight: 600;
+  font-size: 1rem;
+  flex: 0 0 auto;
+}
+
+/* Rank chip — soft accent surface with strong-accent text. */
+.race-rank-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.125rem 0.625rem;
+  border-radius: 9999px;
+  background: var(--race-accent-soft);
+  color: var(--race-accent-strong);
+  font-family: var(--race-font-body);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* Labeled progress row — small label + count + bar. */
+.race-progress-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 0.5rem 0.75rem;
+  font-family: var(--race-font-body);
+}
+.race-progress-row .race-progress-label {
+  font-size: 0.75rem;
+  color: var(--race-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.race-progress-row .race-progress-count {
+  font-size: 0.75rem;
+  font-family: var(--race-font-mono);
+  color: var(--race-text);
+  font-variant-numeric: tabular-nums;
+}
+.race-progress-row .race-progress {
+  grid-column: 1 / -1;
+}
+
+/* Modal — themed overlay for the start-race confirmation. */
+.race-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--race-radius-lg);
+}
+.race-modal {
+  background: var(--race-surface);
+  border: 1px solid var(--race-border);
+  border-radius: var(--race-radius-lg);
+  box-shadow: var(--race-shadow-card);
+  padding: 1.5rem;
+  max-width: 28rem;
+  width: 100%;
+  font-family: var(--race-font-body);
+  color: var(--race-text);
+}

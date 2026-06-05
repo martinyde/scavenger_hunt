@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en" data-theme="default">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Race — Progress (admin view)</title>
+  <link rel="stylesheet" href="../dist/css/app.css" />
+  <link rel="stylesheet" href="themes/default.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" />
+  <style>
+    /* Page-local helpers — consume theme variables only. */
+    .theme-frame { background: var(--race-bg); }
+
+    /* Side-by-side state panels for comparison. Each panel is positioned
+       relative so the modal artifact can be absolutely overlaid inside it. */
+    .state-panel { position: relative; }
+    .state-panel-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--race-font-body);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--race-text-muted);
+      margin-bottom: 0.75rem;
+    }
+    .state-panel-label::before {
+      content: "";
+      display: inline-block;
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 9999px;
+      background: var(--race-accent);
+    }
+
+    /* Participants list row — themed via race tokens only. */
+    .participant-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 0.875rem 1rem;
+      padding: 1rem 1.25rem;
+    }
+    .participant-row + .participant-row {
+      border-top: 1px solid var(--race-border);
+    }
+    .participant-name {
+      font-family: var(--race-font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--race-text);
+      line-height: 1.2;
+    }
+    .participant-bars {
+      grid-column: 2 / -1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body class="theme-frame">
+
+<div class="race-shell">
+
+  <!-- Admin-style top bar (this page is admin-facing, not the venue view). -->
+  <header class="border-b" style="border-color: var(--race-border); background: var(--race-surface);">
+    <div class="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-6 h-6 rounded-md race-accent-bg"></span>
+        <span class="race-title text-lg">Aarhus Old Town Mystery</span>
+        <span class="pill ring-1 ring-inset" style="background: var(--race-accent-soft); color: var(--race-accent-strong); border-color: transparent;">Admin · race progress</span>
+      </div>
+
+      <!-- Theme picker — verifies that themes still apply correctly to this page. -->
+      <div data-theme-picker class="flex items-center"></div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-10">
+
+    <div class="mb-8">
+      <h1 class="race-title text-4xl">Race progress — mock</h1>
+      <p class="race-muted text-sm mt-2 max-w-2xl">
+        Side-by-side preview of the admin's race progress page in its two states.
+        Both panels use only race-display CSS variables, so they respond to the
+        theme picker above. Approved port lives in
+        <code class="kbd">race-frontend/templates/race/progress.html.twig</code>.
+      </p>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-8">
+
+      <!-- ============================================================ -->
+      <!-- STATE A — Pre-start                                           -->
+      <!-- ============================================================ -->
+      <section class="state-panel">
+        <div class="state-panel-label">State A · Pre-start</div>
+
+        <div class="race-card p-6">
+
+          <!-- "Ready to start" — replaces the running-state countdown card. -->
+          <div class="race-card-muted p-6 text-center">
+            <div class="text-xs uppercase tracking-wider race-muted mb-2">Status</div>
+            <h2 class="race-title text-3xl">Ready to start</h2>
+
+            <div class="mt-4 inline-flex items-center gap-2 text-sm" style="color: var(--race-text);">
+              <span class="race-muted">Duration</span>
+              <span class="font-mono font-semibold" style="font-family: var(--race-font-mono);">5 min</span>
+            </div>
+
+            <div class="mt-6">
+              <button type="button" class="race-btn race-btn-lg" data-open-modal>
+                Start race
+              </button>
+            </div>
+
+            <div class="mt-4 text-sm race-muted">3 participants joined</div>
+          </div>
+
+          <!-- Participants list — still shown pre-start, but without rank/progress. -->
+          <div class="mt-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="race-title text-xl">Participants</h3>
+              <span class="text-xs race-muted">3 joined</span>
+            </div>
+
+            <div class="race-card">
+              <div class="participant-row">
+                <span class="race-avatar" aria-hidden="true">A</span>
+                <div>
+                  <div class="participant-name">Alice</div>
+                  <div class="text-xs race-muted mt-0.5">Joined 19:01</div>
+                </div>
+                <span class="race-rank-chip" style="background: var(--race-surface-muted); color: var(--race-text-muted);">Waiting</span>
+              </div>
+              <div class="participant-row">
+                <span class="race-avatar" aria-hidden="true">B</span>
+                <div>
+                  <div class="participant-name">Bob</div>
+                  <div class="text-xs race-muted mt-0.5">Joined 19:02</div>
+                </div>
+                <span class="race-rank-chip" style="background: var(--race-surface-muted); color: var(--race-text-muted);">Waiting</span>
+              </div>
+              <div class="participant-row">
+                <span class="race-avatar" aria-hidden="true">C</span>
+                <div>
+                  <div class="participant-name">Carol</div>
+                  <div class="text-xs race-muted mt-0.5">Joined 19:03</div>
+                </div>
+                <span class="race-rank-chip" style="background: var(--race-surface-muted); color: var(--race-text-muted);">Waiting</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Confirmation modal — rendered as a second artifact, visibly open
+             over the same panel so reviewers see both at once. JS toggles
+             its visibility purely for the demo. -->
+        <div class="race-modal-backdrop" data-modal>
+          <div class="race-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+            <h2 id="confirm-title" class="race-title text-2xl">Start the race now?</h2>
+            <p class="mt-2 text-sm" style="color: var(--race-text-muted);">
+              The timer cannot be paused.
+            </p>
+            <div class="mt-6 flex items-center justify-end gap-3">
+              <button type="button" class="race-btn-secondary" data-close-modal>Cancel</button>
+              <button type="button" class="race-btn" data-close-modal>Confirm</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- STATE B — Running                                             -->
+      <!-- ============================================================ -->
+      <section class="state-panel">
+        <div class="state-panel-label">State B · Running</div>
+
+        <div class="race-card p-6">
+
+          <!-- Live timer (unchanged from existing progress.html.twig). -->
+          <div class="race-card-muted p-6 text-center">
+            <div class="text-xs uppercase tracking-wider race-muted mb-1">Time remaining</div>
+            <div class="race-countdown text-6xl mt-1">03:12</div>
+            <div class="race-progress mt-4"><span style="width: 64%"></span></div>
+          </div>
+
+          <!-- Styled participants list — rows on race-card surface. -->
+          <div class="mt-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="race-title text-xl">Participants</h3>
+              <span class="text-xs race-muted">Ranked by solutions, then entries</span>
+            </div>
+
+            <div class="race-card">
+
+              <!-- Row 1: Alice — 4/5 entries, 3/5 solutions, 1st -->
+              <div class="participant-row">
+                <span class="race-avatar" aria-hidden="true">A</span>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2">
+                    <div class="participant-name truncate">Alice</div>
+                  </div>
+                </div>
+                <span class="race-rank-chip">1st</span>
+
+                <div class="participant-bars">
+                  <div class="race-progress-row">
+                    <span class="race-progress-label">Entries</span>
+                    <span class="race-progress-count">4 / 5</span>
+                    <div class="race-progress"><span style="width: 80%"></span></div>
+                  </div>
+                  <div class="race-progress-row">
+                    <span class="race-progress-label">Solutions</span>
+                    <span class="race-progress-count">3 / 5</span>
+                    <div class="race-progress"><span style="width: 60%"></span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Row 2: Bob — 3/5 entries, 2/5 solutions, 2nd -->
+              <div class="participant-row">
+                <span class="race-avatar" aria-hidden="true">B</span>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2">
+                    <div class="participant-name truncate">Bob</div>
+                  </div>
+                </div>
+                <span class="race-rank-chip">2nd</span>
+
+                <div class="participant-bars">
+                  <div class="race-progress-row">
+                    <span class="race-progress-label">Entries</span>
+                    <span class="race-progress-count">3 / 5</span>
+                    <div class="race-progress"><span style="width: 60%"></span></div>
+                  </div>
+                  <div class="race-progress-row">
+                    <span class="race-progress-label">Solutions</span>
+                    <span class="race-progress-count">2 / 5</span>
+                    <div class="race-progress"><span style="width: 40%"></span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Row 3: Carol — 2/5 entries, 0/5 solutions, 3rd -->
+              <div class="participant-row">
+                <span class="race-avatar" aria-hidden="true">C</span>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2">
+                    <div class="participant-name truncate">Carol</div>
+                  </div>
+                </div>
+                <span class="race-rank-chip">3rd</span>
+
+                <div class="participant-bars">
+                  <div class="race-progress-row">
+                    <span class="race-progress-label">Entries</span>
+                    <span class="race-progress-count">2 / 5</span>
+                    <div class="race-progress"><span style="width: 40%"></span></div>
+                  </div>
+                  <div class="race-progress-row">
+                    <span class="race-progress-label">Solutions</span>
+                    <span class="race-progress-count">0 / 5</span>
+                    <div class="race-progress"><span style="width: 0%"></span></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Reviewer notes ------------------------------------------------- -->
+    <div class="race-card-muted p-6 mt-10 max-w-3xl">
+      <h3 class="race-title text-lg mb-2">Notes for the port</h3>
+      <ul class="text-sm space-y-1.5 list-disc pl-5" style="color: var(--race-text-muted);">
+        <li>Sample data: Alice 4/5 entries · 3/5 solutions, Bob 3/5 · 2/5, Carol 2/5 · 0/5. Sort: solutions desc, then entries desc.</li>
+        <li>Avatar initial uses <code class="kbd">race-accent-bg</code> via the new <code class="kbd">.race-avatar</code> primitive.</li>
+        <li>Rank chip uses <code class="kbd">--race-accent-soft</code> background and <code class="kbd">--race-accent-strong</code> text via the new <code class="kbd">.race-rank-chip</code> primitive.</li>
+        <li>Modal backdrop is positioned <em>inside</em> the demo panel for visibility; the production version should overlay the page (<code class="kbd">position: fixed; inset: 0;</code>).</li>
+        <li>New themed primitives added to <code class="kbd">themes/default.css</code>: <code class="kbd">.race-btn-lg</code>, <code class="kbd">.race-btn-secondary</code>, <code class="kbd">.race-avatar</code>, <code class="kbd">.race-rank-chip</code>, <code class="kbd">.race-progress-row</code>, <code class="kbd">.race-modal</code>, <code class="kbd">.race-modal-backdrop</code>.</li>
+      </ul>
+    </div>
+
+  </main>
+
+  <footer class="border-t" style="border-color: var(--race-border);">
+    <div class="max-w-7xl mx-auto px-6 py-4 text-xs race-muted flex justify-between">
+      <span>Race #248 · admin view</span>
+      <span>Mockup — no live data</span>
+    </div>
+  </footer>
+</div>
+
+<script type="module" src="../src/js/themes.js"></script>
+<script>
+  // Demo-only: let reviewers toggle the modal artifact off/on within State A.
+  // The modal renders OPEN by default so both states are immediately visible.
+  (function () {
+    const modal = document.querySelector('[data-modal]');
+    const openers = document.querySelectorAll('[data-open-modal]');
+    const closers = document.querySelectorAll('[data-close-modal]');
+    if (!modal) return;
+    openers.forEach((b) => b.addEventListener('click', () => { modal.style.display = 'flex'; }));
+    closers.forEach((b) => b.addEventListener('click', () => { modal.style.display = 'none'; }));
+  })();
+</script>
+</body>
+</html>
