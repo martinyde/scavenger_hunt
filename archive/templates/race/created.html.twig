@@ -36,13 +36,13 @@
 
         <div class="card">
             <div class="card-header flex items-center gap-2">
-                <span class="pill-neutral">Admin</span>
-                <h3 class="text-base font-semibold">Admin link</h3>
+                <span class="pill-neutral">Progress</span>
+                <h3 class="text-base font-semibold">Progress link</h3>
             </div>
             <div class="card-body">
-                {% set adminLink = adminUrl ~ '/race/progress/' ~ race.id %}
-                <a href="{{ adminLink }}" class="break-all">{{ adminLink }}</a>
-                <p class="helper mt-2">Manage the race from the admin site.</p>
+                {% set progressLink = raceFrontendUrl ~ '/race/' ~ race.id ~ '/progress' %}
+                <a href="{{ progressLink }}" class="break-all">{{ progressLink }}</a>
+                <p class="helper mt-2">Follow race progress on the race site.</p>
             </div>
         </div>
 

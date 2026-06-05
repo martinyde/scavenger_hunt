@@ -17,8 +17,6 @@ final class RaceController extends AbstractController
         private readonly AdminApiClient $adminApiClient,
         #[\Symfony\Component\DependencyInjection\Attribute\Autowire('%race_frontend_url%')]
         private readonly string $raceFrontendUrl,
-        #[\Symfony\Component\DependencyInjection\Attribute\Autowire('%admin_url%')]
-        private readonly string $adminUrl,
     ) {
     }
 
@@ -37,7 +35,6 @@ final class RaceController extends AbstractController
                 'race' => $race,
                 'hunt' => $hunt,
                 'raceFrontendUrl' => $this->raceFrontendUrl,
-                'adminUrl' => $this->adminUrl,
             ]);
         }
 
