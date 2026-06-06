@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en" data-theme="default">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Race · /race/{id} — Task list (mobile)</title>
+  <link rel="stylesheet" href="../../dist/css/app.css" />
+  <link rel="stylesheet" href="../themes/default.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" />
+  <style>
+    body { background: var(--race-bg); }
+    .desktop-note {
+      max-width: 22.5rem;
+      margin: 1rem auto -0.5rem;
+      padding: 0 0.875rem;
+      font-family: var(--race-font-body);
+      font-size: 0.75rem;
+      color: var(--race-text-muted);
+      text-align: center;
+    }
+    @media (max-width: 480px) { .desktop-note { display: none; } }
+  </style>
+</head>
+<body>
+
+<p class="desktop-note">
+  Mobile mock — viewport clamped to 360 px. Tap tabs / swipe / ←→ to navigate.
+  This page lands on the <strong>task list</strong> panel.
+</p>
+
+<div class="race-phone">
+
+  <header class="race-topbar" role="banner">
+    <span class="race-topbar-timer" aria-label="Time remaining">14:32</span>
+
+    <div class="race-topbar-team">
+      <span class="race-topbar-avatar" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M4 5l3 4c1.5-.6 3.2-.9 5-.9s3.5.3 5 .9l3-4v8.5C20 17.6 16.4 21 12 21S4 17.6 4 13.5V5zm5.5 8a1 1 0 110-2 1 1 0 010 2zm5 0a1 1 0 110-2 1 1 0 010 2zm-2.5 3l-1.2-1.2a.6.6 0 01.4-1h1.6a.6.6 0 01.4 1L12 16z"/>
+        </svg>
+      </span>
+      <span class="race-topbar-team-name">Team Cat</span>
+    </div>
+
+    <span class="race-topbar-progress" aria-label="Tasks completed">3 / 12</span>
+  </header>
+
+  <div class="race-hub" data-race-hub data-active="list">
+
+    <nav class="race-tabs" role="tablist" data-race-tabs aria-label="Race sections">
+      <button type="button" class="race-tab" role="tab"
+              data-tab="search" aria-selected="false">Word search</button>
+      <button type="button" class="race-tab" role="tab"
+              data-tab="list"   aria-selected="true">Tasks</button>
+      <button type="button" class="race-tab" role="tab"
+              data-tab="task"   aria-selected="false">Detail</button>
+    </nav>
+
+    <div class="race-panels" data-race-panels>
+      <div class="race-panels-track" data-race-track>
+
+        <!-- =============================================================
+             PANEL 1 — Word search
+             ============================================================= -->
+        <section class="race-panel" data-panel="search" role="tabpanel" aria-label="Word search">
+          <div class="race-panel-eyebrow">Find the key words</div>
+          <h1 class="race-panel-title">Trace the letters to unlock each task.</h1>
+
+          <div class="race-wordsearch" role="grid" aria-label="Word search grid"
+               style="grid-template-columns: repeat(10, 1fr);">
+            <span class="race-wordsearch-cell is-found-strong">C</span>
+            <span class="race-wordsearch-cell is-found-strong">A</span>
+            <span class="race-wordsearch-cell is-found-strong">T</span>
+            <span class="race-wordsearch-cell">R</span><span class="race-wordsearch-cell">B</span>
+            <span class="race-wordsearch-cell">N</span><span class="race-wordsearch-cell">E</span>
+            <span class="race-wordsearch-cell">L</span><span class="race-wordsearch-cell">S</span>
+            <span class="race-wordsearch-cell">H</span>
+            <span class="race-wordsearch-cell">O</span><span class="race-wordsearch-cell">P</span>
+            <span class="race-wordsearch-cell">M</span><span class="race-wordsearch-cell">I</span>
+            <span class="race-wordsearch-cell">V</span><span class="race-wordsearch-cell">A</span>
+            <span class="race-wordsearch-cell">Q</span><span class="race-wordsearch-cell">T</span>
+            <span class="race-wordsearch-cell">U</span><span class="race-wordsearch-cell">Z</span>
+            <span class="race-wordsearch-cell is-found-strong">D</span>
+            <span class="race-wordsearch-cell is-found-strong">O</span>
+            <span class="race-wordsearch-cell is-found-strong">G</span>
+            <span class="race-wordsearch-cell">F</span><span class="race-wordsearch-cell">W</span>
+            <span class="race-wordsearch-cell">J</span><span class="race-wordsearch-cell">Y</span>
+            <span class="race-wordsearch-cell">R</span><span class="race-wordsearch-cell">M</span>
+            <span class="race-wordsearch-cell">K</span>
+            <span class="race-wordsearch-cell">I</span><span class="race-wordsearch-cell">L</span>
+            <span class="race-wordsearch-cell">U</span><span class="race-wordsearch-cell">N</span>
+            <span class="race-wordsearch-cell">X</span><span class="race-wordsearch-cell">E</span>
+            <span class="race-wordsearch-cell">R</span><span class="race-wordsearch-cell">G</span>
+            <span class="race-wordsearch-cell">P</span><span class="race-wordsearch-cell">D</span>
+            <span class="race-wordsearch-cell">N</span><span class="race-wordsearch-cell">B</span>
+            <span class="race-wordsearch-cell">S</span><span class="race-wordsearch-cell">U</span>
+            <span class="race-wordsearch-cell">N</span><span class="race-wordsearch-cell">A</span>
+            <span class="race-wordsearch-cell">T</span><span class="race-wordsearch-cell">I</span>
+            <span class="race-wordsearch-cell">Q</span><span class="race-wordsearch-cell">F</span>
+            <span class="race-wordsearch-cell">E</span><span class="race-wordsearch-cell">A</span>
+            <span class="race-wordsearch-cell">M</span><span class="race-wordsearch-cell">O</span>
+            <span class="race-wordsearch-cell">O</span><span class="race-wordsearch-cell">N</span>
+            <span class="race-wordsearch-cell">P</span><span class="race-wordsearch-cell">R</span>
+            <span class="race-wordsearch-cell">V</span><span class="race-wordsearch-cell">H</span>
+            <span class="race-wordsearch-cell">S</span><span class="race-wordsearch-cell">L</span>
+            <span class="race-wordsearch-cell">Y</span><span class="race-wordsearch-cell">K</span>
+            <span class="race-wordsearch-cell">T</span><span class="race-wordsearch-cell">R</span>
+            <span class="race-wordsearch-cell">E</span><span class="race-wordsearch-cell">E</span>
+            <span class="race-wordsearch-cell">B</span><span class="race-wordsearch-cell">A</span>
+            <span class="race-wordsearch-cell">B</span><span class="race-wordsearch-cell">I</span>
+            <span class="race-wordsearch-cell">R</span><span class="race-wordsearch-cell">D</span>
+            <span class="race-wordsearch-cell">X</span><span class="race-wordsearch-cell">F</span>
+            <span class="race-wordsearch-cell">A</span><span class="race-wordsearch-cell">M</span>
+            <span class="race-wordsearch-cell">N</span><span class="race-wordsearch-cell">P</span>
+            <span class="race-wordsearch-cell">W</span><span class="race-wordsearch-cell">R</span>
+            <span class="race-wordsearch-cell">I</span><span class="race-wordsearch-cell">V</span>
+            <span class="race-wordsearch-cell">E</span><span class="race-wordsearch-cell">R</span>
+            <span class="race-wordsearch-cell">C</span><span class="race-wordsearch-cell">L</span>
+            <span class="race-wordsearch-cell">D</span><span class="race-wordsearch-cell">U</span>
+            <span class="race-wordsearch-cell">G</span><span class="race-wordsearch-cell">A</span>
+            <span class="race-wordsearch-cell">B</span><span class="race-wordsearch-cell">C</span>
+            <span class="race-wordsearch-cell">F</span><span class="race-wordsearch-cell">L</span>
+            <span class="race-wordsearch-cell">A</span><span class="race-wordsearch-cell">G</span>
+            <span class="race-wordsearch-cell">O</span><span class="race-wordsearch-cell">Z</span>
+          </div>
+
+          <div class="race-key-rail" role="list" aria-label="Task keys">
+            <button type="button" class="race-key is-found-done" data-jump="task" role="listitem">
+              <span class="race-key-dot"></span>CAT
+            </button>
+            <button type="button" class="race-key is-found" data-jump="task" role="listitem">
+              <span class="race-key-dot"></span>DOG
+            </button>
+            <span class="race-key is-locked" role="listitem">• • •</span>
+            <span class="race-key is-locked" role="listitem">• • • •</span>
+            <span class="race-key is-locked" role="listitem">• • •</span>
+            <span class="race-key is-locked" role="listitem">• • • •</span>
+            <span class="race-key is-locked" role="listitem">• • • • •</span>
+            <span class="race-key is-locked" role="listitem">• • • •</span>
+            <span class="race-key is-locked" role="listitem">• • •</span>
+            <span class="race-key is-locked" role="listitem">• • • •</span>
+            <span class="race-key is-locked" role="listitem">• • • • •</span>
+            <span class="race-key is-locked" role="listitem">• • • •</span>
+          </div>
+        </section>
+
+        <!-- =============================================================
+             PANEL 2 — Task list (DEFAULT ACTIVE on this page)
+             ============================================================= -->
+        <section class="race-panel" data-panel="list" role="tabpanel" aria-label="Tasks">
+          <div class="race-panel-eyebrow">Unlocked so far · 2 of 12</div>
+          <h1 class="race-panel-title">Your open tasks</h1>
+
+          <p class="race-task-narration-muted" style="margin-bottom: 0.875rem;">
+            Locked tasks stay hidden until you find their word in the grid.
+            That keeps the list short and means progress in the search is
+            visible everywhere you look.
+          </p>
+
+          <button type="button" class="race-task-row" data-status="done" data-jump="task-from-list">
+            <span class="race-task-row-key" data-state="done">CAT</span>
+            <span>
+              <span class="race-task-row-title">Photograph any cat statue.</span>
+              <span class="race-task-row-meta">Solved · 19:22 · 1 guess</span>
+            </span>
+            <span class="race-task-row-chevron" aria-hidden="true">&rsaquo;</span>
+          </button>
+
+          <button type="button" class="race-task-row" data-status="open" data-jump="task-from-list">
+            <span class="race-task-row-key">DOG</span>
+            <span>
+              <span class="race-task-row-title">Name the breed on the brewery sign.</span>
+              <span class="race-task-row-meta">Open · 0 guesses</span>
+            </span>
+            <span class="race-task-row-chevron" aria-hidden="true">&rsaquo;</span>
+          </button>
+
+          <!-- Empty-state hint at the end of the list. -->
+          <div class="race-card-muted" style="margin-top: 1.25rem; padding: 0.875rem;">
+            <div class="race-panel-eyebrow" style="margin-bottom: 0.25rem;">10 tasks still locked</div>
+            <div class="race-task-narration-muted">
+              Find a key word in the grid to reveal the next task here.
+            </div>
+          </div>
+        </section>
+
+        <!-- =============================================================
+             PANEL 3 — Task detail (states reachable via toggle)
+             ============================================================= -->
+        <section class="race-panel" data-panel="task" role="tabpanel" aria-label="Task detail">
+          <div class="race-state-toggle" role="tablist" aria-label="Mock state preview">
+            <button type="button" data-state-button="idle"    aria-pressed="true">Idle</button>
+            <button type="button" data-state-button="correct" aria-pressed="false">Correct</button>
+            <button type="button" data-state-button="wrong"   aria-pressed="false">Wrong</button>
+          </div>
+
+          <div class="race-panel-eyebrow">Task · key DOG</div>
+          <h1 class="race-panel-title">Name the breed on the brewery sign.</h1>
+
+          <p class="race-task-narration">
+            Walk south down the alley until you reach the brick wall of the old
+            brewery. Above the side entrance you'll see a metal sign with a
+            dog's head etched into it.
+          </p>
+
+          <div class="race-hint" style="margin-top: 0.875rem;">
+            <div class="race-hint-label">Hint</div>
+            It's a breed often associated with the Danish royal family.
+          </div>
+
+          <form class="race-card" style="margin-top: 1rem; padding: 0.875rem;"
+                data-answer-form data-correct-answer="dachshund" novalidate>
+            <label class="race-panel-eyebrow" for="answer-input-list">Your answer</label>
+            <input id="answer-input-list" class="race-input" type="text"
+                   autocomplete="off" autocapitalize="characters" spellcheck="false"
+                   placeholder="Type the breed name…" />
+            <button type="submit" class="race-btn" style="margin-top: 0.625rem; width: 100%;">
+              Submit answer
+            </button>
+
+            <div class="race-feedback race-feedback-correct" data-feedback="correct" hidden>
+              <span class="race-feedback-icon" aria-hidden="true">&#10003;</span>
+              <span><strong>Nice — that's right.</strong> Returning to the word search…</span>
+            </div>
+            <div class="race-feedback race-feedback-wrong" data-feedback="wrong" hidden>
+              <span class="race-feedback-icon" aria-hidden="true">&times;</span>
+              <span><strong>Not quite.</strong> Each wrong guess adds 30 seconds. Try again.</span>
+            </div>
+          </form>
+
+          <p class="race-task-narration-muted" style="margin-top: 1rem;">
+            Once you have the breed, jot it down — it'll come up again later.
+          </p>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="../../src/js/themes.js"></script>
+<script src="mobile-hub.js" defer></script>
+</body>
+</html>
