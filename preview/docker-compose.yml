@@ -14,6 +14,7 @@
 #   PREVIEW_ADMIN_NODE_MODULES   bind-source or volume mount for admin's node_modules
 #   PREVIEW_RACE_NODE_MODULES    same, for race-frontend
 #   PREVIEW_ARCHIVE_NODE_MODULES same, for archive
+#   PREVIEW_DESIGN_NODE_MODULES  same, for the design playground
 #   PREVIEW_SHARED            absolute path to the worktree's shared/ dir
 #   PREVIEW_MAIN_PROJECT      docker-compose project name of the main stack (default: scavenger)
 #
@@ -219,6 +220,36 @@ services:
       - "traefik.http.routers.scavenger_preview_archive.middlewares=preview-redirect-to-https"
       - "traefik.http.services.scavenger_preview_archive.loadbalancer.server.port=8082"
 
+  # ----- Design playground (preview) -----
+  # Static-site preview for the design/ directory. No PHP, no DB — just the
+  # built Tailwind CSS plus the hand-written HTML pages under design/.
+  # The whole worktree's design/ folder is mounted at /app as the web root,
+  # so index.html and the per-feature mocks (race-display/active.html, etc.)
+  # are reachable directly. node_modules is layered on top so a stale or
+  # missing host node_modules doesn't shadow the build container's copy.
+  design-nginx:
+    image: nginxinc/nginx-unprivileged:alpine
+    networks:
+      - frontend
+    volumes:
+      - ${PREVIEW_WORKTREE}/design/.docker/nginx-templates:/etc/nginx/templates:ro
+      - ${PREVIEW_WORKTREE}/design:/app
+      - ${PREVIEW_DESIGN_NODE_MODULES}:/app/node_modules
+    environment:
+      NGINX_WEB_ROOT: /app
+      NGINX_PORT: 8083
+      NGINX_MAX_BODY_SIZE: 5M
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=frontend"
+      - "traefik.http.routers.scavenger_preview_design.rule=Host(`design-preview-${PREVIEW_ISSUE}.${PREVIEW_DOMAIN}`)"
+      - "traefik.http.routers.scavenger_preview_design.middlewares=preview-redirect-to-https"
+      - "traefik.http.services.scavenger_preview_design.loadbalancer.server.port=8083"
+      # Redefine the redirect middleware here so the design-only fast path
+      # (preview-issue:design:up) still has a definition — admin-nginx,
+      # which originally defines it, isn't running in that scenario.
+      - "traefik.http.middlewares.preview-redirect-to-https.redirectscheme.scheme=https"
+
   # Node helper for ad-hoc asset builds across the worktree.
   # The whole worktree is mounted at /app, with per-site node_modules AND
   # vendor layered on top so npm operations pick up the bind-mounted main
@@ -243,6 +274,7 @@ services:
       - ${PREVIEW_ADMIN_NODE_MODULES}:/app/admin/node_modules
       - ${PREVIEW_RACE_NODE_MODULES}:/app/race-frontend/node_modules
       - ${PREVIEW_ARCHIVE_NODE_MODULES}:/app/archive/node_modules
+      - ${PREVIEW_DESIGN_NODE_MODULES}:/app/design/node_modules
 
 volumes:
   mariadb_data:

@@ -219,11 +219,12 @@ tasks:
   #   _preview:guard         errors out if any scavenger_preview container is running
   #
   # Public targets:
-  #   preview-issue:up       bring up the preview stack pointed at issue #N
-  #   preview-issue:down     tear down whatever preview is currently running
-  #   preview-issue:fixtures force-reload Doctrine fixtures into the preview DB
-  #   preview-issue:logs     follow logs from the preview stack
-  #   preview-issue:status   show the resolved worktree and running containers
+  #   preview-issue:up         bring up the full preview stack (admin/race/archive/design) for issue #N
+  #   preview-issue:design:up  bring up ONLY the design playground for issue #N (no PHP / DB)
+  #   preview-issue:down       tear down whatever preview is currently running
+  #   preview-issue:fixtures   force-reload Doctrine fixtures into the preview DB
+  #   preview-issue:logs       follow logs from the preview stack
+  #   preview-issue:status     show the resolved worktree and running containers
   #
   # Notes:
   #   - The compose file lives at preview/docker-compose.yml and is invoked
@@ -313,6 +314,7 @@ tasks:
         export PREVIEW_ADMIN_NODE_MODULES="$(decide_mount admin package-lock.json node_modules)"
         export PREVIEW_RACE_NODE_MODULES="$(decide_mount race-frontend package-lock.json node_modules)"
         export PREVIEW_ARCHIVE_NODE_MODULES="$(decide_mount archive package-lock.json node_modules)"
+        export PREVIEW_DESIGN_NODE_MODULES="$(decide_mount design package-lock.json node_modules)"
 
         echo "Mounts:"
         echo "  admin   vendor       -> $PREVIEW_ADMIN_VENDOR"
@@ -321,6 +323,7 @@ tasks:
         echo "  admin   node_modules -> $PREVIEW_ADMIN_NODE_MODULES"
         echo "  race    node_modules -> $PREVIEW_RACE_NODE_MODULES"
         echo "  archive node_modules -> $PREVIEW_ARCHIVE_NODE_MODULES"
+        echo "  design  node_modules -> $PREVIEW_DESIGN_NODE_MODULES"
 
         echo "Bringing up preview stack…"
         {{.DOCKER_COMPOSE}} -f preview/docker-compose.yml -p scavenger_preview up --detach --wait
@@ -364,6 +367,7 @@ tasks:
         build_assets admin         PREVIEW_ADMIN_NODE_MODULES
         build_assets race-frontend PREVIEW_RACE_NODE_MODULES
         build_assets archive       PREVIEW_ARCHIVE_NODE_MODULES
+        build_assets design        PREVIEW_DESIGN_NODE_MODULES
 
         # Always run migrations against the preview DB.
         echo "Running migrations on preview DB…"
@@ -386,6 +390,94 @@ tasks:
         echo "  https://admin-preview-{{.ISSUE}}.${PREVIEW_DOMAIN}"
         echo "  https://race-preview-{{.ISSUE}}.${PREVIEW_DOMAIN}"
         echo "  https://archive-preview-{{.ISSUE}}.${PREVIEW_DOMAIN}"
+        echo "  https://design-preview-{{.ISSUE}}.${PREVIEW_DOMAIN}"
+
+  preview-issue:design:up:
+    desc: "Bring up ONLY the design preview for issue #N (usage: task preview-issue:design:up -- 17)"
+    silent: true
+    vars:
+      ISSUE: '{{.CLI_ARGS}}'
+    cmds:
+      - task: _preview:guard
+      - |
+        if [ -z "{{.ISSUE}}" ]; then
+          echo "usage: task preview-issue:design:up -- <issue-number>" >&2
+          exit 1
+        fi
+      - |
+        # Design-only preview: static HTML + Tailwind, no PHP, no DB.
+        # Skips composer install, doctrine migrations, fixtures — all the
+        # heavy Symfony plumbing the full :up does. Use this for fast
+        # iteration on design/ changes without spinning up the full stack.
+        export COMPOSE_PROJECT_NAME=scavenger_preview
+
+        if [ -z "${COMPOSE_DOMAIN:-}" ]; then
+          if [ -f admin/.env ]; then
+            COMPOSE_DOMAIN=$(grep -E '^COMPOSE_DOMAIN=' admin/.env | head -1 | cut -d= -f2-)
+          fi
+        fi
+        export COMPOSE_DOMAIN="${COMPOSE_DOMAIN:-scavenger.local.itkdev.dk}"
+
+        worktree=$(./bin/preview-resolve.sh {{.ISSUE}})
+        echo "Preview worktree: $worktree"
+
+        # Resolve the main repo path so decide_mount can compare lockfiles.
+        main_repo=$(git worktree list --porcelain | awk '/^worktree / {p=$2} /^branch refs\/heads\/main$/ {print p; exit}')
+
+        decide_mount() {
+          local site="$1" lockfile="$2" subdir="$3"
+          local worktree_lock="$worktree/$site/$lockfile"
+          local main_lock="$main_repo/$site/$lockfile"
+          local main_dir="$main_repo/$site/$subdir"
+          if [ -f "$worktree_lock" ] && [ -f "$main_lock" ] && cmp -s "$worktree_lock" "$main_lock" && [ -d "$main_dir" ]; then
+            echo "$main_dir"
+          else
+            echo "scavenger_preview_${site}_${subdir}"
+          fi
+        }
+
+        # Stub PREVIEW_* vars for the Symfony services we are NOT bringing up;
+        # compose still parses the entire file and interpolates the volume
+        # sources even when --service-list filters bring-up.
+        export PREVIEW_WORKTREE="$worktree"
+        export PREVIEW_ISSUE="{{.ISSUE}}"
+        export PREVIEW_DOMAIN="${COMPOSE_DOMAIN:-scavenger.local.itkdev.dk}"
+        export PREVIEW_MAIN_PROJECT="${PREVIEW_MAIN_PROJECT:-scavenger}"
+        export PREVIEW_SHARED="$worktree/shared"
+        export PREVIEW_ADMIN_VENDOR=/tmp
+        export PREVIEW_RACE_VENDOR=/tmp
+        export PREVIEW_ARCHIVE_VENDOR=/tmp
+        export PREVIEW_ADMIN_NODE_MODULES=/tmp
+        export PREVIEW_RACE_NODE_MODULES=/tmp
+        export PREVIEW_ARCHIVE_NODE_MODULES=/tmp
+        export PREVIEW_DESIGN_NODE_MODULES="$(decide_mount design package-lock.json node_modules)"
+
+        echo "Mounts:"
+        echo "  design  node_modules -> $PREVIEW_DESIGN_NODE_MODULES"
+
+        # Build design assets first so the static site has fresh dist/css/.
+        build_assets() {
+          local site="$1" mountvar="$2"
+          local val
+          eval "val=\${$mountvar}"
+          local install_step
+          case "$val" in
+            /*) install_step="echo '  [skip] $site: node_modules bind-mounted from main'" ;;
+            *)  install_step="echo '  [run]  $site: npm ci' && npm ci" ;;
+          esac
+          echo "  [run]  $site: npm run build"
+          {{.DOCKER_COMPOSE}} -f preview/docker-compose.yml -p scavenger_preview run --rm --workdir "/app/$site" node sh -c "$install_step && npm run build"
+        }
+
+        echo "Building design assets…"
+        build_assets design PREVIEW_DESIGN_NODE_MODULES
+
+        echo "Bringing up design-nginx…"
+        {{.DOCKER_COMPOSE}} -f preview/docker-compose.yml -p scavenger_preview up --detach --wait design-nginx
+
+        echo ""
+        echo "Design preview is up. Issue #{{.ISSUE}} reachable at:"
+        echo "  https://design-preview-{{.ISSUE}}.${PREVIEW_DOMAIN}"
 
   preview-issue:down:
     desc: "Tear down the preview stack (containers, network, volumes)"
@@ -406,6 +498,7 @@ tasks:
         export PREVIEW_ADMIN_NODE_MODULES=/tmp
         export PREVIEW_RACE_NODE_MODULES=/tmp
         export PREVIEW_ARCHIVE_NODE_MODULES=/tmp
+        export PREVIEW_DESIGN_NODE_MODULES=/tmp
         {{.DOCKER_COMPOSE}} -f preview/docker-compose.yml -p scavenger_preview down --volumes --remove-orphans
         echo "Preview stack down."
 
@@ -423,7 +516,7 @@ tasks:
         # parses the file — stub the PREVIEW_* vars so interpolation works.
         export PREVIEW_WORKTREE=/tmp PREVIEW_ISSUE=0 PREVIEW_DOMAIN=scavenger.local.itkdev.dk PREVIEW_MAIN_PROJECT=scavenger
         export PREVIEW_SHARED=/tmp PREVIEW_ADMIN_VENDOR=/tmp PREVIEW_RACE_VENDOR=/tmp PREVIEW_ARCHIVE_VENDOR=/tmp
-        export PREVIEW_ADMIN_NODE_MODULES=/tmp PREVIEW_RACE_NODE_MODULES=/tmp PREVIEW_ARCHIVE_NODE_MODULES=/tmp
+        export PREVIEW_ADMIN_NODE_MODULES=/tmp PREVIEW_RACE_NODE_MODULES=/tmp PREVIEW_ARCHIVE_NODE_MODULES=/tmp PREVIEW_DESIGN_NODE_MODULES=/tmp
         echo "Reloading fixtures into preview DB…"
         {{.DOCKER_COMPOSE}} -f preview/docker-compose.yml -p scavenger_preview exec -T admin-phpfpm bin/console doctrine:fixtures:load --no-interaction
         echo "Fixtures reloaded."
@@ -435,7 +528,7 @@ tasks:
       - |
         export PREVIEW_WORKTREE=/tmp PREVIEW_ISSUE=0 PREVIEW_DOMAIN=scavenger.local.itkdev.dk PREVIEW_MAIN_PROJECT=scavenger
         export PREVIEW_SHARED=/tmp PREVIEW_ADMIN_VENDOR=/tmp PREVIEW_RACE_VENDOR=/tmp PREVIEW_ARCHIVE_VENDOR=/tmp
-        export PREVIEW_ADMIN_NODE_MODULES=/tmp PREVIEW_RACE_NODE_MODULES=/tmp PREVIEW_ARCHIVE_NODE_MODULES=/tmp
+        export PREVIEW_ADMIN_NODE_MODULES=/tmp PREVIEW_RACE_NODE_MODULES=/tmp PREVIEW_ARCHIVE_NODE_MODULES=/tmp PREVIEW_DESIGN_NODE_MODULES=/tmp
         {{.DOCKER_COMPOSE}} -f preview/docker-compose.yml -p scavenger_preview logs --follow --tail=100
 
   preview-issue:status:
