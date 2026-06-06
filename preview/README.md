@@ -23,12 +23,14 @@ The preview embeds the issue number in every hostname:
 - `admin-preview-<N>.scavenger.local.itkdev.dk`
 - `race-preview-<N>.scavenger.local.itkdev.dk`
 - `archive-preview-<N>.scavenger.local.itkdev.dk`
+- `design-preview-<N>.scavenger.local.itkdev.dk`
 
 For example, while previewing issue 17:
 
 - `https://admin-preview-17.scavenger.local.itkdev.dk`
 - `https://race-preview-17.scavenger.local.itkdev.dk`
 - `https://archive-preview-17.scavenger.local.itkdev.dk`
+- `https://design-preview-17.scavenger.local.itkdev.dk`
 
 This is intentional: while only one preview can run at a time, your
 browser's history, autocomplete, and saved logins will naturally
@@ -54,6 +56,7 @@ need an entry per issue you preview, e.g. for issue 17:
 127.0.0.1  admin-preview-17.scavenger.local.itkdev.dk
 127.0.0.1  race-preview-17.scavenger.local.itkdev.dk
 127.0.0.1  archive-preview-17.scavenger.local.itkdev.dk
+127.0.0.1  design-preview-17.scavenger.local.itkdev.dk
 ```
 
 Tip: a wildcard line in `dnsmasq` or `resolver` is much less painful
@@ -73,10 +76,26 @@ task preview-issue:up -- 17
 open https://admin-preview-17.scavenger.local.itkdev.dk
 open https://race-preview-17.scavenger.local.itkdev.dk
 open https://archive-preview-17.scavenger.local.itkdev.dk
+open https://design-preview-17.scavenger.local.itkdev.dk
 
 # Tear down
 task preview-issue:down
 ```
+
+### Design-only fast path
+
+If you're only iterating on the design playground (no Symfony code
+changes), spin up just the static design preview — it skips composer
+install, the preview DB, migrations, and fixtures:
+
+```bash
+task preview-issue:design:up -- 17
+open https://design-preview-17.scavenger.local.itkdev.dk
+task preview-issue:down
+```
+
+`preview-issue:down` tears down everything (including the design
+container) with `--remove-orphans`, so there is no separate down task.
 
 ## How issue → worktree resolution works
 
@@ -98,7 +117,7 @@ Worktrees don't contain `vendor/` or `node_modules/` (both gitignored),
 and we don't want to run `composer install` every preview boot when the
 deps haven't changed.
 
-For each site (admin, race-frontend, archive), `preview-issue:up`
+For each Symfony site (admin, race-frontend, archive), `preview-issue:up`
 compares the worktree's `composer.lock` against main's:
 
 - **Locks match** → bind-mount main's `vendor/` into the preview
@@ -108,10 +127,16 @@ compares the worktree's `composer.lock` against main's:
   inside the container.
 
 `package-lock.json` / `node_modules` follow the same rule. All three
-sites have a node-based asset pipeline (webpack-encore + Tailwind), and
-`public/build/` is gitignored, so `npm run build` always runs against
-the worktree on every `:up` — only the `npm ci` step is skipped when
-the lockfile matches main.
+Symfony sites have a node-based asset pipeline (webpack-encore +
+Tailwind), and `public/build/` is gitignored, so `npm run build` always
+runs against the worktree on every `:up` — only the `npm ci` step is
+skipped when the lockfile matches main.
+
+The `design/` playground uses the same `decide_mount` logic for its
+`node_modules` and is built the same way on every `:up` (or via
+`preview-issue:design:up` for the design-only fast path). Its build
+output lives at `design/dist/css/app.css`, which the design-nginx
+container serves alongside the hand-written HTML pages in `design/`.
 
 Named volumes are wiped by `preview-issue:down --volumes`, so deps are
 rebuilt fresh on the next `:up`.
@@ -187,8 +212,9 @@ preview DB volume and on the `scavenger_app` network attachment.
 
 | Target | Description |
 |---|---|
-| `task preview-issue:up -- <N>` | Resolve issue #N to a worktree, bring up the preview stack, run migrations, load fixtures (only if DB is empty). |
-| `task preview-issue:down` | Tear down containers, network, and the preview DB volume. |
+| `task preview-issue:up -- <N>` | Resolve issue #N to a worktree, bring up the full preview stack (admin, race, archive, design), run migrations, load fixtures (only if DB is empty). |
+| `task preview-issue:design:up -- <N>` | Bring up ONLY the design playground for issue #N — no PHP, no DB. Fast path when iterating on design-only changes. |
+| `task preview-issue:down` | Tear down containers, network, and the preview DB volume (sweeps design containers too via `--remove-orphans`). |
 | `task preview-issue:fixtures` | Force-reload Doctrine fixtures into the preview DB (destructive). |
 | `task preview-issue:logs` | Tail logs from all preview containers. |
 | `task preview-issue:status` | Show which preview containers are currently running. |
