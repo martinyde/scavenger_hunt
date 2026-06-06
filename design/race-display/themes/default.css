@@ -223,3 +223,382 @@
   font-family: var(--race-font-body);
   color: var(--race-text);
 }
+
+/* ----------------------------------------------------------------------------
+ * Mobile race-display primitives — shared across the /race/{id} mobile hub.
+ * Used by design/race-display/mobile/active-*.html. Every property reads
+ * from the race-* CSS variables so any theme stays consistent on mobile.
+ * --------------------------------------------------------------------------*/
+
+/* Slim sticky top bar — countdown + team identity + x/y. */
+.race-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--race-surface);
+  border-bottom: 1px solid var(--race-border);
+  padding: 0.625rem 0.875rem;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--race-font-body);
+}
+.race-topbar-timer {
+  font-family: var(--race-font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--race-accent-strong);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.race-topbar-team {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.race-topbar-team-name {
+  font-weight: 600;
+  color: var(--race-text);
+  font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.race-topbar-avatar {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+  background: var(--race-accent-soft);
+  color: var(--race-accent-strong);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  overflow: hidden;
+}
+.race-topbar-avatar img,
+.race-topbar-avatar svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.race-topbar-progress {
+  font-family: var(--race-font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--race-text);
+  background: var(--race-surface-muted);
+  border-radius: 9999px;
+  padding: 0.125rem 0.625rem;
+}
+
+/* Tab strip — exactly three tabs (Search / List / Task). */
+.race-tabs {
+  position: sticky;
+  top: 3rem;
+  z-index: 19;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: var(--race-surface);
+  border-bottom: 1px solid var(--race-border);
+}
+.race-tab {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0.625rem 0.5rem;
+  font-family: var(--race-font-body);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: var(--race-text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  text-decoration: none;
+  text-align: center;
+}
+.race-tab[aria-selected="true"] {
+  color: var(--race-accent-strong);
+  border-bottom-color: var(--race-accent);
+}
+
+/* Panel viewport + swipeable track — clip horizontally and slide. */
+.race-panels {
+  overflow: hidden;
+  touch-action: pan-y;
+  background: var(--race-bg);
+}
+.race-panels-track {
+  display: grid;
+  grid-template-columns: repeat(3, 100%);
+  transition: transform 250ms ease;
+}
+.race-panel {
+  padding: 1rem 0.875rem 2rem;
+  min-height: calc(100vh - 7rem);
+}
+
+/* Section heading inside a panel. */
+.race-panel-eyebrow {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--race-text-muted);
+  font-weight: 600;
+  margin-bottom: 0.375rem;
+}
+.race-panel-title {
+  font-family: var(--race-font-display);
+  font-size: 1.5rem;
+  color: var(--race-text);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+}
+
+/* Word-search grid — each cell is a 36×36 tap target. Scales to fit 360px. */
+.race-wordsearch {
+  display: grid;
+  gap: 0.25rem;
+  background: var(--race-surface);
+  border: 1px solid var(--race-border);
+  border-radius: var(--race-radius-lg);
+  padding: 0.625rem;
+  box-shadow: var(--race-shadow-card);
+}
+.race-wordsearch-cell {
+  aspect-ratio: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--race-font-mono);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--race-text);
+  background: var(--race-surface-muted);
+  border-radius: var(--race-radius-sm);
+  user-select: none;
+}
+.race-wordsearch-cell.is-found {
+  background: var(--race-accent-soft);
+  color: var(--race-accent-strong);
+}
+.race-wordsearch-cell.is-found-strong {
+  background: var(--race-accent);
+  color: var(--race-text-inverse);
+}
+
+/* Chip rail — keys (found vs locked) below the grid. */
+.race-key-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-top: 0.75rem;
+}
+.race-key {
+  appearance: none;
+  background: var(--race-surface);
+  border: 1px solid var(--race-border);
+  border-radius: 9999px;
+  padding: 0.375rem 0.75rem;
+  font-family: var(--race-font-mono);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: var(--race-text-muted);
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+.race-key.is-found {
+  background: var(--race-accent-soft);
+  border-color: transparent;
+  color: var(--race-accent-strong);
+}
+.race-key.is-found-done {
+  background: var(--race-success);
+  border-color: transparent;
+  color: var(--race-text-inverse);
+}
+.race-key.is-locked {
+  background: var(--race-surface-muted);
+  color: var(--race-text-muted);
+  letter-spacing: 0.2em;
+}
+.race-key-dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 9999px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+/* Task list rows — only unlocked tasks render. */
+.race-task-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 0.875rem;
+  background: var(--race-surface);
+  border: 1px solid var(--race-border);
+  border-radius: var(--race-radius-lg);
+  text-align: left;
+  width: 100%;
+  font-family: var(--race-font-body);
+  color: var(--race-text);
+  cursor: pointer;
+  appearance: none;
+}
+.race-task-row + .race-task-row { margin-top: 0.5rem; }
+.race-task-row[data-status="done"] { opacity: 0.7; }
+.race-task-row-key {
+  font-family: var(--race-font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--race-accent-soft);
+  color: var(--race-accent-strong);
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+}
+.race-task-row-key[data-state="done"] {
+  background: var(--race-success);
+  color: var(--race-text-inverse);
+}
+.race-task-row-title {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.3;
+}
+.race-task-row-meta {
+  font-size: 0.75rem;
+  color: var(--race-text-muted);
+  margin-top: 0.125rem;
+}
+.race-task-row-chevron {
+  color: var(--race-text-muted);
+  font-size: 1.125rem;
+}
+
+/* Feedback banners on task detail — both states themed. */
+.race-feedback {
+  display: flex;
+  gap: 0.625rem;
+  align-items: flex-start;
+  padding: 0.75rem 0.875rem;
+  border-radius: var(--race-radius);
+  font-family: var(--race-font-body);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  margin-top: 0.875rem;
+}
+.race-feedback-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--race-text-inverse);
+  font-weight: 700;
+  font-size: 0.75rem;
+  flex: 0 0 auto;
+  margin-top: 0.0625rem;
+}
+.race-feedback-correct {
+  background: color-mix(in srgb, var(--race-success) 14%, var(--race-surface));
+  color: var(--race-success);
+  border: 1px solid color-mix(in srgb, var(--race-success) 40%, transparent);
+}
+.race-feedback-correct .race-feedback-icon { background: var(--race-success); }
+.race-feedback-wrong {
+  background: color-mix(in srgb, var(--race-danger) 12%, var(--race-surface));
+  color: var(--race-danger);
+  border: 1px solid color-mix(in srgb, var(--race-danger) 40%, transparent);
+}
+.race-feedback-wrong .race-feedback-icon { background: var(--race-danger); }
+
+/* Hint block — light surface with a colored left rule. */
+.race-hint {
+  background: var(--race-surface-muted);
+  border-left: 3px solid var(--race-accent);
+  border-radius: var(--race-radius-sm);
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  color: var(--race-text);
+  line-height: 1.4;
+}
+.race-hint-label {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: var(--race-text-muted);
+  margin-bottom: 0.125rem;
+}
+
+/* Text-before / text-after — quiet narration around the task. */
+.race-task-narration {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--race-text);
+}
+.race-task-narration-muted {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--race-text-muted);
+}
+
+/* State toggle (mock-only) — picks idle/correct/wrong on the task panel. */
+.race-state-toggle {
+  display: inline-flex;
+  background: var(--race-surface-muted);
+  border-radius: 9999px;
+  padding: 0.1875rem;
+  gap: 0.1875rem;
+  margin-bottom: 0.875rem;
+}
+.race-state-toggle button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  font-family: var(--race-font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--race-text-muted);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  cursor: pointer;
+}
+.race-state-toggle button[aria-pressed="true"] {
+  background: var(--race-surface);
+  color: var(--race-accent-strong);
+  box-shadow: var(--race-shadow-card);
+}
+
+/* Phone frame — purely for desktop preview; clips mock to 360px so reviewers
+   see the mobile layout. On a real phone the markup expands to 100vw. */
+.race-phone {
+  max-width: 22.5rem; /* 360px */
+  margin: 1.5rem auto;
+  background: var(--race-surface);
+  border-radius: 1.5rem;
+  border: 1px solid var(--race-border);
+  box-shadow: var(--race-shadow-card);
+  overflow: hidden;
+}
+@media (max-width: 480px) {
+  .race-phone {
+    max-width: 100%;
+    margin: 0;
+    border-radius: 0;
+    border: 0;
+    box-shadow: none;
+  }
+}
