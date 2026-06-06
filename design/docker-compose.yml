@@ -1,0 +1,15 @@
+# Design playground — Tailwind build container and local static-file preview.
+# Developer-only; never deployed. Mirrors the `node` service shape used by
+# admin/race-frontend, plus a published port so `design:serve` can expose
+# the static site on http://localhost:8088. Port 8088 was chosen because
+# 8080 is already taken on the host by the local Traefik dashboard.
+services:
+  node:
+    image: node:20
+    profiles:
+      - dev
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - '8088:8088'
